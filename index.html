@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MuquiranaTech — antes de gastar, pergunta pro Muquirana</title>
+<style>
+:root{
+  --bg:#06080d;--panel:#0d1320;--panel2:#111a2b;--line:#1c2538;--line2:#26314a;
+  --txt:#e8eef9;--mut:#8b98b2;--dim:#5d6a85;
+  --cy:#00e5ff;--li:#a6ff3b;--am:#ffb020;--rd:#ff4d6d;
+  --mono:ui-monospace,'Cascadia Code','JetBrains Mono',Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font:15px/1.45 'Segoe UI',Inter,system-ui,sans-serif;min-height:100vh;
+  background-image:
+    radial-gradient(1100px 480px at 85% -10%,rgba(0,229,255,.11),transparent 60%),
+    radial-gradient(800px 380px at -10% 5%,rgba(166,255,59,.06),transparent 60%),
+    linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);
+  background-size:auto,auto,32px 32px,32px 32px;background-attachment:fixed}
+button,select,input{font:inherit;color:inherit}
+.wrap{max-width:1320px;margin:0 auto;padding:0 24px}
+
+/* header */
+header{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(6,8,13,.78);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;gap:20px;height:66px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px;letter-spacing:-.5px;white-space:nowrap}
+.logo b{color:var(--cy)}
+.logo small{font:500 10px var(--mono);color:var(--dim);border:1px solid var(--line2);padding:2px 6px;border-radius:5px;letter-spacing:0}
+.search{flex:1;max-width:520px;position:relative}
+.search input{width:100%;background:var(--panel);border:1px solid var(--line2);border-radius:10px;padding:10px 14px 10px 38px;outline:none;transition:.2s}
+.search input:focus{border-color:var(--cy);box-shadow:0 0 0 3px rgba(0,229,255,.12)}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--dim)}
+.trusted{margin-left:auto;display:flex;align-items:center;gap:7px;font-size:13px;color:var(--li);border:1px solid rgba(166,255,59,.3);background:rgba(166,255,59,.06);padding:7px 12px;border-radius:999px;white-space:nowrap}
+
+/* hero */
+.hero{padding:44px 0 26px;display:grid;grid-template-columns:1.25fr 1fr;gap:36px;align-items:center}
+.hero h1{font-size:44px;line-height:1.06;letter-spacing:-1.5px;font-weight:800}
+.hero h1 span{background:linear-gradient(90deg,var(--cy),var(--li));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--mut);margin-top:14px;max-width:560px;font-size:16px}
+.stats{display:flex;gap:28px;margin-top:22px}
+.stats div{font:700 24px var(--mono)}
+.stats small{display:block;font:500 12px 'Segoe UI',system-ui;color:var(--mut)}
+.legend{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}
+.legend h3{font-size:13px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;display:flex;justify-content:space-between}
+.legend h3 em{font-style:normal;font-family:var(--mono);text-transform:none;letter-spacing:0;color:var(--dim)}
+.lg{display:flex;align-items:center;gap:12px;padding:9px 0;border-top:1px dashed var(--line)}
+.lg:first-of-type{border-top:0}
+.lg .tag{min-width:178px;text-align:center}
+.lg p{font-size:13px;color:var(--mut);margin:0}
+.lg code{font:12px var(--mono);color:var(--dim);margin-left:auto;white-space:nowrap}
+
+/* filtros */
+.cats{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px;scrollbar-width:thin}
+.chip{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:10px;border:1px solid var(--line2);background:var(--panel);cursor:pointer;white-space:nowrap;font-size:14px;color:var(--mut);transition:.15s}
+.chip:hover{color:var(--txt);border-color:#38466a}
+.chip.on{color:#001418;background:var(--cy);border-color:var(--cy);font-weight:600;box-shadow:0 0 18px rgba(0,229,255,.35)}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:10px 0 20px;border-bottom:1px solid var(--line)}
+.stores{display:flex;gap:6px;flex-wrap:wrap}
+.st{display:flex;align-items:center;gap:6px;font-size:12.5px;padding:5px 10px;border-radius:999px;border:1px solid var(--line2);cursor:pointer;color:var(--mut);background:transparent}
+.st i{width:8px;height:8px;border-radius:50%}
+.st.on{color:var(--txt);border-color:var(--txt);background:var(--panel2)}
+.bar .sp{flex:1}
+.sel{background:var(--panel);border:1px solid var(--line2);border-radius:8px;padding:7px 10px;font-size:13px;outline:none;cursor:pointer}
+.count{font:12px var(--mono);color:var(--dim);padding:16px 0 12px}
+
+/* cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:16px;padding-bottom:60px}
+.card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:16px;cursor:pointer;position:relative;overflow:hidden;transition:transform .18s,border-color .18s,box-shadow .18s;display:flex;flex-direction:column;gap:12px}
+.card:hover{transform:translateY(-3px);border-color:var(--c);box-shadow:0 10px 40px -12px var(--c)}
+.card::before{content:"";position:absolute;inset:0 0 auto 0;height:2px;background:var(--c);opacity:.8}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.store{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600}
+.store i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.slogo{border-radius:4px;background:#fff;padding:1px;flex:none}
+.thumb{overflow:hidden}
+.go{font-size:12px;color:var(--cy);text-decoration:none;white-space:nowrap}
+.go:hover{text-decoration:underline}
+a.cta{display:block;text-align:center;text-decoration:none}
+.tag{font:700 11px var(--mono);letter-spacing:.6px;padding:4px 8px;border-radius:6px;color:var(--c);background:color-mix(in srgb,var(--c) 13%,transparent);border:1px solid color-mix(in srgb,var(--c) 35%,transparent);white-space:nowrap}
+.prod{display:flex;gap:12px;align-items:center}
+.thumb{width:54px;height:54px;flex:none;border-radius:12px;display:grid;place-items:center;color:var(--c);background:radial-gradient(circle at 30% 20%,color-mix(in srgb,var(--c) 22%,transparent),transparent 70%),#0a0f1a;border:1px solid var(--line2)}
+.prod h4{font-size:15px;line-height:1.25;font-weight:600}
+.prod .cat{font-size:12px;color:var(--dim);margin-top:2px}
+.price{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.price strong{font:700 26px var(--mono);letter-spacing:-1px}
+.price s{color:var(--dim);font-size:13px}
+.off{font:600 12px var(--mono);color:var(--li)}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cmp div{background:#0a0f1a;border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.cmp small{display:block;font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.6px}
+.cmp b{font:700 14px var(--mono)}
+.cmp em{font-style:normal;font:12px var(--mono)}
+.spark{width:100%;height:auto;display:block}
+.foot{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--mut)}
+.ping{display:flex;align-items:center;gap:6px;font:700 13px var(--mono);color:var(--c)}
+.meter{width:48px;height:7px;border-radius:9px;background:#2a3448;overflow:hidden;display:inline-block}
+.meter i{display:block;height:100%;border-radius:9px}
+.verdict .big small{font-size:15px;color:var(--mut)}
+.trust{display:flex;align-items:center;gap:5px;color:var(--mut);font-size:12px}
+.trust svg{color:var(--li);flex:none}
+.lost{font-size:12px;color:var(--mut);border-left:2px solid var(--c);padding-left:8px}
+.lost b{color:var(--txt)}
+.empty{grid-column:1/-1;text-align:center;color:var(--mut);padding:60px 0;font-family:var(--mono)}
+
+/* modal */
+.ov{position:fixed;inset:0;background:rgba(2,4,8,.75);backdrop-filter:blur(6px);display:none;place-items:center;z-index:50;padding:20px}
+.ov.open{display:grid}
+.modal{width:min(880px,100%);max-height:92vh;overflow:auto;background:var(--panel);border:1px solid var(--line2);border-radius:20px;padding:24px;position:relative;box-shadow:0 30px 80px -20px var(--c)}
+.x{position:absolute;right:16px;top:16px;width:34px;height:34px;border-radius:9px;border:1px solid var(--line2);background:var(--panel2);cursor:pointer;font-size:18px}
+.mh{display:flex;gap:16px;align-items:center;padding-right:40px}
+.mh .thumb{width:68px;height:68px}
+.mh h2{font-size:22px;letter-spacing:-.4px}
+.verdict{margin:18px 0;padding:14px 16px;border-radius:12px;background:color-mix(in srgb,var(--c) 9%,transparent);border:1px solid color-mix(in srgb,var(--c) 30%,transparent);display:flex;gap:14px;align-items:center}
+.verdict .big{font:800 30px var(--mono);color:var(--c);white-space:nowrap}
+.verdict p{color:var(--mut);font-size:14px}
+.verdict p b{color:var(--txt)}
+.cw{position:relative;background:#080c15;border:1px solid var(--line);border-radius:14px;padding:10px 6px 0}
+.chart{width:100%;height:auto;display:block}
+.chart .gl{stroke:#18213a}
+.chart .yl{stroke:#26314a;stroke-dasharray:3 4}
+.chart .ax{fill:var(--dim);font:11px var(--mono)}
+.chart .fl{stroke:var(--mut);stroke-dasharray:6 5;opacity:.6}
+.chart .sl{stroke:var(--li);stroke-dasharray:2 4;opacity:.8}
+.tip{position:absolute;pointer-events:none;background:var(--panel2);border:1px solid var(--line2);border-radius:8px;padding:6px 9px;font:12px var(--mono);transform:translate(-50%,-110%);white-space:nowrap;display:none}
+.mg{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;margin-top:16px}
+.box{background:#0a0f1a;border:1px solid var(--line);border-radius:14px;padding:14px}
+.box h5{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td{padding:7px 0;border-top:1px dashed var(--line)}
+tr:first-child td{border-top:0}
+td:nth-child(2),td:nth-child(3){text-align:right;font-family:var(--mono)}
+td small{color:var(--dim)}
+.box ul{list-style:none;display:grid;gap:7px;font-size:13px;color:var(--mut)}
+.box li{display:flex;gap:7px;align-items:flex-start}
+.box li svg{color:var(--li);flex:none;margin-top:2px}
+.cta{margin-top:14px;width:100%;padding:12px;border-radius:10px;border:0;background:var(--c);color:#041014;font-weight:700;cursor:pointer;font-size:15px}
+footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--dim);font-size:12px;font-family:var(--mono)}
+
+@media (max-width:860px){
+  .hero{grid-template-columns:1fr}.hero h1{font-size:34px}
+  .mg{grid-template-columns:1fr}.trusted{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="logo">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="8" cy="8" r="1.6" fill="#a6ff3b" stroke="#a6ff3b"/></svg>
+      <span>Muquirana<b>Tech</b></span><small>v0.4</small>
+    </div>
+    <label class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+      <input id="q" placeholder="Buscar PS5, iPhone, TV 55, RTX 5070…">
+    </label>
+    <div class="trusted"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/></svg>Só lojas verificadas</div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <h1>Antes de gastar,<br>pergunta pro <span>Muquirana</span>.</h1>
+      <p>O Muquirana compara o preço de hoje com tudo o que o produto já custou, só nas lojas mais confiáveis do Brasil. Se já esteve mais barato, ele avisa. Promoção de verdade ou cilada, você descobre na hora, sem precisar entender de tecnologia.</p>
+      <div class="stats" id="stats"></div>
+    </div>
+    <div class="legend">
+      <h3>Muquirômetro <em>nota de 0 a 10</em></h3>
+      <div id="legend"></div>
+    </div>
+  </section>
+
+  <nav class="cats" id="cats"></nav>
+  <div class="bar">
+    <div class="stores" id="stores"></div>
+    <div class="sp"></div>
+    <select class="sel" id="tier">
+      <option value="all">Todos os status</option>
+      <option value="0">Só “Até o Muquirana compra”</option>
+      <option value="1">Tudo que o Muquirana aprova</option>
+    </select>
+    <select class="sel" id="sort">
+      <option value="ping">Melhor nota (melhor negócio)</option>
+      <option value="off">Maior desconto vs preço cheio</option>
+      <option value="low">Menor preço</option>
+      <option value="high">Maior preço</option>
+    </select>
+  </div>
+  <div class="count" id="count"></div>
+  <section class="grid" id="grid"></section>
+</main>
+
+<footer><div class="wrap">MuquiranaTech · protótipo v0.4 · preços, históricos e reputações são FICTÍCIOS, só para demonstrar o layout.</div></footer>
+
+<div class="ov" id="ov"><div class="modal" id="modal"></div></div>
+
+<script src="data.js"></script><!-- gerado pelo coletor; se não existir, usa os dados fictícios -->
+<script>
+/* ---------- base ---------- */
+const MES=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const REAL=window.MUQ_DATA&&window.MUQ_DATA.produtos&&window.MUQ_DATA.produtos.length?window.MUQ_DATA:null;
+const mAbs=d=>{const[y,m]=d.split('-');return +y*12+(+m-1)};
+// eixo de meses: dados reais = do 1º registro até hoje (máx. 36 meses); fictício = jan/24..nov/26
+let M0,N;
+if(REAL){const now=new Date(),cur=now.getFullYear()*12+now.getMonth();
+  M0=Math.max(Math.min(...REAL.produtos.flatMap(p=>p.hist.map(h=>mAbs(h[0])))),cur-35);N=cur-M0+1;}
+else{M0=2024*12;N=35}
+const NN=Math.max(N-1,1);
+const lbl=i=>{const t=M0+i;return MES[t%12]+'/'+String(Math.floor(t/12)).slice(2)};
+const yearOf=i=>Math.floor((M0+i)/12);
+const yearMarks=()=>[...Array(N).keys()].filter(i=>i===0||(M0+i)%12===0);
+const dBR=d=>d.split('-').reverse().join('/');
+const fmt=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
+const pct=v=>(v>0?'+':'')+Math.round(v*100)+'%';
+const short=v=>v>=1000?'R$'+(v/1000).toFixed(1).replace('.',',')+'k':'R$'+Math.round(v);
+
+const T=[
+  {k:'ATÉ O MUQUIRANA COMPRA',c:'#a6ff3b',d:'Menor preço da história. Pode comprar.',r:'nota 9,5+'},
+  {k:'MUQUIRANA APROVA',c:'#00e5ff',d:'Bem pertinho do menor preço já visto.',r:'nota 8+'},
+  {k:'SEGURA A CARTEIRA',c:'#ffb020',d:'Já esteve bem mais barato. Vale esperar.',r:'nota 4+'},
+  {k:'CILADA!',c:'#ff4d6d',d:'O “desconto” engana: já custou muito menos.',r:'abaixo de 4'},
+  {k:'MUQUIRANA DE OLHO',c:'#8b98b2',d:'Ainda juntando histórico pra dar o veredito.',r:'< 30 dias'},
+];
+const nota=v=>v.toFixed(1).replace('.',',');
+
+const CATS=[['all','Tudo'],['console','Consoles'],['game','Jogos'],['celular','Celulares'],['tv','TVs'],['audio','Áudio'],['monitor','Monitores'],['perif','Periféricos'],['notebook','Notebooks'],['gpu','Placas de vídeo'],['cpu','Processadores'],['mobo','Placas-mãe'],['ram','Memória RAM'],['ssd','Armazenamento'],['fonte','Fontes']];
+
+// d = domínio (logo), s = busca na loja (link provisório até o coletor trazer o link exato do produto)
+const slug=t=>t.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+const enc=encodeURIComponent;
+const STORES={
+  kabum:{n:'KaBuM!',c:'#ff6a00',d:'kabum.com.br',s:q=>`https://www.kabum.com.br/busca/${slug(q)}`},
+  pichau:{n:'Pichau',c:'#e3262e',d:'pichau.com.br',s:q=>`https://www.pichau.com.br/search?q=${enc(q)}`},
+  terabyte:{n:'Terabyte',c:'#2f7bff',d:'terabyteshop.com.br',s:q=>`https://www.terabyteshop.com.br/busca?str=${enc(q)}`},
+  ml:{n:'Mercado Livre',c:'#ffe600',d:'mercadolivre.com.br',s:q=>`https://lista.mercadolivre.com.br/${slug(q)}`},
+  amazon:{n:'Amazon',c:'#ff9900',d:'amazon.com.br',s:q=>`https://www.amazon.com.br/s?k=${enc(q)}`},
+  magalu:{n:'Magalu',c:'#0086ff',d:'magazineluiza.com.br',s:q=>`https://www.magazineluiza.com.br/busca/${enc(q)}/`},
+  casasbahia:{n:'Casas Bahia',c:'#3355ff',d:'casasbahia.com.br',s:q=>`https://www.casasbahia.com.br/${slug(q)}/b`},
+  nuuvem:{n:'Nuuvem',c:'#b04cff',d:'nuuvem.com',s:q=>`https://www.nuuvem.com/br-pt/catalog/search/${enc(q)}`},
+  psstore:{n:'PS Store',c:'#2b6cff',d:'store.playstation.com',s:q=>`https://store.playstation.com/pt-br/search/${enc(q)}`},
+};
+// logo da loja: por enquanto o favicon oficial; depois trocamos pelos logos do kit de afiliado de cada loja
+const logo=(k,sz=16)=>{const s=STORES[k];return `<img class="slogo" width="${sz}" height="${sz}" src="https://www.google.com/s2/favicons?domain=${s.d}&sz=64" alt="" onerror="this.replaceWith(Object.assign(document.createElement('i'),{style:'background:${s.c}'}))">`};
+// foto: usa p.img quando o coletor trouxer; senão, ícone da categoria
+const thumb=(p,sz)=>p.img?`<img src="${p.img}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:contain;border-radius:10px;background:#fff">`:icon(p.cat,sz);
+
+const IC={
+all:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+gpu:'<rect x="2" y="6" width="20" height="11" rx="2"/><circle cx="8" cy="11.5" r="3"/><circle cx="16" cy="11.5" r="3"/><path d="M4 17v2M8 17v2"/>',
+cpu:'<rect x="6" y="6" width="12" height="12" rx="1.5"/><rect x="9.5" y="9.5" width="5" height="5"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/>',
+mobo:'<rect x="3" y="3" width="18" height="18" rx="2"/><rect x="6" y="6" width="6" height="6"/><path d="M15 6h3M15 9h3M6 15h12M6 18h8"/>',
+ram:'<rect x="2" y="7" width="20" height="9" rx="1"/><path d="M5 10h2v3H5zM9 10h2v3H9zM13 10h2v3h-2zM17 10h2v3h-2zM4 16v2M8 16v2M12 16v2M16 16v2M20 16v2"/>',
+ssd:'<rect x="2" y="8" width="20" height="8" rx="1.5"/><path d="M5 11h6v2H5zM14 12h1M17 12h1"/>',
+fonte:'<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="10" cy="12" r="4"/><path d="M10 8v8M6 12h8M17 9h1M17 12h1"/>',
+monitor:'<rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>',
+perif:'<rect x="7" y="2" width="10" height="20" rx="5"/><path d="M12 6v4"/>',
+console:'<path d="M6 8h12a4 4 0 0 1 4 4v1a4 4 0 0 1-7 2.6L14 15h-4l-1 .6A4 4 0 0 1 2 13v-1a4 4 0 0 1 4-4z"/><path d="M7 11v3M5.5 12.5h3M16 12h.01M18 13.5h.01"/>',
+game:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/><path d="M12 3a9 9 0 0 1 9 9"/>',
+notebook:'<rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/>',
+celular:'<rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/>',
+tv:'<rect x="2" y="4" width="20" height="13" rx="1.5"/><path d="M7 21l2-4M17 21l-2-4"/>',
+audio:'<rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="14" r="4"/><circle cx="12" cy="6.5" r="1.3"/>'};
+const icon=(k,s=18)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${IC[k]}</svg>`;
+const shield=s=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/></svg>`;
+const meter=(v,c)=>`<span class="meter"><i style="width:${Math.max(4,v*10)}%;background:${c}"></i></span>`;
+
+/* ---------- dados FICTÍCIOS (âncoras de preço por mês: [índice, preço]) ---------- */
+const RAW=[
+ {n:'PlayStation 5 Slim Digital',cat:'console',st:'ml',seller:'Sony Loja Oficial · MercadoLíder Platinum',full:4799,a:[[0,3999],[6,3599],[14,2499],[18,2899],[24,3799],[30,4199],[34,4299]]},
+ {n:'GeForce RTX 5070 12GB',cat:'gpu',st:'kabum',full:5299,a:[[14,5999],[18,4899],[24,4299],[29,3899],[32,4199],[34,3949]]},
+ {n:'Radeon RX 9070 XT 16GB',cat:'gpu',st:'pichau',full:5999,a:[[14,5799],[19,4699],[25,4299],[30,4599],[34,4499]]},
+ {n:'Ryzen 7 9800X3D',cat:'cpu',st:'terabyte',full:3999,a:[[10,3999],[16,3199],[22,2899],[28,3299],[34,3349]]},
+ {n:'Ryzen 5 7600',cat:'cpu',st:'kabum',full:1399,a:[[0,1499],[10,1149],[20,999],[28,1099],[34,1029]]},
+ {n:'Placa-mãe B650M Wi-Fi',cat:'mobo',st:'pichau',full:1299,a:[[0,1399],[12,1099],[20,949],[28,1049],[34,999]]},
+ {n:'Memória DDR5 32GB (2x16) 6000MHz',cat:'ram',st:'terabyte',full:1899,a:[[0,799],[10,629],[18,549],[22,699],[26,1199],[30,1699],[34,1499]]},
+ {n:'SSD NVMe 2TB Gen4 7.000MB/s',cat:'ssd',st:'amazon',full:1599,a:[[0,999],[12,849],[19,749],[26,1099],[34,1199]]},
+ {n:'Monitor 27" QHD 180Hz IPS',cat:'monitor',st:'magalu',full:2299,a:[[0,1999],[10,1599],[20,1399],[28,1499],[34,1449]]},
+ {n:'Headset HyperX Cloud III',cat:'perif',st:'amazon',full:699,a:[[0,799],[12,549],[22,499],[28,529],[34,489]]},
+ {n:'Mouse Logitech G Pro X Superlight 2',cat:'perif',st:'ml',seller:'Logitech G Loja Oficial · Platinum',full:1099,a:[[0,1199],[14,799],[24,749],[30,799],[34,719]]},
+ {n:'Teclado Mecânico TKL Switch Red',cat:'perif',st:'kabum',full:299,a:[[0,259],[10,199],[20,169],[28,189],[34,199]]},
+ {n:'Nintendo Switch 2',cat:'console',st:'casasbahia',full:4499,a:[[17,4499],[22,4199],[26,3999],[30,3899],[34,3799]]},
+ {n:'Xbox Series S 1TB',cat:'console',st:'amazon',full:3299,a:[[0,2499],[10,2199],[20,2999],[28,3199],[34,3099]]},
+ {n:'Controle DualSense',cat:'console',st:'amazon',full:499,a:[[0,449],[10,379],[18,349],[26,419],[34,399]]},
+ {n:'Elden Ring (PC · key Steam)',cat:'game',st:'nuuvem',full:229,a:[[0,149],[6,99],[18,89],[26,109],[34,99]]},
+ {n:'Cyberpunk 2077 Ultimate (PS5)',cat:'game',st:'psstore',full:349,a:[[0,249],[12,159],[22,129],[30,149],[34,139]]},
+ {n:'Notebook Gamer Ryzen 7 + RTX 4060',cat:'notebook',st:'magalu',full:7999,a:[[0,7499],[12,6299],[20,5499],[28,6199],[34,5899]]},
+ {n:'Fonte 850W 80+ Gold Modular',cat:'fonte',st:'terabyte',full:999,a:[[0,899],[14,699],[24,649],[34,659]]},
+ {n:'Samsung Galaxy S25 256GB',cat:'celular',st:'amazon',full:6999,a:[[13,6999],[18,4999],[24,4299],[30,4099],[34,3999]]},
+ {n:'iPhone 16 128GB',cat:'celular',st:'magalu',full:7799,a:[[9,7799],[16,5799],[23,4999],[28,5299],[34,5499]]},
+ {n:'Caixa de Som JBL Flip 6',cat:'audio',st:'ml',seller:'JBL Loja Oficial · MercadoLíder Platinum',full:999,a:[[0,799],[10,649],[22,549],[28,599],[34,559]]},
+ {n:'Fone Bluetooth com Cancelamento de Ruído',cat:'audio',st:'amazon',full:1299,a:[[0,1099],[12,799],[20,699],[28,749],[34,899]]},
+ {n:'Smart TV 55" 4K QLED',cat:'tv',st:'casasbahia',full:3999,a:[[0,3499],[10,2799],[22,2599],[28,2799],[34,2549]]},
+ {n:'Smart TV 65" 4K OLED 120Hz',cat:'tv',st:'magalu',full:8999,a:[[0,9999],[12,6999],[22,5999],[28,6799],[34,7899]]},
+ {n:'Mousepad Gamer Extra Grande 90x40',cat:'perif',st:'kabum',full:149,a:[[0,129],[10,89],[20,79],[28,89],[34,84]]},
+];
+
+function rng(s){return()=>{s=(s*9301+49297)%233280;return s/233280}}
+function buildHist(a,seed){
+  const r=rng(seed*13+7),h=Array(N).fill(null),fixed=new Set(a.map(x=>x[0]));
+  for(let k=0;k<a.length-1;k++){
+    const[i0,p0]=a[k],[i1,p1]=a[k+1];
+    for(let i=i0;i<=i1;i++){let v=p0+(p1-p0)*(i-i0)/(i1-i0);if(!fixed.has(i))v*=1+r()*.06;h[i]=Math.round(v/10)*10-1}
+  }
+  a.forEach(([i,p])=>h[i]=p);return h;
+}
+function stats(p){
+  const v=p.h.map((x,i)=>[x,i]).filter(x=>x[0]!=null);
+  let min=Infinity,mi=0;v.forEach(([x,i])=>{if(x<=min){min=x;mi=i}}); // empate: o mais recente
+  const cur=p.cur??p.h[N-1],up=cur/min-1,full=Math.max(p.full||cur,cur);
+  const years=[...new Set(v.map(x=>yearOf(x[1])))].map(y=>[y,Math.min(...v.filter(x=>yearOf(x[1])===y).map(x=>x[0]))]);
+  const days=p.first?(Date.now()-new Date(p.first))/864e5:999;
+  const fresh=days<30; // histórico curto demais pra veredito honesto
+  return{min,mi,cur,up,full,off:1-cur/full,fresh,
+    score:fresh?null:Math.max(0,Math.min(10,10-up*20)),
+    tier:fresh?4:up<=.02?0:up<=.10?1:up<=.30?2:3,years,
+    max:Math.max(...v.map(x=>x[0]),cur)};
+}
+// dados reais → série mensal (menor preço de cada mês)
+function fromReal(r,i){
+  const h=Array(N).fill(null);
+  r.hist.forEach(([d,v])=>{const k=mAbs(d)-M0;if(k>=0&&k<N)h[k]=h[k]==null?v:Math.min(h[k],v)});
+  return{id:i,n:r.n,cat:r.cat,st:r.st,url:r.url,img:r.img,seller:r.seller,full:r.full,cur:r.cur,h,first:r.hist[0][0]};
+}
+const P=(REAL?REAL.produtos.map(fromReal):RAW.map((p,i)=>{p.id=i;p.h=buildHist(p.a,i);return p}))
+  .map(p=>{p.s=stats(p);p.url=p.url||STORES[p.st].s(p.n);return p});
+
+/* ---------- gráficos ---------- */
+function spark(p){
+  const s=p.s,W=260,H=48,lo=s.min*.94,hi=Math.max(s.max*1.03,s.min*1.01),X=i=>i/NN*W,Y=v=>H-4-(v-lo)/(hi-lo)*(H-8);
+  let started=false;
+  const d=p.h.map((x,i)=>{if(x==null)return'';const c=started?'L':'M';started=true;return `${c}${X(i).toFixed(1)} ${Y(x).toFixed(1)}`}).join('');
+  const c=T[s.tier].c;
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}">
+    ${yearMarks().filter(i=>i>0).map(i=>`<line x1="${X(i)}" x2="${X(i)}" y1="0" y2="${H}" stroke="#1c2538" stroke-dasharray="2 3"/>`).join('')}
+    <line x1="0" x2="${W}" y1="${Y(s.min)}" y2="${Y(s.min)}" stroke="#a6ff3b" stroke-opacity=".45" stroke-dasharray="2 3"/>
+    <path d="${d}" fill="none" stroke="${c}" stroke-width="1.7" stroke-linejoin="round"/>
+    <circle cx="${X(s.mi)}" cy="${Y(s.min)}" r="3.2" fill="#a6ff3b"/>
+    <circle cx="${X(N-1)}" cy="${Y(s.cur)}" r="3.2" fill="${c}" stroke="#06080d" stroke-width="1.5"/></svg>`;
+}
+function chart(p){
+  const s=p.s,W=760,H=270,L=58,R=18,TP=18,B=30;
+  const lo=Math.min(s.min,s.full)*.88,hi=Math.max(s.max,s.full)*1.05;
+  const X=i=>L+i/NN*(W-L-R),Y=v=>TP+(1-(v-lo)/(hi-lo))*(H-TP-B),c=T[s.tier].c;
+  const first=p.h.findIndex(x=>x!=null);
+  const d=p.h.map((x,i)=>x==null?'':`${i===first?'M':'L'}${X(i).toFixed(1)} ${Y(x).toFixed(1)}`).join('');
+  let g='';
+  for(let k=0;k<=4;k++){const v=lo+(hi-lo)*k/4;g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" class="gl"/><text x="${L-8}" y="${Y(v)+4}" text-anchor="end" class="ax">${short(v)}</text>`}
+  yearMarks().forEach(i=>g+=`<line x1="${X(i)}" x2="${X(i)}" y1="${TP}" y2="${H-B}" class="yl"/><text x="${X(i)+5}" y="${H-B+19}" class="ax">${i===0&&(M0%12)?lbl(0):yearOf(i)}</text>`);
+  const sx=X(s.mi),anc=sx>W*.72?'end':sx<L+90?'start':'middle';
+  return `<svg viewBox="0 0 ${W} ${H}" class="chart">
+  <defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c}" stop-opacity=".3"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></linearGradient></defs>
+  ${g}
+  <line x1="${L}" x2="${W-R}" y1="${Y(s.full)}" y2="${Y(s.full)}" class="fl"/>
+  <text x="${W-R}" y="${Y(s.full)-7}" text-anchor="end" class="ax">preço cheio ${fmt(s.full)}</text>
+  <line x1="${L}" x2="${W-R}" y1="${Y(s.min)}" y2="${Y(s.min)}" class="sl"/>
+  <path d="${d}L${X(N-1)} ${H-B}L${X(first)} ${H-B}Z" fill="url(#ga)"/>
+  <path d="${d}" fill="none" stroke="${c}" stroke-width="2.4" stroke-linejoin="round"/>
+  <circle cx="${sx}" cy="${Y(s.min)}" r="5.5" fill="#a6ff3b" stroke="#080c15" stroke-width="2"/>
+  <text x="${sx}" y="${Y(s.min)+20}" text-anchor="${anc}" fill="#a6ff3b" font-family="ui-monospace,Consolas,monospace" font-size="11.5" font-weight="700">MENOR PREÇO ${fmt(s.min)} · ${lbl(s.mi)}</text>
+  <circle cx="${X(N-1)}" cy="${Y(s.cur)}" r="5.5" fill="${c}" stroke="#080c15" stroke-width="2"/>
+  <g id="hv" style="display:none"><line id="hvl" y1="${TP}" y2="${H-B}" stroke="#8b98b2" stroke-opacity=".5"/><circle id="hvc" r="4.5" fill="#e8eef9"/></g>
+  <rect id="hit" x="${L}" y="${TP}" width="${W-L-R}" height="${H-TP-B}" fill="transparent"/>
+  </svg>`;
+}
+
+/* ---------- estado & render ---------- */
+const S={cat:'all',stores:new Set(),tier:'all',sort:'ping',q:''};
+const $=id=>document.getElementById(id);
+
+const storeKeys=REAL?[...new Set(P.map(p=>p.st))]:Object.keys(STORES);
+$('stats').innerHTML=[[P.length,'ofertas monitoradas'],[storeKeys.length,storeKeys.length===1?'loja verificada':'lojas verificadas'],[P.filter(p=>p.s.tier<=1).length,'aprovadas pelo Muquirana']]
+  .map(([v,l])=>`<div>${v}<small>${l}</small></div>`).join('');
+if(REAL)document.querySelector('footer .wrap').textContent=`MuquiranaTech · preços reais coletados em ${new Date(REAL.gerado).toLocaleString('pt-BR')} · preço à vista. Confira sempre na loja antes de comprar.`;
+$('legend').innerHTML=(REAL?T:T.slice(0,4)).map(t=>`<div class="lg" style="--c:${t.c}"><span class="tag">${t.k}</span><p>${t.d}</p><code>${t.r}</code></div>`).join('');
+$('cats').innerHTML=CATS.map(([k,l])=>`<button class="chip${k==='all'?' on':''}" data-k="${k}">${icon(k,16)}${l}</button>`).join('');
+$('stores').innerHTML=storeKeys.map(k=>[k,STORES[k]]).map(([k,s])=>`<button class="st" data-k="${k}"><i style="background:${s.c}"></i>${s.n}</button>`).join('');
+
+function card(p){
+  const s=p.s,t=T[s.tier],st=STORES[p.st],cl=CATS.find(c=>c[0]===p.cat)[1];
+  const novo=s.mi===N-1;
+  return `<article class="card" style="--c:${t.c}" data-id="${p.id}">
+    <div class="top"><span class="store">${logo(p.st)}${st.n}</span><span class="tag">${t.k}</span></div>
+    <div class="prod"><div class="thumb">${thumb(p,28)}</div><div><h4>${p.n}</h4><div class="cat">${cl}</div></div></div>
+    <div class="price"><strong>${fmt(s.cur)}</strong>${s.off>=.01?`<s>${fmt(s.full)}</s><span class="off">−${Math.round(s.off*100)}% vs cheio</span>`:'<span class="off" style="color:var(--dim)">à vista</span>'}</div>
+    <div class="cmp">
+      <div><small>Menor já visto</small><b>${fmt(s.min)}</b> <em style="color:var(--dim)">${lbl(s.mi)}</em></div>
+      <div><small>Hoje vs menor</small><b style="color:${t.c}">${s.fresh?'acompanhando desde '+dBR(p.first).slice(0,5):novo?'É O MENOR!':pct(s.up)+' mais caro'}</b></div>
+    </div>
+    ${spark(p)}
+    ${s.tier>=2?`<div class="lost">Melhor preço perdido: <b>${fmt(s.min)}</b> em ${lbl(s.mi)}</div>`:''}
+    <div class="foot"><a class="go" href="${p.url}" target="_blank" rel="noopener sponsored" onclick="event.stopPropagation()">Ver na loja ↗</a><span class="ping">${s.fresh?'em análise':meter(s.score,t.c)+nota(s.score)}</span></div>
+  </article>`;
+}
+function render(){
+  const q=S.q.toLowerCase();
+  let list=P.filter(p=>(S.cat==='all'||p.cat===S.cat)&&(!S.stores.size||S.stores.has(p.st))&&(S.tier==='all'||p.s.tier<=+S.tier)&&(!q||p.n.toLowerCase().includes(q)));
+  const f={ping:(a,b)=>(b.s.score??-1)-(a.s.score??-1),off:(a,b)=>b.s.off-a.s.off,low:(a,b)=>a.s.cur-b.s.cur,high:(a,b)=>b.s.cur-a.s.cur}[S.sort];
+  list.sort(f);
+  $('count').textContent=`> ${list.length} oferta${list.length===1?'':'s'} encontrada${list.length===1?'':'s'}`;
+  $('grid').innerHTML=list.length?list.map(card).join(''):'<div class="empty">Nenhuma oferta com esses filtros. Tente tirar algum.</div>';
+}
+
+$('cats').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;S.cat=b.dataset.k;document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b));render()};
+$('stores').onclick=e=>{const b=e.target.closest('.st');if(!b)return;const k=b.dataset.k;S.stores.has(k)?S.stores.delete(k):S.stores.add(k);b.classList.toggle('on');render()};
+$('tier').onchange=e=>{S.tier=e.target.value;render()};
+$('sort').onchange=e=>{S.sort=e.target.value;render()};
+$('q').oninput=e=>{S.q=e.target.value;render()};
+$('grid').onclick=e=>{const c=e.target.closest('.card');if(c)openModal(P[c.dataset.id])};
+$('ov').onclick=e=>{if(e.target.id==='ov'||e.target.closest('.x'))$('ov').classList.remove('open')};
+addEventListener('keydown',e=>{if(e.key==='Escape')$('ov').classList.remove('open')});
+
+/* ---------- modal ---------- */
+function openModal(p){
+  const s=p.s,t=T[s.tier],st=STORES[p.st];
+  const rows=[['Menor preço já visto',s.min,lbl(s.mi)],...s.years.map(([y,v])=>['Menor de '+y,v]),['Preço cheio',s.full]]
+    .filter(r=>r[1]!=null)
+    .map(([l,v,m])=>{const d=s.cur/v-1;return `<tr><td>${l}${m?` <small>· ${m}</small>`:''}</td><td>${fmt(v)}</td><td style="color:${d>.02?'#ff4d6d':'#a6ff3b'}">${Math.abs(d)<.005?'=':pct(d)}</td></tr>`}).join('');
+  const frase=s.fresh
+    ? `O Muquirana começou a acompanhar este produto em <b>${dBR(p.first)}</b>. Com pelo menos 30 dias de histórico ele dá o veredito.`
+    : s.tier===0
+    ? `Hoje está <b>${Math.round(s.off*100)}% abaixo do preço cheio</b> e no menor patamar já registrado. Momento de comprar.`
+    : `Hoje está <b>${Math.round(s.off*100)}% abaixo do preço cheio</b>, mas <b>${pct(s.up)} mais caro que o menor preço já visto</b> (${fmt(s.min)} em ${lbl(s.mi)}).`;
+  const m=$('modal');m.style.setProperty('--c',t.c);
+  m.innerHTML=`<button class="x">×</button>
+    <div class="mh"><div class="thumb" style="--c:${t.c};color:${t.c}">${thumb(p,34)}</div>
+      <div><span class="store">${logo(p.st,18)}${st.n}</span><h2>${p.n}</h2><div class="trust" style="margin-top:4px">${shield(13)}${p.seller||'Vendido e entregue por '+st.n}</div></div></div>
+    <div class="verdict"><div class="big">${s.fresh?'—':nota(s.score)}<small>/10</small></div><div><span class="tag">${t.k}</span><p style="margin-top:6px">${frase}</p></div></div>
+    <div class="cw" id="cw">${chart(p)}<div class="tip" id="tip"></div></div>
+    <div class="mg">
+      <div class="box"><h5>Hoje (${fmt(s.cur)}) comparado com</h5><table>${rows}</table></div>
+      <div class="box"><h5>Por que essa loja é confiável</h5><ul>
+        ${(p.st==='ml'?[p.seller,'Reputação verde no Mercado Livre','+10 mil vendas concluídas','Compra garantida pelo Mercado Livre']:[p.seller||'Vendido e entregue por '+st.n,'Nota fiscal e garantia oficial','Boa reputação em sites de reclamação']).map(x=>`<li>${shield(13)}${x}</li>`).join('')}
+        </ul><a class="cta" href="${p.url}" target="_blank" rel="noopener sponsored">Ir para a ${st.n} →</a></div>
+    </div>`;
+  $('ov').classList.add('open');
+  // hover no gráfico
+  const svg=m.querySelector('.chart'),hit=svg.querySelector('#hit'),tip=$('tip'),W=760,L=58,R=18;
+  hit.onmousemove=e=>{
+    const r=svg.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*W;
+    const i=Math.max(0,Math.min(N-1,Math.round((x-L)/(W-L-R)*NN))),v=p.h[i];
+    if(v==null){svg.querySelector('#hv').style.display='none';tip.style.display='none';return}
+    const H=270,TP=18,B=30,lo=Math.min(s.min,s.full)*.88,hi=Math.max(s.max,s.full)*1.05;
+    const cx=L+i/NN*(W-L-R),cy=TP+(1-(v-lo)/(hi-lo))*(H-TP-B);
+    svg.querySelector('#hv').style.display='';svg.querySelector('#hvl').setAttribute('x1',cx);svg.querySelector('#hvl').setAttribute('x2',cx);
+    svg.querySelector('#hvc').setAttribute('cx',cx);svg.querySelector('#hvc').setAttribute('cy',cy);
+    tip.style.display='block';tip.style.left=(cx/W*r.width+6)+'px';tip.style.top=(cy/H*r.height+10)+'px';
+    tip.innerHTML=`${lbl(i)} · <b>${fmt(v)}</b> <span style="color:${v<=s.min?'#a6ff3b':'#8b98b2'}">${v<=s.min?'MENOR PREÇO':pct(v/s.min-1)}</span>`;
+  };
+  hit.onmouseleave=()=>{svg.querySelector('#hv').style.display='none';tip.style.display='none'};
+}
+
+render();
+</script>
+</body>
+</html>

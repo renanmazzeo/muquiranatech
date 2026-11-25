@@ -1,0 +1,40 @@
+{
+  "kabum": {
+    "vendedores_confiaveis": ["KaBuM!", "Magalu", "Fast Shop"],
+    "buscas": [
+      {"q": "playstation-5", "cat": "console", "must": ["console"], "max": 3},
+      {"q": "nintendo-switch-2", "cat": "console", "must": ["console"], "max": 2},
+      {"q": "xbox-series", "cat": "console", "must": ["console"], "max": 2},
+      {"q": "controle-dualsense", "cat": "console", "must": ["controle"], "max": 2},
+      {"q": "jogo-ps5", "cat": "game", "must": ["jogo"], "max": 4},
+      {"q": "smartphone-samsung-galaxy", "cat": "celular", "must": ["smartphone"], "max": 3},
+      {"q": "iphone", "cat": "celular", "must": ["iphone"], "max": 2},
+      {"q": "smart-tv-55", "cat": "tv", "must": ["smart tv"], "max": 3},
+      {"q": "caixa-de-som-jbl", "cat": "audio", "must": ["caixa de som"], "max": 3},
+      {"q": "fone-bluetooth", "cat": "audio", "must": ["fone"], "max": 3},
+      {"q": "monitor-gamer-27", "cat": "monitor", "must": ["monitor"], "max": 3},
+      {"q": "mouse-gamer", "cat": "perif", "must": ["mouse"], "max": 3},
+      {"q": "teclado-mecanico", "cat": "perif", "must": ["teclado"], "max": 3},
+      {"q": "headset-gamer", "cat": "perif", "must": ["headset"], "max": 3},
+      {"q": "mousepad-gamer", "cat": "perif", "must": ["mousepad"], "max": 2},
+      {"q": "notebook-gamer", "cat": "notebook", "must": ["notebook"], "max": 3},
+      {"q": "rtx-5060", "cat": "gpu", "must": ["placa de video"], "max": 2},
+      {"q": "rtx-5070", "cat": "gpu", "must": ["placa de video"], "max": 2},
+      {"q": "rx-9070", "cat": "gpu", "must": ["placa de video"], "max": 2},
+      {"q": "ryzen-7-9800x3d", "cat": "cpu", "must": ["processador"], "max": 1},
+      {"q": "ryzen-5-7600", "cat": "cpu", "must": ["processador"], "max": 1},
+      {"q": "placa-mae-b650", "cat": "mobo", "must": ["placa mae"], "max": 2},
+      {"q": "memoria-ddr5-32gb", "cat": "ram", "must": ["memoria"], "max": 2},
+      {"q": "ssd-1tb-nvme", "cat": "ssd", "must": ["ssd"], "max": 3},
+      {"q": "fonte-850w", "cat": "fonte", "must": ["fonte"], "max": 2}
+    ],
+    "wayback_paginas": [
+      "hardware/placa-de-video-vga", "hardware/processadores", "hardware/memoria-ram",
+      "hardware/ssd-2-5", "hardware/placas-mae", "hardware/fontes", "monitores",
+      "perifericos", "perifericos/-mouse-gamer", "perifericos/teclado-gamer", "perifericos/headset-gamer",
+      "gamer", "gamer/playstation", "gamer/nintendo", "gamer/xbox",
+      "celular-smartphone", "celular-smartphone/smartphones", "tv", "tv/smart-tv",
+      "computadores/notebooks", "audio", "audio/caixa-de-som", ""
+    ]
+  }
+}

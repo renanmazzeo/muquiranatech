@@ -1,0 +1,44 @@
+name: Coletar preços
+
+on:
+  schedule:
+    - cron: "0 9,21 * * *"   # 06h e 18h (horário de Brasília): preço do dia
+    - cron: "0 12 * * 0"     # domingo 09h: também busca histórico novo na Wayback
+  workflow_dispatch:
+    inputs:
+      historico:
+        description: "Buscar histórico na Wayback Machine? (sim/nao)"
+        default: "nao"
+
+concurrency: coleta  # nunca duas coletas ao mesmo tempo
+
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r collector/requirements.txt
+
+      - name: Preço de hoje
+        run: python collector/muq.py coletar
+
+      - name: Histórico (Wayback Machine)
+        if: github.event.schedule == '0 12 * * 0' || inputs.historico == 'sim'
+        run: python collector/muq.py historico --pausa 3
+
+      - name: Exportar para o site
+        run: python collector/muq.py exportar
+
+      - name: Salvar no repositório
+        run: |
+          git config user.name "muquirana-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/muquirana.db data.js
+          git diff --cached --quiet || git commit -m "Preços de $(date -u +%F)"
+          git push
