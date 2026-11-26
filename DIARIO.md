@@ -17,6 +17,14 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 
 ---
 
+## 2026-11-26 22:40 UTC · agente · saúde e fechamento da 5d
+**Saúde:** data.js gerado às 22:13 UTC (menos de 1 h) · 4.201 KaBuM! · 286 Amazon · 160 Samsung · 176 Lenovo · 65 Kalunga · 32 Motorola · 21 PlayStation · `xbox:` e `steam:` presentes · últimas 5 coletas do GitHub `success`.
+**Feito:** conferido que `xbox:`, `lenovo:`, `motorola:` e `playstation:` estão no data.js publicado; tarefa 5d marcada `[x]` (Dell `[-]`: Access Denied da Akamai; Apple deixada de lado). Só TAREFAS e DIARIO mudaram (site não mudou).
+**Falta:** tarefa 5 segue `[~]`: Carrefour só passa no PC (precisa de coletor `"onde": "pc"`, a partir de HTML guardado pelo PC) e Pichau no PC mostra preços absurdos. Magalu, Casas Bahia e Terabyte seguem 403 (não burlar). Depois, tarefa final (9).
+**Precisa do dono:** nada novo.
+
+---
+
 ## 2026-11-26 20:30 UTC · agente · tarefa 5d (Xbox Store ligada)
 **Saúde:** data.js gerado às 16:46 UTC (3h40) · 4.190 KaBuM! · 286 Amazon · 153 Samsung · 65 Kalunga · 32 Motorola · 21 Steam · 20 PlayStation · últimas 5 coletas `success`.
 **Feito:** achei a causa do 0 jogos da Xbox: a espera do coletor casava com links escondidos do menu do topo. Agora espera o cartão com preço (`aria-label` com R$). O HTML guardado da rede do GitHub já era lido certo (9 jogos). Com isso `testar-xbox` passou na rede do GitHub (20 jogos, 5 preços iguais à ficha). Xbox trocada para `"onde": "github-nav"` (entra no job `coletar-navegador`).
