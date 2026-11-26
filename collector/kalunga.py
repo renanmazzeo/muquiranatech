@@ -71,8 +71,5 @@ def preco_pagina(url):
     r = requests.get(url, headers=HEADERS, timeout=30)
     r.raise_for_status()
     t = r.text
-    for padrao in (r'"price"\s*:\s*"?(\d+(?:\.\d+)?)"?', r'itemprop="price"[^>]*content="([\d.]+)"'):
-        m = re.search(padrao, t)
-        if m:
-            return float(m.group(1))
-    return _num(t)
+    m = re.search(r'id="precovista"[^>]*>\s*(R\$\s*[\d.]+,\d{2})', t)  # "R$ 218,41 à vista" da ficha
+    return _num(m.group(1)) if m else None
