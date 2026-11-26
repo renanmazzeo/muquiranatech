@@ -9,6 +9,9 @@ on:
       historico:
         description: "Buscar histórico na Wayback Machine? (sim/nao)"
         default: "nao"
+      meses:
+        description: "Histórico de quantos meses para trás? (máx. 12)"
+        default: "12"
 
 concurrency: coleta  # nunca duas coletas ao mesmo tempo
 
@@ -31,7 +34,7 @@ jobs:
       - name: Histórico (Wayback Machine)
         if: github.event.schedule == '0 12 * * 0' || inputs.historico == 'sim'
         # para antes do limite do job (340 min) para sempre dar tempo de salvar; o resto continua na próxima
-        run: python collector/muq.py historico --pausa 3 --max-minutos 270
+        run: python collector/muq.py historico --pausa 3 --max-minutos 270 --meses ${{ inputs.meses || 12 }}
 
       - name: Exportar para o site
         if: ${{ !cancelled() }}

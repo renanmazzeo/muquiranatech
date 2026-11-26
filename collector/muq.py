@@ -49,7 +49,7 @@ def cmd_coletar(a):
     for q in w["buscas"]:
         try:
             chosen = kabum.pick(kabum.search(q["q"]), q.get("must", []), q.get("max", 4),
-                                w["vendedores_confiaveis"])
+                                w["vendedores_confiaveis"], q.get("not", []))
         except Exception as e:  # noqa: BLE001 — uma busca com erro não derruba as outras
             print(f"  ! {q['q']}: {e}")
             continue
@@ -76,11 +76,15 @@ def cmd_historico(a):
         return
     pages = ["kabum.com.br/" + p for p in w["wayback_paginas"]]
     pages += ["kabum.com.br/busca/" + q["q"] for q in w["buscas"]]
+    hoje = dt.date.today()
+    m = hoje.year * 12 + hoje.month - 1 - a.meses
+    desde = a.desde or f"{m // 12}{m % 12 + 1:02d}"
+    print(f"Histórico desde {desde[:4]}/{desde[4:] or '01'} ({a.meses} meses)")
     done = {r[0] for r in c.execute("select key from wayback_done")}
     todo = []
     for url in pages:
         try:
-            snaps = wayback.snapshots(url, since=a.desde, per_month=a.por_mes)
+            snaps = wayback.snapshots(url, since=desde, per_month=a.por_mes)
         except Exception as e:  # noqa: BLE001
             print(f"! {url}: {e}")
             continue
@@ -131,7 +135,7 @@ def cmd_exportar(a):
             "seller": None if "kabum" in kabum.norm(seller) else f"Vendido por {seller} · parceiro oficial KaBuM!",
             "full": list_price, "cur": cur[0], "hist": [[d, p] for d, p in hist],
         })
-    payload = {"gerado": dt.datetime.now().isoformat(timespec="minutes"), "produtos": produtos}
+    payload = {"gerado": dt.datetime.now(dt.timezone.utc).isoformat(timespec="minutes"), "produtos": produtos}
     out = ROOT / "data.js"
     out.write_text("window.MUQ_DATA=" + json.dumps(payload, ensure_ascii=False, separators=(",", ":")) + ";\n",
                    "utf-8")
@@ -142,7 +146,8 @@ def main():
     p = argparse.ArgumentParser(description="Coletor de preços do MuquiranaTech")
     p.add_argument("comando", choices=["coletar", "historico", "exportar", "tudo"])
     p.add_argument("--pausa", type=float, default=2.0, help="segundos entre requisições (seja gentil)")
-    p.add_argument("--desde", default="2023", help="histórico Wayback a partir deste ano/mês (AAAA ou AAAAMM)")
+    p.add_argument("--meses", type=int, default=12, help="histórico Wayback dos últimos N meses (padrão: 12)")
+    p.add_argument("--desde", help="ou a partir deste ano/mês exato (AAAA ou AAAAMM)")
     p.add_argument("--por-mes", type=int, default=2, help="cópias da Wayback por mês e por página")
     p.add_argument("--max-minutos", type=float, default=1e9,
                    help="para o histórico depois de N minutos, salvando o que já baixou")

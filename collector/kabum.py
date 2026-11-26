@@ -97,16 +97,18 @@ def search(term):
     return parse(r.text)
 
 
-def pick(items, must=(), limit=4, sellers=("KaBuM!",)):
-    """Só vendedores confiáveis (KaBuM! e parceiros grandes), disponíveis, com as palavras exigidas."""
+def pick(items, must=(), limit=4, sellers=("KaBuM!",), exclude=()):
+    """Só vendedores confiáveis (KaBuM! e parceiros grandes), disponíveis, com as palavras exigidas
+    e sem as palavras proibidas (ex.: busca "ssd 2tb" não pode trazer um PS5 "com SSD de 2TB")."""
     must = [norm(w) for w in must]
+    exclude = [norm(w) for w in exclude]
     ok = {norm(s) for s in sellers}
     out = []
     for it in items:
         if norm(it["seller"]) not in ok or not it["available"]:
             continue
         name = norm(it["name"])
-        if all(w in name for w in must):
+        if all(w in name for w in must) and not any(w in name for w in exclude):
             out.append(it)
         if len(out) >= limit:
             break

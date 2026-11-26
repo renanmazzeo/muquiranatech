@@ -45,14 +45,29 @@ header .wrap{display:flex;align-items:center;gap:20px;height:66px}
 .legend{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}
 .legend h3{font-size:13px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;display:flex;justify-content:space-between}
 .legend h3 em{font-style:normal;font-family:var(--mono);text-transform:none;letter-spacing:0;color:var(--dim)}
-.lg{display:flex;align-items:center;gap:12px;padding:9px 0;border-top:1px dashed var(--line)}
-.lg:first-of-type{border-top:0}
-.lg .tag{min-width:178px;text-align:center}
-.lg p{font-size:13px;color:var(--mut);margin:0}
-.lg code{font:12px var(--mono);color:var(--dim);margin-left:auto;white-space:nowrap}
+/* Muquirômetro: termômetro (frio = barato, quente = cilada) */
+.thv{display:grid;grid-template-columns:30px 1fr;column-gap:16px}
+.thv .tube{display:flex;flex-direction:column;width:16px;margin:0 auto;border-radius:9px 9px 0 0;overflow:hidden;border:2px solid #2a3448;border-bottom:0}
+.thv .tube i{height:46px;display:block}
+.thv .bulb{width:30px;height:30px;border-radius:50%;background:#a6ff3b;border:2px solid #2a3448;margin-top:-4px;box-shadow:0 0 18px rgba(166,255,59,.55)}
+.thv .lbl{display:flex;flex-direction:column}
+.thv .lbl span{height:46px;display:flex;align-items:center;gap:10px;font:800 13px var(--mono);letter-spacing:.6px;color:var(--c)}
+.thv .lbl span::before{content:"";width:14px;height:2px;background:var(--c);opacity:.7}
+.thv .hot,.thv .cold{grid-column:2;font:11px var(--mono);color:var(--dim)}
+.thv .hot{order:-1;margin-bottom:2px}
+.watch{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+.th{--w:96px;position:relative;display:inline-block;width:var(--w);height:8px;border-radius:9px;margin-left:8px;vertical-align:middle;
+  background:linear-gradient(90deg,#a6ff3b 0 25%,#00e5ff 25% 50%,#ffb020 50% 75%,#ff4d6d 75%)}
+.th::before{content:"";position:absolute;left:-8px;top:50%;width:13px;height:13px;border-radius:50%;background:#a6ff3b;transform:translateY(-50%)}
+.th i{position:absolute;top:50%;width:6px;height:18px;border-radius:4px;background:#fff;border:2px solid #06080d;transform:translate(-50%,-50%);box-shadow:0 0 10px rgba(255,255,255,.6)}
+.th.big{--w:100%;height:12px;margin-left:10px}
+.th.big::before{width:20px;height:20px;left:-10px}
+.th.big i{width:8px;height:26px}
+.thn{display:grid;grid-template-columns:repeat(4,1fr);margin:8px 0 0 10px;font:700 10px var(--mono);letter-spacing:.3px;text-align:center}
+.mthermo{flex:0 0 300px}
 
 /* filtros */
-.cats{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px;scrollbar-width:thin}
+.cats{scroll-margin-top:130px;display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px;scrollbar-width:thin}
 .chip{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:10px;border:1px solid var(--line2);background:var(--panel);cursor:pointer;white-space:nowrap;font-size:14px;color:var(--mut);transition:.15s}
 .chip:hover{color:var(--txt);border-color:#38466a}
 .chip.on{color:#001418;background:var(--cy);border-color:var(--cy);font-weight:600;box-shadow:0 0 18px rgba(0,229,255,.35)}
@@ -170,8 +185,29 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--dim);fon
   .hero{grid-template-columns:1fr}.hero h1{font-size:34px}
   .mg{grid-template-columns:1fr}.trusted{display:none}
   .bf-explain,.bf-cols{grid-template-columns:1fr}.bfx{grid-template-columns:1fr}
-  .bfi{grid-template-columns:44px 1fr}.bfi svg{display:none}.navbf{display:none}
+  .bfi{grid-template-columns:44px 1fr}.bfi svg{display:none}
 }
+@media (max-width:640px){
+  .wrap{padding:0 14px}
+  header .wrap{flex-wrap:wrap;height:auto;padding-top:10px;padding-bottom:10px;gap:10px}
+  .logo{font-size:20px}.logo small{display:none}
+  .navbf{margin-left:auto}
+  .search{order:3;flex-basis:100%;max-width:none}
+  .hero{padding:24px 0 18px;gap:20px}.hero h1{font-size:30px}.hero p{font-size:14.5px}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}.stats div{font-size:21px}
+  .bf{padding:18px 14px;border-radius:16px}.bf h2{font-size:24px}
+  .bfx svg{max-width:280px}
+  .bf-list .bfi:nth-child(n+4){display:none}
+  .grid{grid-template-columns:1fr}
+  .bar .sp{display:none}.sel{flex:1 1 45%}
+  .ov{padding:0;place-items:end center}
+  .modal{border-radius:18px 18px 0 0;padding:18px 14px;max-height:94vh}
+  .mh h2{font-size:17px}.mh .thumb{width:54px;height:54px}
+  .verdict{flex-direction:column;align-items:stretch}
+  .mthermo{flex:none}
+}
+.bf-more{display:block;margin-top:10px;width:100%;padding:9px;border-radius:10px;border:1px solid color-mix(in srgb,var(--c) 40%,transparent);background:transparent;color:var(--c);font:700 12px var(--mono);cursor:pointer}
+.bf-more:hover{background:color-mix(in srgb,var(--c) 10%,transparent)}
 </style>
 </head>
 <body>
@@ -199,7 +235,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--dim);fon
       <div class="stats" id="stats"></div>
     </div>
     <div class="legend">
-      <h3>Muquirômetro <em>nota de 0 a 10</em></h3>
+      <h3>Muquirômetro</h3>
       <div id="legend"></div>
     </div>
   </section>
@@ -259,7 +295,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--dim);fon
       <option value="firmeza">Só Black Firmeza</option>
     </select>
     <select class="sel" id="sort">
-      <option value="ping">Melhor nota (melhor negócio)</option>
+      <option value="ping">Melhor negócio</option>
       <option value="off">Maior desconto vs preço cheio</option>
       <option value="low">Menor preço</option>
       <option value="high">Maior preço</option>
@@ -302,7 +338,7 @@ const T=[
 ];
 const nota=v=>v.toFixed(1).replace('.',',');
 
-const CATS=[['all','Tudo'],['console','Consoles'],['game','Jogos'],['celular','Celulares'],['tv','TVs'],['audio','Áudio'],['monitor','Monitores'],['perif','Periféricos'],['notebook','Notebooks'],['gpu','Placas de vídeo'],['cpu','Processadores'],['mobo','Placas-mãe'],['ram','Memória RAM'],['ssd','Armazenamento'],['fonte','Fontes']];
+const CATS=[['all','Tudo'],['console','Consoles'],['game','Jogos'],['celular','Celulares'],['tv','TVs'],['audio','Áudio'],['monitor','Monitores'],['perif','Periféricos'],['notebook','Notebooks'],['gpu','Placas de vídeo'],['cpu','Processadores'],['mobo','Placas-mãe'],['ram','Memória RAM'],['ssd','Armazenamento'],['fonte','Fontes'],['gab','Gabinetes e coolers'],['tablet','Tablets e e-readers'],['wear','Smartwatches'],['rede','Redes e energia'],['casa','Casa inteligente']];
 
 // d = domínio (logo), s = busca na loja (link provisório até o coletor trazer o link exato do produto)
 const slug=t=>t.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
@@ -338,10 +374,20 @@ game:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/><path d="M
 notebook:'<rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/>',
 celular:'<rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/>',
 tv:'<rect x="2" y="4" width="20" height="13" rx="1.5"/><path d="M7 21l2-4M17 21l-2-4"/>',
-audio:'<rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="14" r="4"/><circle cx="12" cy="6.5" r="1.3"/>'};
+audio:'<rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="14" r="4"/><circle cx="12" cy="6.5" r="1.3"/>',
+gab:'<rect x="6" y="2" width="12" height="20" rx="1.5"/><circle cx="12" cy="13" r="3.5"/><path d="M9 5.5h6"/>',
+tablet:'<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M11 18h2"/>',
+wear:'<rect x="6" y="6" width="12" height="12" rx="3"/><path d="M9 6l1-4h4l1 4M9 18l1 4h4l1-4M12 10v2.5l1.5 1"/>',
+rede:'<path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r="1"/>',
+casa:'<path d="M3 11 12 3l9 8"/><path d="M5 9.5V21h14V9.5"/><path d="M9.5 15a3.5 3.5 0 0 1 5 0"/><circle cx="12" cy="17.5" r=".8"/>'};
 const icon=(k,s=18)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${IC[k]}</svg>`;
 const shield=s=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/></svg>`;
-const meter=(v,c)=>`<span class="meter"><i style="width:${Math.max(4,v*10)}%;background:${c}"></i></span>`;
+// posição no termômetro: cada faixa ocupa 1/4 e, dentro dela, anda conforme o quanto está acima do menor preço
+const FAIXA=[[0,.02],[.02,.10],[.10,.30],[.30,.60]];
+const thermoPos=s=>{const[a,b]=FAIXA[s.tier];return s.tier*25+Math.min(1,Math.max(0,(s.up-a)/(b-a)))*25};
+const thermo=s=>s.fresh?'<span style="color:var(--dim)">em análise</span>':`<span class="th" title="Muquirômetro"><i style="left:${thermoPos(s)}%"></i></span>`;
+const thermoBig=s=>`<span class="th big"><i style="left:${s.fresh?0:thermoPos(s)}%;${s.fresh?'display:none':''}"></i></span>
+  <div class="thn">${T.slice(0,4).map((t,i)=>`<span style="color:${t.c};opacity:${s.fresh||i===s.tier?1:.45}">${t.k}</span>`).join('')}</div>`;
 
 /* ---------- dados FICTÍCIOS (âncoras de preço por mês: [índice, preço]) ---------- */
 const RAW=[
@@ -444,8 +490,10 @@ function spark(p){
     <circle cx="${X(s.mi)}" cy="${Y(s.min)}" r="3.2" fill="#a6ff3b"/>
     <circle cx="${X(N-1)}" cy="${Y(s.cur)}" r="3.2" fill="${c}" stroke="#06080d" stroke-width="1.5"/></svg>`;
 }
+// gráfico mais estreito no celular, para o texto não ficar minúsculo
+const CW=()=>innerWidth<640?440:760;
 function chart(p){
-  const s=p.s,W=760,H=270,L=58,R=18,TP=18,B=30;
+  const s=p.s,W=CW(),H=270,L=58,R=18,TP=18,B=30;
   const lo=Math.min(s.min,s.full)*.88,hi=Math.max(s.max,s.full)*1.05;
   const X=i=>L+i/NN*(W-L-R),Y=v=>TP+(1-(v-lo)/(hi-lo))*(H-TP-B),c=T[s.tier].c;
   const first=p.h.findIndex(x=>x!=null);
@@ -475,10 +523,17 @@ const S={cat:'all',stores:new Set(),tier:'all',sort:'ping',q:''};
 const $=id=>document.getElementById(id);
 
 const storeKeys=REAL?[...new Set(P.map(p=>p.st))]:Object.keys(STORES);
-$('stats').innerHTML=[[P.length,'ofertas monitoradas'],[storeKeys.length,storeKeys.length===1?'loja verificada':'lojas verificadas'],[P.filter(p=>p.s.tier<=1).length,'aprovadas pelo Muquirana']]
+const nPrecos=REAL?REAL.produtos.reduce((a,p)=>a+p.hist.length,0):P.reduce((a,p)=>a+p.h.filter(x=>x!=null).length,0);
+const gerado=REAL?new Date(REAL.gerado):null;
+const quando=gerado?(gerado.toDateString()===new Date().toDateString()?'hoje, ':gerado.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+', ')+gerado.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):null;
+const milhar=v=>v.toLocaleString('pt-BR');
+$('stats').innerHTML=[[milhar(P.length),'produtos monitorados'],[milhar(nPrecos),'preços registrados'],[milhar(P.filter(p=>p.s.tier<=1).length),'aprovados pelo Muquirana'],...(quando?[[quando,'última atualização']]:[])]
   .map(([v,l])=>`<div>${v}<small>${l}</small></div>`).join('');
-if(REAL)document.querySelector('footer .wrap').textContent=`MuquiranaTech · preços reais coletados em ${new Date(REAL.gerado).toLocaleString('pt-BR')} · preço à vista. Confira sempre na loja antes de comprar.`;
-$('legend').innerHTML=(REAL?T:T.slice(0,4)).map(t=>`<div class="lg" style="--c:${t.c}"><span class="tag">${t.k}</span><p>${t.d}</p><code>${t.r}</code></div>`).join('');
+if(REAL)document.querySelector('footer .wrap').textContent=`MuquiranaTech · preços reais atualizados 2x por dia (última coleta: ${gerado.toLocaleString('pt-BR')}) · preço à vista, só vendedores confiáveis. Confira sempre na loja antes de comprar.`;
+{const sc=T.slice(0,4).reverse();
+ $('legend').innerHTML=`<div class="thv"><div><div class="tube">${sc.map(t=>`<i style="background:${t.c}"></i>`).join('')}</div><div class="bulb"></div></div>
+  <div class="lbl">${sc.map(t=>`<span style="--c:${t.c}">${t.k}</span>`).join('')}</div></div>
+  ${REAL?`<div class="watch"><span class="tag" style="--c:${T[4].c}">${T[4].k}</span></div>`:''}`;}
 $('cats').innerHTML=CATS.map(([k,l])=>`<button class="chip${k==='all'?' on':''}" data-k="${k}">${icon(k,16)}${l}</button>`).join('');
 $('stores').innerHTML=storeKeys.map(k=>[k,STORES[k]]).map(([k,s])=>`<button class="st" data-k="${k}"><i style="background:${s.c}"></i>${s.n}</button>`).join('');
 
@@ -497,7 +552,7 @@ function card(p){
     ${s.tier>=2?`<div class="lost">Melhor preço perdido: <b>${fmt(s.min)}</b> em ${lbl(s.mi)}</div>`:''}
     ${p.bf.kind==='fraude'?`<div class="lost" style="--c:#ff4d6d"><b style="color:#ff4d6d">BLACK FRAUDE</b> · ${bfWhy(p.bf)}</div>`:''}
     ${p.bf.kind==='firmeza'?`<div class="lost" style="--c:#a6ff3b"><b style="color:#a6ff3b">BLACK FIRMEZA</b> · ${pct(p.bf.vs)} vs preço normal (${fmt(p.bf.normal)})</div>`:''}
-    <div class="foot"><a class="go" href="${p.url}" target="_blank" rel="noopener sponsored" onclick="event.stopPropagation()">Ver na loja ↗</a><span class="ping">${s.fresh?'em análise':meter(s.score,t.c)+nota(s.score)}</span></div>
+    <div class="foot"><a class="go" href="${p.url}" target="_blank" rel="noopener sponsored" onclick="event.stopPropagation()">Ver na loja ↗</a><span class="ping">${thermo(s)}</span></div>
   </article>`;
 }
 function render(){
@@ -533,11 +588,18 @@ function renderBlack(){
   const wait=waiting===P.length?'O Muquirana ainda está juntando histórico: precisa conhecer o preço normal de pelo menos 1 mês antes.':'';
   $('bfFrH').textContent=`Flagrados na Black Fraude (${fr.length})`;
   $('bfFiH').textContent=`Black Firmeza (${fi.length})`;
+  const more=(k,n)=>n>3?`<button class="bf-more" data-f="${k}">Ver todos os ${n} →</button>`:'';
   $('bfFr').innerHTML=fr.length?fr.slice(0,8).map(p=>item(p,'#ff4d6d',bfWhy(p.bf))).join(''):empty(wait||'Nenhuma Black Fraude flagrada até agora. O Muquirana continua de olho.');
   $('bfFi').innerHTML=fi.length?fi.slice(0,8).map(p=>item(p,'#a6ff3b',`${pct(p.bf.vs)} vs preço normal de ${fmt(p.bf.normal)}`)).join(''):empty(wait||'Nenhum desconto real (8%+ abaixo do normal) por enquanto.');
+  $('bfFr').insertAdjacentHTML('afterend',more('fraude',fr.length));
+  $('bfFi').insertAdjacentHTML('afterend',more('firmeza',fi.length));
   $('bfNote').textContent=`Preço normal = mediana dos preços de 31 a 90 dias atrás.${waiting&&waiting<P.length?` ${waiting} produto${waiting>1?'s ainda não têm':' ainda não tem'} histórico suficiente.`:''} Veja todos usando o filtro “Só Black Fraude” abaixo.`;
 }
-$('black').onclick=e=>{const c=e.target.closest('.bfi');if(c)openModal(P[c.dataset.id])};
+$('black').onclick=e=>{
+  const m=e.target.closest('.bf-more');
+  if(m){S.tier=m.dataset.f;$('tier').value=m.dataset.f;render();$('cats').scrollIntoView({behavior:'smooth'});return}
+  const c=e.target.closest('.bfi');if(c)openModal(P[c.dataset.id]);
+};
 
 $('cats').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;S.cat=b.dataset.k;document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b));render()};
 $('stores').onclick=e=>{const b=e.target.closest('.st');if(!b)return;const k=b.dataset.k;S.stores.has(k)?S.stores.delete(k):S.stores.add(k);b.classList.toggle('on');render()};
@@ -563,7 +625,7 @@ function openModal(p){
   m.innerHTML=`<button class="x">×</button>
     <div class="mh"><div class="thumb" style="--c:${t.c};color:${t.c}">${thumb(p,34)}</div>
       <div><span class="store">${logo(p.st,18)}${st.n}</span><h2>${p.n}</h2><div class="trust" style="margin-top:4px">${shield(13)}${p.seller||'Vendido e entregue por '+st.n}</div></div></div>
-    <div class="verdict"><div class="big">${s.fresh?'—':nota(s.score)}<small>/10</small></div><div><span class="tag">${t.k}</span><p style="margin-top:6px">${frase}</p></div></div>
+    <div class="verdict"><div class="mthermo">${thermoBig(s)}</div><div><span class="tag">${t.k}</span><p style="margin-top:6px">${frase}</p></div></div>
     ${p.bf.kind==='fraude'||p.bf.kind==='firmeza'?`<div class="lost" style="--c:${p.bf.kind==='fraude'?'#ff4d6d':'#a6ff3b'};margin:-6px 0 16px"><b style="color:${p.bf.kind==='fraude'?'#ff4d6d':'#a6ff3b'}">${p.bf.kind==='fraude'?'BLACK FRAUDE':'BLACK FIRMEZA'}</b> · ${p.bf.kind==='fraude'?bfWhy(p.bf):pct(p.bf.vs)+' vs o preço normal dos 3 meses anteriores ('+fmt(p.bf.normal)+')'}</div>`:''}
     <div class="cw" id="cw">${chart(p)}<div class="tip" id="tip"></div></div>
     <div class="mg">
@@ -574,7 +636,7 @@ function openModal(p){
     </div>`;
   $('ov').classList.add('open');
   // hover no gráfico
-  const svg=m.querySelector('.chart'),hit=svg.querySelector('#hit'),tip=$('tip'),W=760,L=58,R=18;
+  const svg=m.querySelector('.chart'),hit=svg.querySelector('#hit'),tip=$('tip'),W=CW(),L=58,R=18;
   hit.onmousemove=e=>{
     const r=svg.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*W;
     const i=Math.max(0,Math.min(N-1,Math.round((x-L)/(W-L-R)*NN))),v=p.h[i];
