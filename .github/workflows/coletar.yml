@@ -30,12 +30,15 @@ jobs:
 
       - name: Histórico (Wayback Machine)
         if: github.event.schedule == '0 12 * * 0' || inputs.historico == 'sim'
-        run: python collector/muq.py historico --pausa 3
+        # para antes do limite do job (340 min) para sempre dar tempo de salvar; o resto continua na próxima
+        run: python collector/muq.py historico --pausa 3 --max-minutos 270
 
       - name: Exportar para o site
+        if: ${{ !cancelled() }}
         run: python collector/muq.py exportar
 
       - name: Salvar no repositório
+        if: ${{ !cancelled() }}
         run: |
           git config user.name "muquirana-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

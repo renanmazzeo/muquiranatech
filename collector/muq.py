@@ -77,30 +77,40 @@ def cmd_historico(a):
     pages = ["kabum.com.br/" + p for p in w["wayback_paginas"]]
     pages += ["kabum.com.br/busca/" + q["q"] for q in w["buscas"]]
     done = {r[0] for r in c.execute("select key from wayback_done")}
+    todo = []
     for url in pages:
         try:
             snaps = wayback.snapshots(url, since=a.desde, per_month=a.por_mes)
         except Exception as e:  # noqa: BLE001
             print(f"! {url}: {e}")
             continue
-        todo = [s for s in snaps if f"{s[0]} {s[1]}" not in done]
-        print(f"{url}: {len(snaps)} cópias ({len(todo)} novas)")
-        for ts, original in todo:
-            try:
-                html = wayback.fetch(ts, original)
-            except Exception as e:  # noqa: BLE001
-                print(f"   ! {ts}: {e}")
-                continue
-            day, hits = f"{ts[:4]}-{ts[4:6]}-{ts[6:8]}", 0
-            for it in kabum.parse(html):
-                if it["code"] in known:
-                    c.execute("insert or replace into prices values(?,?,?,?)",
-                              ("kabum:" + it["code"], day, it["price"], "wayback"))
-                    hits += 1
-            c.execute("insert or ignore into wayback_done values(?)", (f"{ts} {original}",))
-            c.commit()
-            print(f"   {day}: {hits} preços dos nossos produtos")
-            time.sleep(a.pausa)
+        new = [s for s in snaps if f"{s[0]} {s[1]}" not in done]
+        print(f"{url}: {len(snaps)} cópias ({len(new)} novas)")
+        todo += new
+        time.sleep(a.pausa)
+    # mais recentes primeiro: o passado próximo importa mais (ex.: Black Fraude olha os últimos 90 dias)
+    todo.sort(key=lambda s: s[0], reverse=True)
+    deadline = time.monotonic() + a.max_minutos * 60
+    print(f"{len(todo)} cópias para baixar (limite de {a.max_minutos:g} min; o resto fica para a próxima vez)")
+    for n, (ts, original) in enumerate(todo, 1):
+        if time.monotonic() > deadline:
+            print(f"Tempo esgotado: {len(todo) - n + 1} cópias ficam para a próxima execução.")
+            break
+        try:
+            html = wayback.fetch(ts, original)
+        except Exception as e:  # noqa: BLE001
+            print(f"   ! {ts} {original}: {e}")
+            continue
+        day, hits = f"{ts[:4]}-{ts[4:6]}-{ts[6:8]}", 0
+        for it in kabum.parse(html):
+            if it["code"] in known:
+                c.execute("insert or replace into prices values(?,?,?,?)",
+                          ("kabum:" + it["code"], day, it["price"], "wayback"))
+                hits += 1
+        c.execute("insert or ignore into wayback_done values(?)", (f"{ts} {original}",))
+        c.commit()
+        print(f"   [{n}/{len(todo)}] {day} {original}: {hits} preços dos nossos produtos")
+        time.sleep(a.pausa)
 
 
 def cmd_exportar(a):
@@ -134,6 +144,8 @@ def main():
     p.add_argument("--pausa", type=float, default=2.0, help="segundos entre requisições (seja gentil)")
     p.add_argument("--desde", default="2023", help="histórico Wayback a partir deste ano/mês (AAAA ou AAAAMM)")
     p.add_argument("--por-mes", type=int, default=2, help="cópias da Wayback por mês e por página")
+    p.add_argument("--max-minutos", type=float, default=1e9,
+                   help="para o histórico depois de N minutos, salvando o que já baixou")
     a = p.parse_args()
     if a.comando in ("coletar", "tudo"):
         cmd_coletar(a)
