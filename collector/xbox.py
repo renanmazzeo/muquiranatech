@@ -1,6 +1,9 @@
 """Leitura de jogos da Xbox Store (loja oficial da Microsoft, em reais).
 
-A página de busca só mostra os cartões depois que o JavaScript roda, por isso usa o navegador (Playwright).
+As páginas só mostram os cartões depois que o JavaScript roda, por isso usa o navegador (Playwright).
+`catalogo("browse")` abre a página pública "Jogos" (/pt-BR/games/browse, os mais populares primeiro) e clica em
+"Carregar mais" como uma pessoa faria (25 jogos por clique). A busca (/search?q=) é proibida no robots.txt:
+`search()` fica só para testes manuais e não é usada na coleta.
 Cada cartão tem no `aria-label`: "Nome, Preço original R$X, à venda por R$Y". Sem desconto: "Nome, R$Y".
 Cartão sem preço (jogo grátis, "Exibir jogo", só assinatura) é ignorado. Mesmo formato do kabum.py.
 """
@@ -82,6 +85,24 @@ def search(term):
             pg.wait_for_selector('a[aria-label*="R$"][href*="/games/store/"]', state="attached", timeout=45000)
         except Exception:  # noqa: BLE001 — sem resultados
             pg.wait_for_timeout(3000)
+        return parse(pg.content())
+    finally:
+        pg.close()
+
+
+def catalogo(path="browse", cliques=16, pausa=3.5):
+    """Jogos da página pública de navegação da loja, com preço (25 por clique em "Carregar mais")."""
+    pg = _browser().new_page(locale="pt-BR")
+    try:
+        pg.goto(f"{BASE}/pt-BR/games/{path}", wait_until="load", timeout=90000)
+        pg.wait_for_timeout(5000)
+        btn = pg.locator("button:has-text('Carregar mais')")
+        for _ in range(cliques):
+            if not btn.count():
+                break
+            btn.first.scroll_into_view_if_needed()
+            btn.first.click()
+            pg.wait_for_timeout(int(pausa * 1000))
         return parse(pg.content())
     finally:
         pg.close()
