@@ -18,6 +18,15 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 
 ---
 
+## 2026-11-26 06:30 UTC · agente · saúde, 5c e 5d (leitura do HTML guardado)
+**Saúde:** data.js gerado às 04:35 UTC (cerca de 2 h) · 308 KaBuM! · 286 Amazon · 21 Steam · 0 Kalunga · última coleta do GitHub `success` às 01:33 UTC (nenhuma coleta agendada nova apareceu desde então; conferir na próxima execução se o agendamento de 3 h está disparando).
+**5c:** segue `[~]`: ainda sem `kalunga:` no data.js, porque a coleta com a Kalunga ainda não rodou.
+**5d:** li o HTML guardado. Dell: o arquivo guardado é "Access Denied" (Akamai), então o "ok" da rodada 2 era instável e não há como montar coletor confiável (Dell fica `[-]` por ora, retestar depois). Samsung: o HTML tem 400 KB mas **nenhum preço** (carrega por JavaScript), então precisa de navegador e de achar a API interna; fica para a próxima execução. Apple, Lenovo, Motorola, PlayStation, Xbox: ainda não tentados. Nada publicado no site nesta execução.
+**Próximo passo:** conferir `kalunga:` no data.js; pedir sondagem nova com `guardar` para Apple/Lenovo/Motorola/PlayStation/Xbox e procurar APIs internas.
+**Precisa do dono:** nada novo.
+
+---
+
 ## 2026-11-26 06:00 UTC · agente · tarefa 5c (Kalunga)
 **Feito:** `collector/kalunga.py` (HTML da busca; a lista nem sempre traz o preço à vista, então `refinar()` confere cada item na ficha do produto, que é o que o cliente vê), 20 buscas próprias na watchlist, loja `kalunga` em `STORES`, 4 testes novos (26 no total, ok). Fichas de 8 produtos guardadas pela sondagem: o preço lido bate com o cabeçalho da ficha nas 8. Workflow `testar-kalunga.yml` no GitHub: 57 produtos, 5 conferidos, todos OK (a lista dava, por ex., R$ 2.781,60 num notebook cuja ficha mostra R$ 2.693,76: por isso a conferência na ficha). Só depois disso a loja entrou na coleta agendada.
 **Teste no ar:** falta ver `kalunga:` no data.js depois da próxima coleta (tarefa 5c segue `[~]`).
