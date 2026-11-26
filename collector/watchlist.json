@@ -18,6 +18,31 @@
       "vendedores_confiaveis": ["Loja oficial"],
       "not": ["capa", "pelicula", "capinha", "case para", "suporte para", "compativel", "usado", "recondicionado"]
     },
+    "kalunga": {
+      "nome": "Kalunga", "onde": "teste", "pausa": 3, "vendedores_confiaveis": ["Kalunga"], "not": ["recondicionado", "usado"],
+      "buscas": [
+        {"q": "mouse gamer", "cat": "perif", "must": ["mouse"], "max": 5, "not": ["pad"]},
+        {"q": "mouse sem fio", "cat": "perif", "must": ["mouse"], "max": 4, "not": ["pad"]},
+        {"q": "teclado gamer", "cat": "perif", "must": ["teclado"], "max": 4},
+        {"q": "teclado sem fio", "cat": "perif", "must": ["teclado"], "max": 3},
+        {"q": "headset gamer", "cat": "perif", "must": ["headset"], "max": 4},
+        {"q": "webcam", "cat": "perif", "must": ["webcam"], "max": 3},
+        {"q": "mousepad gamer", "cat": "perif", "must": ["mouse pad"], "max": 3},
+        {"q": "monitor 24", "cat": "monitor", "must": ["monitor"], "max": 4, "not": ["suporte", "braco"]},
+        {"q": "monitor 27", "cat": "monitor", "must": ["monitor"], "max": 4, "not": ["suporte", "braco"]},
+        {"q": "notebook", "cat": "notebook", "must": ["notebook"], "max": 6, "not": ["mochila", "capa", "suporte", "base", "maleta", "cooler", "bolsa", "carregador"]},
+        {"q": "notebook gamer", "cat": "notebook", "must": ["notebook"], "max": 4, "not": ["mochila", "capa", "suporte", "base", "maleta", "cooler", "bolsa", "carregador"]},
+        {"q": "smart tv 50", "cat": "tv", "must": ["smart tv"], "max": 3, "not": ["suporte"]},
+        {"q": "smart tv 55", "cat": "tv", "must": ["smart tv"], "max": 3, "not": ["suporte"]},
+        {"q": "fone bluetooth", "cat": "audio", "must": ["fone"], "max": 5, "not": ["capa"]},
+        {"q": "caixa de som bluetooth", "cat": "audio", "must": ["caixa de som"], "max": 4},
+        {"q": "ssd 1tb", "cat": "ssd", "must": ["ssd"], "max": 3},
+        {"q": "hd externo", "cat": "ssd", "must": ["hd externo"], "max": 3},
+        {"q": "roteador wifi", "cat": "rede", "must": ["roteador"], "max": 4},
+        {"q": "nobreak", "cat": "rede", "must": ["nobreak"], "max": 3},
+        {"q": "impressora multifuncional", "cat": "casa", "must": ["impressora"], "max": 4, "not": ["cartucho", "toner", "tinta"]}
+      ]
+    },
     "steam": {
       "nome": "Steam",
       "pausa": 3,

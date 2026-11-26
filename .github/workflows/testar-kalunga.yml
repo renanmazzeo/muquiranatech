@@ -1,0 +1,42 @@
+name: Testar Kalunga
+
+# Roda quando o coletor da Kalunga muda (ou na mão). Não salva nada: coleta numa cópia do banco e confere
+# 5 preços contra a página do produto. Resultado nas anotações.
+on:
+  push:
+    branches: [main]
+    paths: ["collector/kalunga.py", ".github/workflows/testar-kalunga.yml"]
+  workflow_dispatch:
+
+jobs:
+  kalunga:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r collector/requirements.txt
+      - name: Coletar numa cópia e conferir 5 preços
+        run: |
+          MUQ_DB="$RUNNER_TEMP/kalunga.db" python collector/muq.py coletar --lojas kalunga
+          python - <<'PY'
+          import os, sqlite3, sys, time
+          sys.path.insert(0, "collector")
+          import kalunga
+          c = sqlite3.connect(os.environ["RUNNER_TEMP"] + "/kalunga.db")
+          rows = c.execute("select p.code,p.name,p.url,x.price from products p join prices x on x.product_id=p.id "
+                           "where p.store='kalunga' order by p.code").fetchall()
+          print(f"::notice::kalunga {len(rows)} produtos coletados")
+          passo = max(1, len(rows) // 5)
+          ruins = 0
+          for code, name, url, price in rows[::passo][:5]:
+              time.sleep(3)
+              pg = kalunga.preco_pagina(url)
+              ok = pg is not None and abs(pg - price) < 0.01
+              ruins += not ok
+              print(f"::notice::{name[:50]}: busca R$ {price} · página R$ {pg} · {'OK' if ok else 'DIFERENTE'}")
+          if len(rows) < 20 or ruins:
+              sys.exit(1)
+          PY
