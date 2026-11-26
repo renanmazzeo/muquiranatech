@@ -1,0 +1,53 @@
+# Teste da Open API de afiliados da Shopee (secrets SHOPEE_APP_ID e SHOPEE_SECRET). Só leitura: busca alguns
+# produtos e mostra preço, loja e o tipo de loja (oficial/Mall ou não), para montar o filtro de vendedores confiáveis.
+# Nunca imprime as chaves.
+name: Testar Shopee
+on: workflow_dispatch
+permissions:
+  contents: read
+jobs:
+  testar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Testar a API
+        env:
+          APP_ID: ${{ secrets.SHOPEE_APP_ID }}
+          SECRET: ${{ secrets.SHOPEE_SECRET }}
+        run: |
+          pip install -q requests
+          python - <<'EOF'
+          import hashlib, json, os, time, requests
+          APP, SEC = os.environ.get("APP_ID"), os.environ.get("SECRET")
+          if not (APP and SEC):
+              raise SystemExit("Faltam os secrets SHOPEE_APP_ID e SHOPEE_SECRET")
+          URL = "https://open-api.affiliate.shopee.com.br/graphql"
+
+          def gql(query):
+              corpo = json.dumps({"query": query}, separators=(",", ":"))
+              ts = str(int(time.time()))
+              assinatura = hashlib.sha256((APP + ts + corpo + SEC).encode()).hexdigest()
+              time.sleep(1.5)
+              r = requests.post(URL, data=corpo, timeout=40, headers={
+                  "Content-Type": "application/json",
+                  "Authorization": f"SHA256 Credential={APP}, Timestamp={ts}, Signature={assinatura}"})
+              try:
+                  return r.status_code, r.json()
+              except ValueError:
+                  return r.status_code, {"texto": r.text[:300]}
+
+          campos = "itemId productName priceMin priceMax shopName shopId shopType ratingStar sales commissionRate productLink offerLink imageUrl"
+          for termo in ["fone bluetooth", "xiaomi redmi", "samsung galaxy", "ssd kingston", "jbl"]:
+              st, j = gql('{productOfferV2(keyword: "%s", limit: 8, page: 1) {nodes {%s} pageInfo {hasNextPage}}}' % (termo, campos))
+              if j.get("errors") or "data" not in j:
+                  print(f"== {termo}: HTTP {st} {json.dumps(j)[:400]}")
+                  continue
+              ns = ((j["data"] or {}).get("productOfferV2") or {}).get("nodes") or []
+              print(f"== {termo}: {len(ns)} produtos")
+              for p in ns:
+                  print(f"   R$ {p.get('priceMin')}-{p.get('priceMax')} tipo_loja={p.get('shopType')} "
+                        f"loja={str(p.get('shopName'))[:25]} nota={p.get('ratingStar')} vendas={p.get('sales')} "
+                        f"com={p.get('commissionRate')} | {str(p.get('productName'))[:60]}")
+          EOF
