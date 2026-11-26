@@ -50,6 +50,14 @@ def _resumo(status, texto, extra=None):
     return r
 
 
+def _enxugar(html):
+    """Tira estilos, SVGs e scripts sem preço, para sobrar a estrutura dos produtos."""
+    html = re.sub(r"<style.*?</style>|<svg.*?</svg>|<!--.*?-->", "", html, flags=re.S | re.I)
+    return re.sub(r"<script(?![^>]*(?:ld\+json|__NEXT_DATA__))[^>]*>(?:(?!</script>).)*</script>",
+                  lambda m: m.group(0) if re.search(r"price|preco|preço", m.group(0), re.I) and len(m.group(0)) < 60000 else "",
+                  html, flags=re.S | re.I)
+
+
 def por_requests(url):
     r = requests.get(url, headers=HEADERS, timeout=30)
     return _resumo(r.status_code, r.text, {"url_final": r.url, "_html": r.text})
@@ -105,7 +113,7 @@ def rodar(pedido, lojas, pausa=3.0):
                 pasta = os.environ.get("SONDAR_HTML", "docs/sondagens/html")
                 os.makedirs(pasta, exist_ok=True)
                 with open(os.path.join(pasta, f"{t['nome']}.html"), "w", encoding="utf-8") as f:
-                    f.write(html[:400000])
+                    f.write(_enxugar(html)[:400000])
         except Exception as e:  # noqa: BLE001 — o erro é o próprio resultado do teste
             r.update({"funcionou": False, "erro": f"{type(e).__name__}: {e}"[:300]})
         resultados.append(r)

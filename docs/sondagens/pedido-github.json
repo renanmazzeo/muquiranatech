@@ -1,15 +1,9 @@
 {
- "id": "2026-11-26-html1",
+ "id": "2026-11-26-html2",
  "testes": [
   {
    "nome": "kalunga-html",
    "url": "https://www.kalunga.com.br/busca/mouse",
-   "modo": "requests",
-   "guardar": true
-  },
-  {
-   "nome": "dell-html",
-   "url": "https://www.dell.com/pt-br/search/notebook",
    "modo": "requests",
    "guardar": true
   },
