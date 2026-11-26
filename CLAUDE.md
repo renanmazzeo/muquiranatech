@@ -100,7 +100,8 @@ Preço normal = mediana dos preços de 31 a 90 dias atrás (`BF` em `index.html`
 | PlayStation Store | ✅ GitHub, com navegador (Playwright, job `coletar-navegador`); 20 jogos, 5 preços conferidos |
 | Motorola | ✅ `collector/motorola.py`: API pública VTEX (`www.motorola.com.br/api/catalog_system`), categoria Smartphones, preço do Pix, só seller "1" |
 | Lenovo | ✅ `collector/lenovo.py`: API das páginas de categoria (`openapi.lenovo.com`, filtro `pageFilterId`) para a lista e `/detail/price/batch/get` (a da ficha) para o preço do Pix; notebooks, desktops e monitores. `/search` é proibido no robots.txt |
-| Apple, Dell, Xbox | ⏳ responderam à sondagem de 26/11 no GitHub; coletores pendentes (tarefa 5d); Apple deixada de lado |
+| Xbox Store | ✅ `collector/xbox.py` (navegador, job `coletar-navegador`), 20 jogos, 5 preços conferidos (26/11) |
+| Apple, Dell | ⏳ responderam à sondagem de 26/11 no GitHub; coletores pendentes (tarefa 5d); Apple deixada de lado |
 | Magalu, Casas Bahia, Pichau, Terabyte, Nuuvem, LG | ❌ 403/captcha para robôs (Pichau/Terabyte só abrem no PC com navegador). Não burlar: só por afiliados/feeds oficiais (Awin em análise; Lomadee tem TeraByte e Lenovo, sem feed de produtos) |
 
 ## Infra

@@ -17,6 +17,15 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 
 ---
 
+## 2026-11-26 20:30 UTC · agente · tarefa 5d (Xbox Store ligada)
+**Saúde:** data.js gerado às 16:46 UTC (3h40) · 4.190 KaBuM! · 286 Amazon · 153 Samsung · 65 Kalunga · 32 Motorola · 21 Steam · 20 PlayStation · últimas 5 coletas `success`.
+**Feito:** achei a causa do 0 jogos da Xbox: a espera do coletor casava com links escondidos do menu do topo. Agora espera o cartão com preço (`aria-label` com R$). O HTML guardado da rede do GitHub já era lido certo (9 jogos). Com isso `testar-xbox` passou na rede do GitHub (20 jogos, 5 preços iguais à ficha). Xbox trocada para `"onde": "github-nav"` (entra no job `coletar-navegador`).
+**Teste no ar:** commit 5a31067: Testes `success`, Pages `success`, `testar-xbox` `success`. A troca para `github-nav` vai no commit seguinte; falta ver `xbox:` no data.js depois da próxima coleta.
+**Falta:** conferir `xbox:` no data.js na próxima execução. Lenovo/Samsung/Motorola já feitas; Dell e Apple seguem pendentes (Apple deixada de lado). Depois, tarefa 5 (Carrefour/Pichau só no PC) e a final.
+**Precisa do dono:** nada novo.
+
+---
+
 ## 2026-11-26 18:40 UTC · agente · tarefa 5d (Xbox Store)
 **Saúde:** data.js gerado às 16:46 UTC · 4.190 KaBuM! · 286 Amazon · 153 Samsung · 65 Kalunga · 32 Motorola (já no ar) · 21 Steam · 20 PlayStation · últimas execuções do GitHub `success`.
 **Feito:** `collector/xbox.py` (navegador; lê nome, preço e "preço original" do `aria-label` dos cartões da busca; ignora jogo sem preço), 20 jogos na watchlist (`lojas.xbox`, **com `"onde": "teste"`: ainda NÃO é coletada pelos robôs**), loja em `STORES` do site, 2 testes novos (36 no total, ok) e workflow `testar-xbox.yml` (coleta numa cópia e confere 5 fichas na rede do GitHub).
