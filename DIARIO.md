@@ -3,6 +3,11 @@
 Registro de tudo o que foi feito, do mais recente para o mais antigo. O agente autônomo acrescenta uma entrada
 por execução (modelo no fim do arquivo) e lê as 3 últimas antes de começar.
 
+ESTADO: EM ANDAMENTO
+<!-- O agente troca para "ESTADO: CONCLUÍDO" na tarefa final do TAREFAS.md. Depois disso, ele não faz mais nada. -->
+
+**Próxima entrada vai logo abaixo desta linha.**
+
 ## Precisa do dono
 Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apaga quando resolver.
 - [ ] Mercado Livre: criar o app e guardar as credenciais como secrets do GitHub (ver TAREFAS.md).
