@@ -1,0 +1,57 @@
+# Teste rápido da API do Mercado Livre com as chaves do app (secrets ML_CLIENT_ID e ML_CLIENT_SECRET).
+# Mostra só o código de resposta de cada caminho da API e quantos itens vieram. Nunca imprime as chaves.
+name: Testar Mercado Livre
+on: workflow_dispatch
+permissions:
+  contents: read
+jobs:
+  testar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Testar caminhos da API
+        env:
+          ML_CLIENT_ID: ${{ secrets.ML_CLIENT_ID }}
+          ML_CLIENT_SECRET: ${{ secrets.ML_CLIENT_SECRET }}
+        run: |
+          pip install -q requests
+          python - <<'EOF'
+          import os, requests
+          API = "https://api.mercadolibre.com"
+          H = {"User-Agent": "MuquiranaTech/1.0", "Accept": "application/json"}
+          if not os.environ.get("ML_CLIENT_ID") or not os.environ.get("ML_CLIENT_SECRET"):
+              raise SystemExit("Faltam os secrets ML_CLIENT_ID e ML_CLIENT_SECRET")
+          r = requests.post(f"{API}/oauth/token", headers=H, timeout=30, data={
+              "grant_type": "client_credentials",
+              "client_id": os.environ["ML_CLIENT_ID"], "client_secret": os.environ["ML_CLIENT_SECRET"]})
+          print("token:", r.status_code, (r.json().get("error") if r.status_code != 200 else "ok"))
+          if r.status_code != 200:
+              raise SystemExit(1)
+          A = {**H, "Authorization": "Bearer " + r.json()["access_token"]}
+
+          def get(nome, path, **params):
+              x = requests.get(API + path, headers=A, params=params, timeout=30)
+              try:
+                  j = x.json()
+              except ValueError:
+                  j = {}
+              res = j.get("results") if isinstance(j, dict) else j
+              n = len(res) if isinstance(res, list) else "-"
+              erro = j.get("message") or j.get("error") if isinstance(j, dict) and x.status_code != 200 else ""
+              print(f"{nome:28} {x.status_code}  itens={n}  {erro or ''}")
+              return j if x.status_code == 200 else None
+
+          get("busca de anúncios", "/sites/MLB/search", q="rtx 3060", limit=5)
+          cat = get("busca no catálogo", "/products/search", status="active", site_id="MLB", q="rtx 3060")
+          if cat and cat.get("results"):
+              pid = cat["results"][0]["id"]
+              print("  1º do catálogo:", cat["results"][0].get("name"))
+              ofs = get("ofertas do produto", f"/products/{pid}/items")
+              if ofs and ofs.get("results"):
+                  o = ofs["results"][0]
+                  print("  preço:", o.get("price"), "| loja oficial:", o.get("official_store_id"), "| item:", o.get("item_id"))
+                  get("detalhe do anúncio", "/items", ids=o.get("item_id"))
+          get("mais vendidos (celulares)", "/highlights/MLB/category/MLB1055")
+          EOF
