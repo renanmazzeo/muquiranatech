@@ -25,7 +25,11 @@ jobs:
                   return getattr(e, "code", 0), str(e)
           B = "https://www.motorola.com.br/api/catalog_system/pub/"
           s, t = get(B + "category/tree/2")
-          print(f"::notice::arvore {s} {t[:600]}")
+          print("::notice::raizes " + str([(c["id"], c["name"]) for c in json.loads(t)]))
+          for c in json.loads(t)[:12]:
+              n = get(B + "products/search?fq=C:/%d/&_from=0&_to=0" % c["id"])
+              print("::notice::cat %d %s: resp %s" % (c["id"], c["name"], n[0]))
+              time.sleep(3)
           time.sleep(3)
           s, t = get(B + "products/search?ft=moto%20g&_from=0&_to=9")
           print(f"::notice::busca {s} {len(t)} bytes")
