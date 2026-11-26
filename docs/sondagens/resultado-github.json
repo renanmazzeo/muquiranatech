@@ -1,7 +1,7 @@
 {
- "id": "2026-11-26-html1",
+ "id": "2026-11-26-html2",
  "onde": "github",
- "quando": "2026-11-26T04:33+00:00",
+ "quando": "2026-11-26T04:34+00:00",
  "resultados": [
   {
    "nome": "kalunga-html",
@@ -26,29 +26,13 @@
    "url_final": "https://www.kalunga.com.br/busca/mouse"
   },
   {
-   "nome": "dell-html",
-   "modo": "requests",
-   "url": "https://www.dell.com/pt-br/search/notebook",
-   "loja": null,
-   "q": null,
-   "status": 403,
-   "tamanho": 399,
-   "precos_na_pagina": 0,
-   "exemplos_de_preco": [],
-   "bloqueio_detectado": true,
-   "titulo": "Access Denied",
-   "json": false,
-   "funcionou": false,
-   "url_final": "https://www.dell.com/pt-br/search/notebook"
-  },
-  {
    "nome": "samsung-html",
    "modo": "playwright",
    "url": "https://shop.samsung.com/br/search?searchText=galaxy",
    "loja": null,
    "q": null,
    "status": 200,
-   "tamanho": 2328405,
+   "tamanho": 2303293,
    "precos_na_pagina": 250,
    "exemplos_de_preco": [
     "R$16.199,00",
