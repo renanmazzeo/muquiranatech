@@ -64,7 +64,9 @@ Push recusado? `git pull --rebase` de novo e repita. Até 3 tentativas.
   Confira que o HTML publicado contém a sua mudança (procure um trecho novo) e que o `data.js` carrega.
 - Se houver Chrome headless, abra o site publicado a 390 px e confira que os cards aparecem, sem erro no console.
 - Mexeu no coletor ou no workflow? Dispare `gh workflow run "Coletar preços"`, espere terminar
-  (`gh run watch`) e confira: sucesso e produtos da loja no `data.js` novo.
+  (`gh run watch`) e confira: sucesso e produtos da loja no `data.js` novo. **Sem `gh` com login** (comum na
+  nuvem): rode a coleta dessa loja localmente numa cópia (`MUQ_DB=/tmp/teste.db`) para provar que funciona, e
+  na próxima execução confira o resultado da coleta agendada (que roda a cada 3h) pela API pública (abaixo).
 - **Algo quebrou no ar?** Corrija na hora. Se não conseguir em poucos minutos, `git revert` do seu commit,
   publique o revert, confira que o site voltou e registre no DIARIO.md o que aconteceu.
 - Anote no DIARIO.md o resultado do teste no ar.
@@ -74,7 +76,9 @@ Push recusado? `git pull --rebase` de novo e repita. Até 3 tentativas.
 ## Checagem de saúde (toda execução, poucos minutos)
 - `data.js`: o campo `gerado` tem menos de 6 horas? Quantos produtos há de cada loja (prefixo do `id`)?
 - `gh run list --workflow coletar.yml -L 5`: alguma execução terminou em `failure`? (`cancelled` feito à mão não
-  é problema.) Se houver, leia o log com `gh run view <id> --log-failed`.
+  é problema.) Se houver, leia o log com `gh run view <id> --log-failed`. Sem `gh` com login, o repositório é
+  público: `curl -s "https://api.github.com/repos/renanmazzeo/muquiranatech/actions/workflows/coletar.yml/runs?per_page=5"`
+  mostra `conclusion` e `html_url` de cada execução.
 - Produtos `amazon:` sumiram? Então o robô do PC parou, e isso só o dono resolve: anote em "Precisa do dono".
 - Anote os números na entrada do DIARIO.md. Se houver falha de coleta, corrigir vira a tarefa desta execução.
 
