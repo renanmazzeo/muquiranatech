@@ -30,6 +30,7 @@ jobs:
         run: |
           python collector/muq.py testar docs/sondagens/pedido-github.json --onde github \
             --saida "$RUNNER_TEMP/resultado.json"
+          mkdir -p "$RUNNER_TEMP/html" && cp -r docs/sondagens/html/. "$RUNNER_TEMP/html/" 2>/dev/null || true
           python - <<'PY'
           import json, os
           r = json.load(open(os.environ["RUNNER_TEMP"] + "/resultado.json", encoding="utf-8"))
@@ -45,7 +46,8 @@ jobs:
           for i in 1 2 3 4 5; do
             git fetch -q origin main && git reset -q --hard origin/main
             cp "$RUNNER_TEMP/resultado.json" docs/sondagens/resultado-github.json
-            git add docs/sondagens/resultado-github.json
+            mkdir -p docs/sondagens/html && cp -r "$RUNNER_TEMP/html/." docs/sondagens/html/ 2>/dev/null || true
+            git add docs/sondagens/resultado-github.json docs/sondagens/html
             git diff --cached --quiet && exit 0
             git commit -q -m "Sondagem de lojas (GitHub): resultado"
             git push -q && exit 0

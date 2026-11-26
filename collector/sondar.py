@@ -52,7 +52,7 @@ def _resumo(status, texto, extra=None):
 
 def por_requests(url):
     r = requests.get(url, headers=HEADERS, timeout=30)
-    return _resumo(r.status_code, r.text, {"url_final": r.url})
+    return _resumo(r.status_code, r.text, {"url_final": r.url, "_html": r.text})
 
 
 def por_navegador(url):
@@ -75,7 +75,7 @@ def por_navegador(url):
         status = resp.status if resp else 0
         url_final = pag.url
         nav.close()
-    return _resumo(status, html, {"url_final": url_final})
+    return _resumo(status, html, {"url_final": url_final, "_html": html})
 
 
 def por_coletor(loja, termo, lojas):
@@ -99,6 +99,13 @@ def rodar(pedido, lojas, pausa=3.0):
                 r.update(por_navegador(t["url"]))
             else:
                 r.update(por_requests(t["url"]))
+            html = r.pop("_html", None)
+            if t.get("guardar") and html:  # guarda a página (até 400 KB) para o agente montar o coletor da loja
+                import os
+                pasta = os.environ.get("SONDAR_HTML", "docs/sondagens/html")
+                os.makedirs(pasta, exist_ok=True)
+                with open(os.path.join(pasta, f"{t['nome']}.html"), "w", encoding="utf-8") as f:
+                    f.write(html[:400000])
         except Exception as e:  # noqa: BLE001 — o erro é o próprio resultado do teste
             r.update({"funcionou": False, "erro": f"{type(e).__name__}: {e}"[:300]})
         resultados.append(r)
