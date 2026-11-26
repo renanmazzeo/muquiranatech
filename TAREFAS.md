@@ -22,7 +22,9 @@ O agente existe **só para terminar a construção do projeto**: deixar o site c
    3. **Publique na `main` e teste no ar.** Só depois passe para a próxima tarefa.
    Tarefa grande? Publique cada parte que funcione sozinha e marque `[~]`, dizendo no DIARIO.md o que falta.
    A execução pode ser cortada a qualquer momento (cota esgotada): nada importante pode ficar só na sua cópia.
-4. Só pare antes do fim da fila se: a próxima tarefa depende de algo que ainda não aconteceu (marque e diga o
+4. Tarefa esperando algo externo (uma coleta agendada, o dono)? Deixe `[~]`, anote o que falta e **siga para a
+   próxima tarefa que não dependa disso**. Na execução seguinte, confira a pendente.
+5. Só pare antes do fim da fila se: a próxima tarefa depende de algo que ainda não aconteceu (marque e diga o
    quê), ou algo no ar quebrou e você não conseguiu consertar nem reverter.
 
 Status: `[ ]` a fazer · `[~]` em andamento · `[x]` feita, publicada e testada no ar · `[-]` impossível
@@ -36,8 +38,10 @@ Status: `[ ]` a fazer · `[~]` em andamento · `[x]` feita, publicada e testada 
 - **Nunca mexa** em credenciais ou segredos, no `coletar-pc.ps1`, nem nas configurações da Cloudflare ou do
   GitHub (Pages, secrets, branch protection).
 - **Nunca aumente** a frequência dos robôs: o plano grátis da Cloudflare tem 500 builds por mês.
-- **Requisições às lojas:** no máximo 30 por tarefa, com 3 s ou mais entre elas. **Nunca acesse a Amazon** (ela
-  bloqueia IPs de servidor, e insistir pode atrapalhar a coleta do PC do dono).
+- **Requisições às lojas:** no máximo 30 por tarefa, com 3 s ou mais entre elas.
+- **Amazon: só pela rede do GitHub Actions**, nunca de outro lugar e nunca no PC do dono. O bloqueio da Amazon é
+  por endereço de rede, então testes no GitHub não atrapalham a coleta que o PC do dono faz. No máximo 10
+  requisições à Amazon por execução do agente.
 - **Só serviços gratuitos.** Serviço pago, cadastro em site, aceitar termos, qualquer coisa em nome do dono:
   **não faça**. Anote no DIARIO.md em "Precisa do dono".
 - Ficou em dúvida sobre o que o dono quer? Escolha a opção mais conservadora e deixe a pergunta em
@@ -145,14 +149,43 @@ O dono ainda vai criar o app. O agente deixa tudo pronto para funcionar no dia e
   HTML do produto) e confira 5 produtos.
 - Se o preço não bater de jeito nenhum, marque `[-]` e explique no DIARIO.md.
 
-### 5. [ ] Lojas que bloqueiam robôs: tentar navegador de verdade
-Magalu, Casas Bahia, Pichau, Terabyte e Carrefour devolvem 403/captcha para `requests`.
-- Crie um workflow de teste (sem salvar dados) que usa **Playwright com Chromium** (grátis) no GitHub Actions e
-  abre **uma** busca de cada loja. Registre quais mostram produtos com preço.
-- Para cada loja que funcionar: crie uma tarefa nova aqui (no padrão das tarefas 2 e 4), em vez de implementar
-  tudo na mesma execução.
-- As que não funcionarem: `[-]` com o motivo, e atualize a tabela "Lojas" do CLAUDE.md.
-- Nada de serviço pago de proxy ou de resolver captcha.
+### 5. [ ] Testar TODAS as lojas importantes (pedido do dono: todas devem aparecer no site)
+O dono quer o máximo de lojas confiáveis no site. Teste **cada uma** da lista abaixo, na rede do GitHub Actions,
+com um workflow de teste (sem salvar dados) que escreve o resultado como anotação (`::notice::`), uma busca
+simples por loja (ex.: "smart tv 55" ou "iphone"). Para cada loja, tente nesta ordem até uma funcionar:
+1. API pública da loja (muitas lojas brasileiras usam VTEX: `/api/catalog_system/pub/products/search?ft=...`;
+   outras têm JSON embutido na página, como o `__NEXT_DATA__` da KaBuM!);
+2. `requests` com cabeçalhos de navegador;
+3. **Playwright com Chromium** (grátis), abrindo a página de busca como um navegador de verdade.
+
+Lojas para testar (registre o resultado de **todas** numa tabela no DIARIO.md e na tabela "Lojas" do CLAUDE.md):
+- **Grandes varejistas:** Magazine Luiza, Casas Bahia, Ponto, Extra, Carrefour, Fast Shop, Americanas
+  (se a tarefa 4 não resolveu), Shoptime, Submarino, Mercado Livre (página de busca, além da API da tarefa 3).
+- **Lojas de informática e games:** Pichau, Terabyte, Kalunga, Girafa, Nuuvem, PlayStation Store,
+  Nintendo eShop, Xbox Store.
+- **Lojas oficiais de marcas:** Samsung, Apple, Dell, Lenovo, LG, Motorola.
+- **Amazon pelo GitHub:** o `requests` recebe 503. Teste o **Playwright** com o mesmo filtro
+  `rh=p_6:A1ZZFT5FULY4LN`. Se funcionar, a Amazon passa a ser coletada pelo GitHub também, sem depender do PC do
+  dono: crie a tarefa para isso.
+
+Para cada loja que funcionar (mostra produtos com preço): **crie uma tarefa nova aqui**, logo depois desta, no
+padrão das tarefas 2 e 4 (coletor, vendedores confiáveis, conferência de 5 preços contra a página, inclusão no
+`coletar.yml` e no `STORES` do site). Faça essas tarefas novas na sequência, **antes** da tarefa 6.
+As que não funcionarem de jeito nenhum: registre o motivo (403, captcha, preço não confere) na tabela.
+Nada de serviço pago de proxy ou de resolver captcha.
+
+Playwright no GitHub Actions: `pip install playwright && python -m playwright install --with-deps chromium`.
+Se uma loja só funcionar com Playwright, a coleta dela vai num **job separado** do `coletar.yml` (é mais lento), e
+a mescla continua por loja (`mesclar --lojas <loja>`).
+
+### 5b. [ ] Amazon aparecendo no site
+- Na checagem de saúde, veja se há produtos `amazon:` no `data.js`. Se não houver há mais de 12 horas, o robô do
+  PC do dono não está conseguindo coletar: anote em "Precisa do dono" (o log fica em
+  `%LOCALAPPDATA%\MuquiranaTech\coleta.log` no PC dele).
+- Se o teste da tarefa 5 mostrou que a Amazon funciona com Playwright no GitHub, implemente a coleta da Amazon
+  no GitHub (job separado, mesmo filtro de vendedor e as mesmas buscas/ajustes da watchlist) e confira 5 preços.
+  Assim a Amazon aparece no site mesmo com o PC do dono desligado.
+- Pronta quando: há produtos `amazon:` no `data.js` publicado, vindos do PC ou do GitHub.
 
 ### 6. [ ] Site com muitas lojas e muitos produtos
 - Lista que carrega aos poucos: 48 cards e um botão "Mostrar mais". Filtros, busca e ordenação valem sobre a
