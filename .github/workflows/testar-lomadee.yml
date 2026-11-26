@@ -1,0 +1,79 @@
+# Teste da API de afiliado da Lomadee com a chave do secret LOMADEE_API_KEY (só leitura).
+# Mostra quais lojas de tecnologia existem, se o canal está ativo, exemplos de produtos com preço e cupons.
+# Nunca imprime a chave.
+name: Testar Lomadee
+on: workflow_dispatch
+permissions:
+  contents: read
+jobs:
+  testar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Testar a API
+        env:
+          LOMADEE_API_KEY: ${{ secrets.LOMADEE_API_KEY }}
+        run: |
+          pip install -q requests
+          python - <<'EOF'
+          import os, time, requests
+          K = os.environ.get("LOMADEE_API_KEY")
+          if not K:
+              raise SystemExit("Falta o secret LOMADEE_API_KEY")
+          API = "https://api.lomadee.com.br"
+          H = {"x-api-key": K, "Accept": "application/json", "User-Agent": "MuquiranaTech/1.0"}
+
+          def get(path, **params):
+              time.sleep(1.2)  # limite: 60 por minuto
+              r = requests.get(API + path, headers=H, params=params, timeout=30)
+              try:
+                  j = r.json()
+              except ValueError:
+                  j = {}
+              if r.status_code != 200:
+                  print(f"  {path} -> {r.status_code} {j.get('code') or ''} {j.get('message') or ''}")
+                  return None
+              return j
+
+          print("== CANAIS")
+          c = get("/affiliate/channels")
+          for ch in (c or {}).get("data", []):
+              print(" ", ch.get("name"), "|", ch.get("slug") or ch.get("address"), "|", ch.get("status"))
+
+          print("== LOJAS (marcas)")
+          lojas = {}
+          for q in ["terabyte", "pichau", "magalu", "magazine", "casas bahia", "americanas", "kabum", "samsung",
+                    "motorola", "dell", "lenovo", "fast shop", "kalunga", "amazon", "acer", "asus", "positivo",
+                    "lg", "philips", "multilaser", "girafa", "carrefour", "ponto", "extra", "submarino", "shoptime"]:
+              j = get("/affiliate/brands", search=q, limit=20)
+              for b in (j or {}).get("data", []):
+                  if b["id"] in lojas:
+                      continue
+                  lojas[b["id"]] = b
+                  com = (b.get("commission") or {}).get("value")
+                  canais = [x.get("message") or "ok" for x in b.get("channels") or []]
+                  print(f"  {b.get('name')[:30]:30} {b.get('site') or '':40} comissão={com}%  segmento={b.get('segment')}  canal={canais}")
+
+          print("== PRODUTOS (exemplos por loja)")
+          for bid, b in lojas.items():
+              j = get("/affiliate/products", organizationIds=bid, limit=3, isAvailable="true")
+              if not j:
+                  continue
+              print(f"  {b.get('name')}: {j.get('count')} produtos")
+              for p in j.get("data", [])[:3]:
+                  o = (p.get("options") or [{}])[0]
+                  pr = (o.get("pricing") or [{}])[0]
+                  print(f"     R$ {(pr.get('price') or 0)/100:,.2f} (de {(pr.get('listPrice') or 0)/100:,.2f})"
+                        f" seller={o.get('seller')} atualizado={p.get('updatedAt')} | {p.get('name','')[:70]}")
+                  print(f"       {p.get('url')}")
+
+          print("== CUPONS E OFERTAS ativos")
+          for bid, b in lojas.items():
+              j = get("/affiliate/campaigns", organizationId=bid, status="onTime", limit=5)
+              if j and j.get("data"):
+                  print(f"  {b.get('name')}: {(j.get('meta') or {}).get('total')} campanhas")
+                  for x in j["data"][:3]:
+                      print(f"     {x.get('type')}: {str(x.get('name'))[:80]}")
+          EOF
