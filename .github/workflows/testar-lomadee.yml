@@ -76,4 +76,17 @@ jobs:
                   print(f"  {b.get('name')}: {(j.get('meta') or {}).get('total')} campanhas")
                   for x in j["data"][:3]:
                       print(f"     {x.get('type')}: {str(x.get('name'))[:80]}")
+          print("== DETALHE (formato bruto, encurtado)")
+          import json
+          def bruto(nome, path, **params):
+              time.sleep(1.2)
+              r = requests.get(API + path, headers=H, params=params, timeout=30)
+              print(f"-- {nome}: {r.status_code}")
+              print(r.text[:2500])
+          tb = [bid for bid, b in lojas.items() if b.get("name") == "TeraByte"]
+          bruto("produtos sem filtro", "/affiliate/products", limit=2)
+          bruto("produtos busca rtx", "/affiliate/products", limit=2, search="rtx 5060")
+          if tb:
+              bruto("produtos terabyte", "/affiliate/products", limit=2, organizationIds=tb[0])
+              bruto("campanhas terabyte", "/affiliate/campaigns", organizationId=tb[0], status="onTime", limit=3, types="Offer")
           EOF
