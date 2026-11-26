@@ -75,7 +75,13 @@ def de_lomadee(marcas):
     out, pagina = [], 1
     nomes = {}
     while pagina <= 20:
-        j = _get("/affiliate/campaigns", types="GenericCoupon", limit=20, page=pagina)
+        try:
+            j = _get("/affiliate/campaigns", types="GenericCoupon", limit=20, page=pagina)
+        except requests.HTTPError:
+            if pagina == 1:
+                raise
+            break  # a Lomadee às vezes dá erro 500 numa página do meio: fica com as que vieram
+
         for x in j.get("data") or []:
             oid = x.get("organizationId")
             if oid not in nomes:
