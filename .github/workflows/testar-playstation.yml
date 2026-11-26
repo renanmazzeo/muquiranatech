@@ -37,13 +37,18 @@ jobs:
               time.sleep(4)
               pg = pw.new_page(locale="pt-BR")
               pg.goto(url, timeout=60000)
+              precos = []
               try:
                   pg.wait_for_selector('[data-qa="mfeCtaMain#offer0#finalPrice"]', timeout=30000)
-                  txt = pg.inner_text('[data-qa="mfeCtaMain#offer0#finalPrice"]')
+                  for k in range(4):  # a ficha pode ter oferta de experimentação antes da compra
+                      el = pg.query_selector(f'[data-qa="mfeCtaMain#offer{k}#finalPrice"]')
+                      if el:
+                          precos.append(playstation._reais(el.inner_text()))
               except Exception:
-                  txt = ""
+                  pass
               pg.close()
-              v = playstation._reais(txt)
+              txt = precos
+              v = price if price in precos else None
               ok = v is not None and abs(v - price) < 0.01
               ruins += not ok
               print(f"::notice::{name[:40]}: busca R$ {price} · página '{txt}' · {'OK' if ok else 'DIFERENTE'}")
