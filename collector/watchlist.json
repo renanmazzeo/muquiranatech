@@ -19,7 +19,7 @@
       "not": ["capa", "pelicula", "capinha", "case para", "suporte para", "compativel", "usado", "recondicionado"]
     },
     "kalunga": {
-      "nome": "Kalunga", "onde": "teste", "pausa": 3, "vendedores_confiaveis": ["Kalunga"], "not": ["recondicionado", "usado"],
+      "nome": "Kalunga", "pausa": 3, "vendedores_confiaveis": ["Kalunga"], "not": ["recondicionado", "usado"],
       "buscas": [
         {"q": "mouse gamer", "cat": "perif", "must": ["mouse"], "max": 5, "not": ["pad"]},
         {"q": "mouse sem fio", "cat": "perif", "must": ["mouse"], "max": 4, "not": ["pad"]},

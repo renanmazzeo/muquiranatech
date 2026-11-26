@@ -18,6 +18,13 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 
 ---
 
+## 2026-11-26 06:00 UTC · agente · tarefa 5c (Kalunga)
+**Feito:** `collector/kalunga.py` (HTML da busca; a lista nem sempre traz o preço à vista, então `refinar()` confere cada item na ficha do produto, que é o que o cliente vê), 20 buscas próprias na watchlist, loja `kalunga` em `STORES`, 4 testes novos (26 no total, ok). Fichas de 8 produtos guardadas pela sondagem: o preço lido bate com o cabeçalho da ficha nas 8. Workflow `testar-kalunga.yml` no GitHub: 57 produtos, 5 conferidos, todos OK (a lista dava, por ex., R$ 2.781,60 num notebook cuja ficha mostra R$ 2.693,76: por isso a conferência na ficha). Só depois disso a loja entrou na coleta agendada.
+**Teste no ar:** falta ver `kalunga:` no data.js depois da próxima coleta (tarefa 5c segue `[~]`).
+**Próximo passo:** conferir a coleta; depois 5d (Dell, Samsung, Apple, Lenovo, Motorola, PlayStation, Xbox) e Carrefour no PC (`"onde": "pc"` precisa de coletor).
+
+---
+
 ## 2026-11-26 04:50 UTC · agente · tarefa 5 (sondagem das lojas) e 5b
 **Saúde:** data.js gerado às 02:47 UTC · 308 KaBuM! · 286 Amazon (do PC) · 21 Steam · coletas do GitHub `success`.
 **5b:** há 286 produtos `amazon:` no data.js publicado, então a tarefa 5b está `[x]` (vindo do PC). Teste `amazon-coletor` no PC: ok. Amazon por navegador no GitHub: "Algo deu errado", segue só pelo PC.

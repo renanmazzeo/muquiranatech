@@ -71,7 +71,10 @@ Preço normal = mediana dos preços de 31 a 90 dias atrás (`BF` em `index.html`
 | Mercado Livre | ⏳ só pela API oficial; o dono precisa criar o app em developers.mercadolivre.com.br |
 | Americanas | ❌ a API VTEX responde 400 "Scripts are not allowed" na rede do GitHub (26/11); sem preço confiável, não coletamos |
 | Steam | ✅ API pública (`store.steampowered.com/api/storesearch`), não implementada ainda |
-| Carrefour, Magalu, Casas Bahia, Pichau, Terabyte | ❌ 403/captcha para robôs |
+| Kalunga | ✅ GitHub (HTML da busca + preço à vista da ficha do produto) |
+| Carrefour | ⏳ só o PC do dono passa (GitHub 403); coletor ainda não feito |
+| Samsung, Apple, Dell, Lenovo, Motorola, PlayStation, Xbox | ⏳ responderam à sondagem de 26/11 no GitHub; coletores pendentes (tarefa 5d) |
+| Magalu, Casas Bahia, Pichau, Terabyte, Nuuvem, LG | ❌ 403/captcha para robôs (Pichau/Terabyte só abrem no PC com navegador) |
 
 ## Infra
 - Repositório: https://github.com/renanmazzeo/muquiranatech (público). GitHub CLI: `C:\Program Files\GitHub CLI\gh.exe`.
