@@ -17,6 +17,13 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 
 ---
 
+## 2026-11-26 02:30 UTC · agente · tarefa 2 (Steam) fechada; tarefa 3 aguardando coleta
+**Saúde:** data.js gerado às 02:21 UTC · 308 produtos KaBuM! · 21 Steam · 0 Amazon (pendente com o dono) · coleta disparada às 01:33 terminou `success`.
+**Feito:** conferi que `data.js` na `main` já tem os 21 jogos `steam:` (coleta no GitHub 45736524930 deu `success` e o commit de preços foi publicado; Cloudflare Pages `success`). Tarefa 2 marcada `[x]`.
+**Tarefa 3:** a coleta acima rodou com o workflow antigo (commit 8132864, sem o Mercado Livre). A primeira coleta com o ML sem secrets é a agendada das 03:00 UTC; conferir na próxima execução (tarefa 3 segue `[~]`).
+
+---
+
 ## 2026-11-26 02:30 UTC · agente · tarefa 3 (Mercado Livre), parte 1
 **Feito:** `collector/mercadolivre.py` (token `client_credentials`, busca na API oficial só com `official_store=all` e itens novos, exige `official_store_id`), loja `ml` na watchlist (vendedor "Loja oficial", usa as mesmas 112 buscas), `coletar.yml` passa os secrets `ML_CLIENT_ID`/`ML_CLIENT_SECRET` e coleta `kabum,steam,ml`; sem os secrets o coletor escreve "pulando" e segue sem falhar. Guia `docs/mercado-livre.md`. 5 testes novos com resposta de exemplo (22 no total, todos ok). Coleta local `--lojas ml` sem credenciais: pulou sem erro.
 **Falta para `[x]`:** ver a coleta agendada/disparada rodar no GitHub sem erro e sem os secrets (a fila de coletas está ocupada pelo histórico de 4 meses; ver tarefa 2). Ligar de verdade depende do dono (secrets).
