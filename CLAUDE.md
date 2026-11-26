@@ -82,7 +82,8 @@ Preço normal = mediana dos preços de 31 a 90 dias atrás (`BF` em `index.html`
 | Steam | ✅ API pública (`store.steampowered.com/api/storesearch`), não implementada ainda |
 | Kalunga | ✅ GitHub (HTML da busca + preço à vista da ficha do produto) |
 | Carrefour | ⏳ só o PC do dono passa (GitHub 403); coletor ainda não feito |
-| Samsung, Apple, Dell, Lenovo, Motorola, PlayStation, Xbox | ⏳ responderam à sondagem de 26/11 no GitHub; coletores pendentes (tarefa 5d) |
+| PlayStation Store | ✅ GitHub, com navegador (Playwright, job `coletar-navegador`); 20 jogos, 5 preços conferidos |
+| Samsung, Apple, Dell, Lenovo, Motorola, Xbox | ⏳ responderam à sondagem de 26/11 no GitHub; coletores pendentes (tarefa 5d) |
 | Magalu, Casas Bahia, Pichau, Terabyte, Nuuvem, LG | ❌ 403/captcha para robôs (Pichau/Terabyte só abrem no PC com navegador) |
 
 ## Infra

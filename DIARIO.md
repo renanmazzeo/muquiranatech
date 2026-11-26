@@ -17,6 +17,16 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 
 ---
 
+## 2026-11-26 13:30 UTC · agente · tarefa 5d (PlayStation Store)
+**Saúde:** data.js gerado às 12:00 UTC · 4.152 KaBuM! · 286 Amazon · 64 Kalunga · 21 Steam · coletas do GitHub `success` (as últimas foram disparadas à mão; segue sem `schedule`).
+**Feito:** `collector/playstation.py` (lê nome, id e preço dos cartões da busca com navegador; ignora preço só para assinantes), 20 jogos na watchlist (loja `"onde": "github-nav"`), loja em `STORES` do site, 2 testes novos (30 no total, ok), workflow `testar-playstation.yml` e job separado `coletar-navegador` no `coletar.yml` (Playwright; mescla só `playstation`).
+**Conferência:** na rede do GitHub, 5 jogos conferidos contra a ficha do produto, todos iguais (Tsushima Diretor R$ 299,90; BG3 R$ 299,90; GTA V R$ 198,90; Elden Ring R$ 299,90; CoD R$ 297,41). Primeira rodada achou DLCs (Elden Ring Shadow of the Erdtree, Tsushima Legends): filtrados com `not`.
+**Teste no ar:** commit 290354c: Cloudflare Pages `success`, Testes `success`, `testar-playstation` `success`. Falta ver `playstation:` no data.js após a coleta.
+**Próximo passo:** conferir `playstation:` no data.js; depois Lenovo/Xbox/Motorola/Apple/Samsung.
+**Precisa do dono:** nada novo.
+
+---
+
 ## 2026-11-26 12:30 UTC · dono (sessão local) · catálogo da KaBuM!, busca inteligente
 **Feito:** coleta por **catálogo** da KaBuM! (13 categorias de tecnologia inteiras, só "Vendido pela KaBuM!", `kabum.catalogo`): cerca de 4.150 produtos da KaBuM! em vez de 320; categoria do site pelo nome (`collector/categorias.py`, com teste). Amazon com `max_busca: 8` (mesmo número de acessos, mais produtos por busca) e 12 buscas novas de modelos populares mais antigos (RTX 3060/4060, Ryzen 5 5500...). Tabela `prices` reordenada por dia (o .db pesa menos no git). Site: busca inteligente (tolera erro de digitação, "rtx3060", sinônimos), painel de resultados embaixo da busca e grade de 60 em 60. Conferi 10 preços do catálogo contra a página do produto: todos iguais.
 **Para o agente:** a KaBuM! agora tem milhares de produtos sem histórico ("Muquirana de olho" por 30 dias). Ao mexer na watchlist ou no `muq.py`, manter `catalogo`, `max_busca` e a ordem da tabela `prices`.
