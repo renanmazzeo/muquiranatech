@@ -1,0 +1,30 @@
+name: Testar lojas
+
+# Teste rápido: as lojas respondem para o robô do GitHub? (não salva nada)
+on: workflow_dispatch
+
+jobs:
+  testar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r collector/requirements.txt
+      - name: Amazon e KaBuM!
+        run: |
+          python - <<'PY'
+          import sys, time
+          sys.path.insert(0, "collector")
+          import amazon, kabum
+          for loja, mod in (("amazon", amazon), ("kabum", kabum)):
+              for q in ("rtx-5070", "iphone", "smart-tv-55", "echo-dot", "notebook-gamer", "headset-gamer"):
+                  try:
+                      it = mod.search(q)
+                      print(f"{loja:<7} {q:<16} {len(it):>3} itens  ex.: {it[0]['price'] if it else '-'} {it[0]['name'][:50] if it else ''}")
+                  except Exception as e:
+                      print(f"{loja:<7} {q:<16} ERRO {e}")
+                  time.sleep(2)
+          PY
