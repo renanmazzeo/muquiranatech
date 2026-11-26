@@ -69,7 +69,8 @@ def cmd_coletar(a):
     w = watchlist()
     lojas = a.lojas.split(",") if a.lojas else list(w["lojas"])
     for loja in lojas:
-        total = coletar_loja(c, loja, w["lojas"][loja], w["buscas"], today, now, a.pausa)
+        cfg = w["lojas"][loja]
+        total = coletar_loja(c, loja, cfg, w["buscas"], today, now, cfg.get("pausa", a.pausa))
         c.commit()
         print(f"== {w['lojas'][loja]['nome']}: {total} preços de hoje salvos.")
 
@@ -186,8 +187,8 @@ def cmd_exportar(a):
         })
     payload = {"gerado": dt.datetime.now(dt.timezone.utc).isoformat(timespec="minutes"), "produtos": produtos}
     out = ROOT / "data.js"
-    out.write_text("window.MUQ_DATA=" + json.dumps(payload, ensure_ascii=False, separators=(",", ":")) + ";\n",
-                   "utf-8")
+    with open(out, "w", encoding="utf-8", newline="\n") as f:  # sempre LF, igual no Windows e no GitHub
+        f.write("window.MUQ_DATA=" + json.dumps(payload, ensure_ascii=False, separators=(",", ":")) + ";\n")
     print(f"{len(produtos)} produtos exportados para {out.name}")
 
 

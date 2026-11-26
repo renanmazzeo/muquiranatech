@@ -10,6 +10,8 @@
 param([switch]$Instalar, [string]$Lojas = "amazon")
 
 $ErrorActionPreference = "Stop"
+$env:PYTHONIOENCODING = "utf-8"
+[Console]::OutputEncoding = [Text.Encoding]::UTF8
 $Home_ = Join-Path $env:LOCALAPPDATA "MuquiranaTech"
 $Repo = Join-Path $Home_ "repo"
 $Log = Join-Path $Home_ "coleta.log"
@@ -24,8 +26,16 @@ function Write-Log($msg) {
 }
 
 function Invoke-Git {
-    & git -C $Repo @args 2>&1 | ForEach-Object { "$_" }
-    if ($LASTEXITCODE -ne 0) { throw "git $($args -join ' ') falhou" }
+    # avisos do git vão para stderr; no PowerShell 5.1 isso viraria erro com "Stop"
+    $ErrorActionPreference = "Continue"
+    $out = & git -C $Repo @args 2>&1 | ForEach-Object { "$_" }
+    if ($LASTEXITCODE -ne 0) { throw "git $($args -join ' ') falhou: $out" }
+    $out
+}
+
+function Invoke-Py {
+    $ErrorActionPreference = "Continue"
+    & $py @args 2>&1 | ForEach-Object { "$_" }
 }
 
 if ($Instalar) {
@@ -39,6 +49,7 @@ if ($Instalar) {
     }
     git -C $Repo config user.name "muquirana-pc"
     git -C $Repo config user.email "muquiranatech@users.noreply.github.com"
+    git -C $Repo config core.autocrlf false
     $script = Join-Path $Repo "collector\coletar-pc.ps1"
     $acao = New-ScheduledTaskAction -Execute "powershell.exe" `
         -Argument "-NoProfile -NonInteractive -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$script`""
@@ -62,7 +73,7 @@ try {
     Invoke-Git reset -q --hard origin/main | Out-Null
     Copy-Item (Join-Path $Repo "data\muquirana.db") $copia -Force
     $env:MUQ_DB = $copia
-    $saida = & $py $muq coletar --lojas $Lojas 2>&1 | ForEach-Object { "$_" }
+    $saida = Invoke-Py $muq coletar --lojas $Lojas
     Remove-Item Env:MUQ_DB
     $saida | Where-Object { $_ -match "^==|!" } | ForEach-Object { Write-Log $_ }
 
@@ -70,15 +81,21 @@ try {
         # parte da versão mais nova do GitHub e mescla só os preços desta coleta
         Invoke-Git fetch -q origin main | Out-Null
         Invoke-Git reset -q --hard origin/main | Out-Null
-        & $py $muq mesclar $copia --lojas $Lojas 2>&1 | ForEach-Object { Write-Log "$_" }
-        & $py $muq exportar 2>&1 | ForEach-Object { Write-Log "$_" }
+        Invoke-Py $muq mesclar $copia --lojas $Lojas | ForEach-Object { Write-Log $_ }
+        Invoke-Py $muq exportar | ForEach-Object { Write-Log $_ }
         Invoke-Git add data/muquirana.db data.js | Out-Null
+        $ErrorActionPreference = "Continue"
         & git -C $Repo diff --cached --quiet
-        if ($LASTEXITCODE -eq 0) { Write-Log "Nada novo para enviar."; break }
+        $semMudanca = ($LASTEXITCODE -eq 0)
+        $ErrorActionPreference = "Stop"
+        if ($semMudanca) { Write-Log "Nada novo para enviar."; break }
         $quando = Get-Date -Format "yyyy-MM-dd HH'h'mm"
         Invoke-Git commit -q -m "Preços de $quando · Amazon (PC)" | Out-Null
-        & git -C $Repo push -q 2>&1 | ForEach-Object { "$_" } | Out-Null
-        if ($LASTEXITCODE -eq 0) { Write-Log "Enviado ao GitHub."; break }
+        $ErrorActionPreference = "Continue"
+        & git -C $Repo push -q 2>&1 | Out-Null
+        $ok = ($LASTEXITCODE -eq 0)
+        $ErrorActionPreference = "Stop"
+        if ($ok) { Write-Log "Enviado ao GitHub."; break }
         Write-Log "Push recusado (tentativa $i); tentando de novo."
         Start-Sleep -Seconds 20
     }

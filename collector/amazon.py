@@ -6,6 +6,7 @@ Devolve itens no mesmo formato do kabum.py, para o resto do coletor tratar as lo
 """
 import html as htmllib
 import re
+import time
 
 import requests
 
@@ -70,10 +71,28 @@ def parse(page):
     return out
 
 
+_session = None
+
+
+def _get(url, **kw):
+    """Uma sessão com cookies (como um navegador) e paciência: a Amazon responde 503 a quem pede rápido demais."""
+    global _session
+    if _session is None:
+        _session = requests.Session()
+        _session.headers.update(HEADERS)
+        try:
+            _session.get(BASE, timeout=30)  # pega os cookies da página inicial
+        except requests.RequestException:
+            pass
+    for espera in (0, 60):
+        time.sleep(espera)
+        r = _session.get(url, timeout=30, **kw)
+        if r.status_code != 503:
+            r.raise_for_status()
+            return r
+    raise Blocked("HTTP 503")
+
+
 def search(term):
-    r = requests.get(f"{BASE}/s", params={"k": term.replace("-", " "), "rh": f"p_6:{AMAZON_SELLER}"},
-                     headers=HEADERS, timeout=30)
-    if r.status_code == 503:
-        raise Blocked("HTTP 503")
-    r.raise_for_status()
+    r = _get(f"{BASE}/s", params={"k": term.replace("-", " "), "rh": f"p_6:{AMAZON_SELLER}"})
     return parse(r.text)
