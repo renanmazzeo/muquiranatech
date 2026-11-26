@@ -218,7 +218,7 @@ só vendedor Kalunga, conferência de 5 preços, `STORES` do site, `coletar.yml`
 ### 5d. [~] Lojas oficiais de marcas e jogos que responderam na rodada 2 (GitHub)
 Dell (requests), Samsung (navegador), Apple, Lenovo (navegador), Motorola, PlayStation Store, Xbox (navegador).
 Uma de cada vez, só as que o coletor conseguir ler com preço confiável; as com navegador vão em job separado.
-**PlayStation Store: feita** (coletor, 5 preços conferidos, job `coletar-navegador` no `coletar.yml`; falta só ver `playstation:` no data.js). Restam Lenovo, Xbox, Motorola. **Samsung: feita na conversa do dono (26/11, `collector/samsung.py`). Apple: deixada de lado (26/11): cada página tem um formato, nomes em inglês, e a Apple quase nunca muda preço (o termômetro ficaria sempre igual); o agente não mexe.**
+**PlayStation Store: feita** (coletor, 5 preços conferidos, job `coletar-navegador` no `coletar.yml`; falta só ver `playstation:` no data.js). **Motorola: feita (26/11, `collector/motorola.py`, API VTEX, preço do Pix, 32 smartphones, 5 preços conferidos; falta ver `motorola:` no data.js).** Restam Lenovo e Xbox. **Samsung: feita na conversa do dono (26/11, `collector/samsung.py`). Apple: deixada de lado (26/11): cada página tem um formato, nomes em inglês, e a Apple quase nunca muda preço (o termômetro ficaria sempre igual); o agente não mexe.**
 Carrefour e Pichau só passaram no PC (`"onde": "pc"`): ver DIARIO.
 
 ### 6. [ ] Site com muitas lojas e muitos produtos

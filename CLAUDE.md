@@ -93,7 +93,8 @@ Preço normal = mediana dos preços de 31 a 90 dias atrás (`BF` em `index.html`
 | Samsung | ✅ `collector/samsung.py`: API pública VTEX (`shop.samsung.com/br/api/catalog_system`), categorias de tecnologia inteiras, preço do Pix, só seller "1" (a Samsung), sem kits "A + B" |
 | Carrefour | ⏳ só o PC do dono passa (GitHub 403); coletor ainda não feito |
 | PlayStation Store | ✅ GitHub, com navegador (Playwright, job `coletar-navegador`); 20 jogos, 5 preços conferidos |
-| Apple, Dell, Lenovo, Motorola, Xbox | ⏳ responderam à sondagem de 26/11 no GitHub; coletores pendentes (tarefa 5d) |
+| Motorola | ✅ `collector/motorola.py`: API pública VTEX (`www.motorola.com.br/api/catalog_system`), categoria Smartphones, preço do Pix, só seller "1" |
+| Apple, Dell, Lenovo, Xbox | ⏳ responderam à sondagem de 26/11 no GitHub; coletores pendentes (tarefa 5d); Apple deixada de lado |
 | Magalu, Casas Bahia, Pichau, Terabyte, Nuuvem, LG | ❌ 403/captcha para robôs (Pichau/Terabyte só abrem no PC com navegador) |
 
 ## Infra

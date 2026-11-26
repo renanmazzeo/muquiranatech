@@ -17,6 +17,16 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 
 ---
 
+## 2026-11-26 15:00 UTC · agente · tarefa 5d (Motorola)
+**Saúde:** data.js gerado às 14:26 UTC · 4.173 KaBuM! · 286 Amazon · 64 Kalunga · 20 PlayStation · 150 Samsung · 21 Steam · coletas do GitHub `success` (todas disparadas à mão; segue sem `schedule`).
+**Feito:** `collector/motorola.py` (API VTEX pública, categoria Smartphones, preço do Pix, só vendedor Motorola), loja na watchlist, em `muq.py` e em `STORES` do site, 2 testes novos (34 no total, ok), workflow `testar-motorola.yml`. A sonda temporária mostrou na rede do GitHub que a API responde e que só há "Smartphones", "Acessórios" (misturado, deixei de fora) e "Seguros".
+**Conferência (rede do GitHub):** 32 produtos; 5 preços iguais aos da ficha (Moto g Max 5G R$ 2.499; g47 R$ 1.499; Edge 70 R$ 3.149,10; g06 256GB R$ 1.079; g35 R$ 899,10).
+**Teste no ar:** commit e2d4003: Cloudflare Pages `success`, Testes `success`, `testar-motorola` `success`. Falta ver `motorola:` no data.js após a próxima coleta.
+**Próximo passo:** conferir `motorola:`; Lenovo e Xbox (navegador); depois tarefas 6, 7, 8.
+**Precisa do dono:** nada novo.
+
+---
+
 ## 2026-11-26 14:00 UTC · dono + Claude · filtros e preços desatualizados
 **Problemas que o dono viu:** "Só Black Fraude" mostrava cartões "Até o Muquirana compra"; alguns preços diferentes da loja.
 **Feito:** selos coerentes com o termômetro (Fraude só acima de 10% do menor; Firmeza só até 10%); aviso amarelo
