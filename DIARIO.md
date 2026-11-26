@@ -17,6 +17,14 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 
 ---
 
+## 2026-11-26 18:40 UTC · agente · tarefa 5d (Xbox Store)
+**Saúde:** data.js gerado às 16:46 UTC · 4.190 KaBuM! · 286 Amazon · 153 Samsung · 65 Kalunga · 32 Motorola (já no ar) · 21 Steam · 20 PlayStation · últimas execuções do GitHub `success`.
+**Feito:** `collector/xbox.py` (navegador; lê nome, preço e "preço original" do `aria-label` dos cartões da busca; ignora jogo sem preço), 20 jogos na watchlist (`lojas.xbox`, **com `"onde": "teste"`: ainda NÃO é coletada pelos robôs**), loja em `STORES` do site, 2 testes novos (36 no total, ok) e workflow `testar-xbox.yml` (coleta numa cópia e confere 5 fichas na rede do GitHub).
+**Falta:** ver o `testar-xbox` passar com 5 preços iguais; só então trocar `"onde"` para `"github-nav"` (entra no job `coletar-navegador`). Lenovo: HTML guardado é grande e misturado (kits, preço "de" e preço atual em blocos diferentes), ainda sem coletor.
+**Precisa do dono:** nada novo.
+
+---
+
 ## 2026-11-26 16:30 UTC · agente · saúde e tarefa 8 (revisar.py)
 **Saúde:** data.js gerado às 14:26 UTC (2 h) · 4.173 KaBuM! · 286 Amazon · 64 Kalunga · 20 PlayStation · 150 Samsung · 21 Steam · 0 Motorola (a coleta de 14:09 é anterior à loja) · nenhuma coleta `schedule` desde 25/11 (só `workflow_dispatch`, todas `success`). Disparei uma coleta à mão (16:3x UTC) para trazer `motorola:`.
 **Feito:** `collector/revisar.py` (só leitura; lê data.js e lista preço fora de 25%–400% da mediana da categoria e acessório em categoria de aparelho). Resultado: 1.097 suspeitos, quase todos falsos alarmes (a mediana da categoria mistura produtos de faixas muito diferentes: TV 98" × TV box, monitor OLED × monitor comum, jogos de R$ 12 × R$ 300). Achados reais: Amazon traz carregadores/power banks e controles na categoria `celular`/`console` (acessórios de 9 itens na Amazon e 19 na KaBuM!). Não removi buscas nem mexi na watchlist: o dono aceita acessórios das lojas, e a categoria aproximada não engana o preço. Sugestão futura: comparar preço só entre produtos da mesma busca, não da categoria inteira.

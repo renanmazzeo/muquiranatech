@@ -149,6 +149,35 @@
         {"q": "the witcher 3", "cat": "game", "must": ["witcher 3"], "max": 1},
         {"q": "ratchet clank rift apart", "cat": "game", "must": ["rift apart"], "max": 1}
       ]
+    },
+    "xbox": {
+      "nome": "Xbox Store",
+      "onde": "teste",
+      "pausa": 4,
+      "vendedores_confiaveis": ["Xbox Store"],
+      "not": ["trilha sonora", "soundtrack", "dlc", "demo", "upgrade", "pacote de", "bundle", "moedas", "creditos", "avatar", "tema", "complemento", "expansao"],
+      "buscas": [
+        {"q": "forza horizon 5", "cat": "game", "must": ["forza horizon 5"], "max": 1},
+        {"q": "forza horizon 6", "cat": "game", "must": ["forza horizon 6"], "max": 1},
+        {"q": "halo infinite", "cat": "game", "must": ["halo infinite"], "max": 1},
+        {"q": "starfield", "cat": "game", "must": ["starfield"], "max": 1},
+        {"q": "gears 5", "cat": "game", "must": ["gears 5"], "max": 1},
+        {"q": "minecraft", "cat": "game", "must": ["minecraft"], "max": 1},
+        {"q": "hogwarts legacy", "cat": "game", "must": ["hogwarts"], "max": 1},
+        {"q": "cyberpunk 2077", "cat": "game", "must": ["cyberpunk"], "max": 1},
+        {"q": "red dead redemption 2", "cat": "game", "must": ["red dead redemption 2"], "max": 1},
+        {"q": "grand theft auto v", "cat": "game", "must": ["grand theft auto v"], "max": 1},
+        {"q": "elden ring", "cat": "game", "must": ["elden ring"], "max": 1},
+        {"q": "baldurs gate 3", "cat": "game", "must": ["baldur"], "max": 1},
+        {"q": "mortal kombat 1", "cat": "game", "must": ["mortal kombat 1"], "max": 1},
+        {"q": "call of duty", "cat": "game", "must": ["call of duty"], "max": 1},
+        {"q": "the witcher 3", "cat": "game", "must": ["witcher 3"], "max": 1},
+        {"q": "fc 26", "cat": "game", "must": ["fc 26"], "max": 1},
+        {"q": "resident evil 4", "cat": "game", "must": ["resident evil 4"], "max": 1},
+        {"q": "tekken 8", "cat": "game", "must": ["tekken 8"], "max": 1},
+        {"q": "microsoft flight simulator", "cat": "game", "must": ["flight simulator"], "max": 1},
+        {"q": "sea of thieves", "cat": "game", "must": ["sea of thieves"], "max": 1}
+      ]
     }
   },
   "buscas": [

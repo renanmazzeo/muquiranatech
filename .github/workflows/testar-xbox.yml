@@ -1,0 +1,55 @@
+name: Testar Xbox Store
+
+# Roda quando o coletor da Xbox muda (ou na mão). Não salva nada: coleta numa cópia do banco e confere
+# 5 preços contra a ficha do produto. Resultado nas anotações.
+on:
+  push:
+    branches: [main]
+    paths: ["collector/xbox.py", ".github/workflows/testar-xbox.yml"]
+  workflow_dispatch:
+
+jobs:
+  xbox:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r collector/requirements.txt playwright
+      - run: python -m playwright install --with-deps chromium
+      - name: Coletar numa cópia e conferir 5 preços
+        run: |
+          MUQ_DB="$RUNNER_TEMP/xb.db" python collector/muq.py coletar --lojas xbox
+          python - <<'PY'
+          import os, re, sqlite3, sys, time
+          sys.path.insert(0, "collector")
+          import xbox
+          c = sqlite3.connect(os.environ["RUNNER_TEMP"] + "/xb.db")
+          rows = c.execute("select p.code,p.name,p.url,x.price from products p join prices x on x.product_id=p.id "
+                           "where p.store='xbox' order by p.code").fetchall()
+          print(f"::notice::xbox {len(rows)} jogos coletados")
+          for r in rows:
+              print(f"::notice::lista {r[1][:45]} R$ {r[3]}")
+          passo = max(1, len(rows) // 5)
+          ruins = 0
+          pw = xbox._browser()
+          for code, name, url, price in rows[::passo][:5]:
+              time.sleep(4)
+              pg = pw.new_page(locale="pt-BR")
+              precos = []
+              try:
+                  pg.goto(url, timeout=60000)
+                  pg.wait_for_timeout(8000)
+                  txt = pg.inner_text("body")
+                  precos = sorted({xbox._reais(m) for m in re.findall(r"R\$\s*[\d.]+,\d{2}", txt)})
+              except Exception as e:
+                  print(f"::warning::{name[:30]}: erro {e}")
+              pg.close()
+              ok = price in precos
+              ruins += not ok
+              print(f"::notice::{name[:40]}: busca R$ {price} · ficha {precos[:6]} · {'OK' if ok else 'DIFERENTE'}")
+          if len(rows) < 8 or ruins:
+              sys.exit(1)
+          PY
