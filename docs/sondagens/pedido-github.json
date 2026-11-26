@@ -1,16 +1,10 @@
 {
- "id": "2026-11-26-html2",
+ "id": "2026-11-26-html3",
  "testes": [
   {
-   "nome": "kalunga-html",
-   "url": "https://www.kalunga.com.br/busca/mouse",
+   "nome": "kalunga-produto",
+   "url": "https://www.kalunga.com.br/prod/mouse-gamer-sem-fio-logitech-g305-lightspeed-com-6-botoes-programaveis-e-ate-12-000-dpi-preto-cx-1-un/442535",
    "modo": "requests",
-   "guardar": true
-  },
-  {
-   "nome": "samsung-html",
-   "url": "https://shop.samsung.com/br/search?searchText=galaxy",
-   "modo": "playwright",
    "guardar": true
   }
  ]
