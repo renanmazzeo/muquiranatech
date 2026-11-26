@@ -126,7 +126,7 @@ API pública, funciona do GitHub.
 - Pronto quando: a coleta local com `--lojas steam` traz cerca de 20 jogos, 5 conferidos batem com a Steam e,
   depois de publicar, uma coleta disparada no GitHub coloca os jogos da Steam no site.
 
-### 3. [~] Mercado Livre (API oficial), deixar pronto para ligar
+### 3. [-] Mercado Livre (API oficial), em espera: o dono não consegue criar o app (botão desabilitado, 26/11); código pronto
 O dono ainda vai criar o app. O agente deixa tudo pronto para funcionar no dia em que os secrets existirem.
 - `collector/mercadolivre.py`: token por `client_credentials` (`ML_CLIENT_ID` e `ML_CLIENT_SECRET` vindos de
   variáveis de ambiente) e busca em `api.mercadolibre.com/sites/MLB/search`. **Só lojas oficiais**

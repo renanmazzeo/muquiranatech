@@ -10,7 +10,7 @@ ESTADO: EM ANDAMENTO
 
 ## Precisa do dono
 Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apaga quando resolver.
-- [ ] Mercado Livre: criar o app e guardar as credenciais como secrets do GitHub (ver TAREFAS.md).
+- [ ] Mercado Livre: "Criar nova aplicação" está desabilitado na conta do dono (26/11). Se liberar (ou o suporte do ML responder), criar o app, guardar ML_CLIENT_ID/ML_CLIENT_SECRET nos secrets e rodar o workflow "Testar Mercado Livre". Agente: não insista no ML até lá.
 
 - [ ] Tarefa 5 (navegador Playwright nas lojas que bloqueiam robôs): o sistema de permissões da execução automática recusou criar o teste, por ser tentativa de passar por bloqueio anti-robô. Diga se autoriza (ou marque a tarefa `[-]` e atualize a tabela "Lojas").
 - [ ] Opcional: Programa de Associados da Amazon; domínio próprio.

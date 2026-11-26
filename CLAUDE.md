@@ -86,7 +86,7 @@ Preço normal = mediana dos preços de 31 a 90 dias atrás (`BF` em `index.html`
 |---|---|
 | KaBuM! | ✅ GitHub (vendedores KaBuM!, Magalu e Fast Shop) |
 | Amazon | ✅ só pelo PC do dono (bloqueia o GitHub). No futuro: API oficial via Programa de Associados |
-| Mercado Livre | ⏳ só pela API oficial; o dono precisa criar o app em developers.mercadolivre.com.br |
+| Mercado Livre | ⏸️ em espera (26/11): o botão "Criar nova aplicação" fica desabilitado na conta do dono, mesmo com os dados completos; o site manda robôs (até do PC) para "verificação de conta". Código e `testar-mercadolivre.yml` prontos para quando liberar |
 | Americanas | ❌ a API VTEX responde 400 "Scripts are not allowed" na rede do GitHub (26/11); sem preço confiável, não coletamos |
 | Steam | ✅ API pública (`store.steampowered.com/api/storesearch`), não implementada ainda |
 | Kalunga | ✅ GitHub (HTML da busca + preço à vista da ficha do produto) |
