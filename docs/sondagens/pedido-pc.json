@@ -1,90 +1,125 @@
 {
- "id": "2026-11-26-inicial",
+ "id": "2026-11-26-rodada2",
  "testes": [
   {
-   "nome": "magalu-requests",
-   "url": "https://www.magazineluiza.com.br/busca/smart+tv+55/",
-   "modo": "requests"
-  },
-  {
-   "nome": "magalu-navegador",
-   "url": "https://www.magazineluiza.com.br/busca/smart+tv+55/",
-   "modo": "playwright"
-  },
-  {
-   "nome": "casasbahia-requests",
-   "url": "https://www.casasbahia.com.br/smart-tv-55/b",
-   "modo": "requests"
-  },
-  {
-   "nome": "casasbahia-navegador",
-   "url": "https://www.casasbahia.com.br/smart-tv-55/b",
-   "modo": "playwright"
-  },
-  {
-   "nome": "pichau-requests",
-   "url": "https://www.pichau.com.br/search?q=rtx%205070",
-   "modo": "requests"
-  },
-  {
-   "nome": "pichau-navegador",
-   "url": "https://www.pichau.com.br/search?q=rtx%205070",
-   "modo": "playwright"
-  },
-  {
-   "nome": "terabyte-requests",
-   "url": "https://www.terabyteshop.com.br/busca?str=rtx+5070",
-   "modo": "requests"
-  },
-  {
-   "nome": "terabyte-navegador",
-   "url": "https://www.terabyteshop.com.br/busca?str=rtx+5070",
-   "modo": "playwright"
-  },
-  {
-   "nome": "carrefour-requests",
-   "url": "https://www.carrefour.com.br/busca/smart%20tv%2055",
-   "modo": "requests"
-  },
-  {
-   "nome": "carrefour-navegador",
-   "url": "https://www.carrefour.com.br/busca/smart%20tv%2055",
-   "modo": "playwright"
-  },
-  {
    "nome": "fastshop-requests",
-   "url": "https://www.fastshop.com.br/web/s/iphone",
+   "url": "https://www.fastshop.com.br/web/s/smart%20tv",
    "modo": "requests"
   },
   {
    "nome": "fastshop-navegador",
-   "url": "https://www.fastshop.com.br/web/s/iphone",
+   "url": "https://www.fastshop.com.br/web/s/smart%20tv",
    "modo": "playwright"
   },
   {
-   "nome": "kalunga-requests",
-   "url": "https://www.kalunga.com.br/busca/1?q=mouse",
+   "nome": "submarino-requests",
+   "url": "https://www.submarino.com.br/busca/smart-tv-55",
    "modo": "requests"
   },
   {
-   "nome": "kalunga-navegador",
-   "url": "https://www.kalunga.com.br/busca/1?q=mouse",
+   "nome": "submarino-navegador",
+   "url": "https://www.submarino.com.br/busca/smart-tv-55",
    "modo": "playwright"
   },
   {
-   "nome": "mercadolivre-requests",
-   "url": "https://lista.mercadolivre.com.br/smart-tv-55",
+   "nome": "girafa-requests",
+   "url": "https://www.girafa.com.br/mouse",
    "modo": "requests"
   },
   {
-   "nome": "mercadolivre-navegador",
-   "url": "https://lista.mercadolivre.com.br/smart-tv-55",
+   "nome": "girafa-navegador",
+   "url": "https://www.girafa.com.br/mouse",
    "modo": "playwright"
   },
   {
-   "nome": "amazon-coletor",
-   "loja": "amazon",
-   "q": "echo-dot"
+   "nome": "nuuvem-requests",
+   "url": "https://www.nuuvem.com/br-pt/catalog?search=cyberpunk",
+   "modo": "requests"
+  },
+  {
+   "nome": "nuuvem-navegador",
+   "url": "https://www.nuuvem.com/br-pt/catalog?search=cyberpunk",
+   "modo": "playwright"
+  },
+  {
+   "nome": "samsung-requests",
+   "url": "https://shop.samsung.com/br/search?searchText=galaxy",
+   "modo": "requests"
+  },
+  {
+   "nome": "samsung-navegador",
+   "url": "https://shop.samsung.com/br/search?searchText=galaxy",
+   "modo": "playwright"
+  },
+  {
+   "nome": "apple-requests",
+   "url": "https://www.apple.com/br/shop/buy-iphone",
+   "modo": "requests"
+  },
+  {
+   "nome": "apple-navegador",
+   "url": "https://www.apple.com/br/shop/buy-iphone",
+   "modo": "playwright"
+  },
+  {
+   "nome": "dell-requests",
+   "url": "https://www.dell.com/pt-br/search/notebook",
+   "modo": "requests"
+  },
+  {
+   "nome": "dell-navegador",
+   "url": "https://www.dell.com/pt-br/search/notebook",
+   "modo": "playwright"
+  },
+  {
+   "nome": "lenovo-requests",
+   "url": "https://www.lenovo.com/br/pt/search?text=notebook",
+   "modo": "requests"
+  },
+  {
+   "nome": "lenovo-navegador",
+   "url": "https://www.lenovo.com/br/pt/search?text=notebook",
+   "modo": "playwright"
+  },
+  {
+   "nome": "lg-requests",
+   "url": "https://www.lg.com/br/busca?search=tv",
+   "modo": "requests"
+  },
+  {
+   "nome": "lg-navegador",
+   "url": "https://www.lg.com/br/busca?search=tv",
+   "modo": "playwright"
+  },
+  {
+   "nome": "motorola-requests",
+   "url": "https://www.motorola.com.br/search?q=moto%20g",
+   "modo": "requests"
+  },
+  {
+   "nome": "motorola-navegador",
+   "url": "https://www.motorola.com.br/search?q=moto%20g",
+   "modo": "playwright"
+  },
+  {
+   "nome": "playstation-requests",
+   "url": "https://store.playstation.com/pt-br/search/god%20of%20war",
+   "modo": "requests"
+  },
+  {
+   "nome": "playstation-navegador",
+   "url": "https://store.playstation.com/pt-br/search/god%20of%20war",
+   "modo": "playwright"
+  },
+  {
+   "nome": "xbox-requests",
+   "url": "https://www.xbox.com/pt-BR/search?q=forza",
+   "modo": "requests"
+  },
+  {
+   "nome": "xbox-navegador",
+   "url": "https://www.xbox.com/pt-BR/search?q=forza",
+   "modo": "playwright"
   }
  ]
 }
