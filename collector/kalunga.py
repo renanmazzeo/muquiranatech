@@ -66,10 +66,28 @@ def search(term):
     return parse(r.text)
 
 
+def preco_ficha(t):
+    """Preço que a ficha do produto mostra: o "à vista" (campo txtPrecoVista) quando existe; senão o preço
+    único da loja (último "price" do dataLayer)."""
+    m = re.search(r'id="hfprecovista">(R\$\s*[\d.]+,\d{2})', t) or re.search(r'id="hfprecovenda">(R\$\s*[\d.]+,\d{2})', t)
+    if m:  # o preço do cabeçalho fixo da ficha: é o que o cliente vê
+        return _num(m.group(1))
+    m = re.search(r'id="txtPrecoVista"[^>]*value="(R\$\s*[\d.]+,\d{2})"', t)
+    if m:
+        return _num(m.group(1))
+    todos = re.findall(r'"price"\s*:\s*(\d+(?:\.\d+)?)', t)
+    return float(todos[-1]) if todos else None
+
+
 def preco_pagina(url):
-    """Preço à vista que a página do produto mostra (para conferir o da busca)."""
     r = requests.get(url, headers=HEADERS, timeout=30)
     r.raise_for_status()
-    t = r.text
-    m = re.search(r'id="precovista"[^>]*>\s*(R\$\s*[\d.]+,\d{2})', t)  # "R$ 218,41 à vista" da ficha
-    return _num(m.group(1)) if m else None
+    return preco_ficha(r.text)
+
+
+def refinar(item):
+    """A lista da busca nem sempre traz o mesmo preço da ficha (desconto à vista): confirma na ficha."""
+    preco = preco_pagina(item["url"])
+    if not preco:
+        return None
+    return {**item, "price": preco, "list_price": max(item["list_price"], preco)}

@@ -26,6 +26,15 @@ class Kalunga(unittest.TestCase):
         escolhidos = kabum.pick(kalunga.parse(HTML), ["mouse"], 5, ["Kalunga"], ["pad"])
         self.assertEqual({i["code"] for i in escolhidos}, {"442311", "442535"})
 
+    def test_preco_da_ficha(self):
+        vista = '<span id="hfprecovista">R$ 218,41</span><small>à vista</small> "price": 229.9'
+        unico = '<span id="hfprecovenda">R$ 28,50</span> "price": 28.5'
+        sem_cabecalho = '<input id="txtPrecoVista" value="R$ 1.044,05"> "price": 1100'
+        self.assertEqual(kalunga.preco_ficha(vista), 218.41)
+        self.assertEqual(kalunga.preco_ficha(unico), 28.5)
+        self.assertEqual(kalunga.preco_ficha(sem_cabecalho), 1044.05)
+        self.assertIsNone(kalunga.preco_ficha("<html></html>"))
+
     def test_vazio(self):
         self.assertEqual(kalunga.parse(""), [])
         self.assertEqual(kalunga.parse(None), [])

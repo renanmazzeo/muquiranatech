@@ -91,6 +91,14 @@ def coletar_loja(c, loja, cfg, buscas, today, now, pausa):
         try:
             chosen = kabum.pick(mod.search(q["q"]), q.get("must", []), q.get("max", 4),
                                 cfg["vendedores_confiaveis"], q.get("not", []) + cfg.get("not", []))
+            if hasattr(mod, "refinar"):  # loja cuja lista de busca não traz o preço final: confere na ficha
+                refinados = []
+                for it in chosen:
+                    time.sleep(pausa)
+                    it = mod.refinar(it)
+                    if it:
+                        refinados.append(it)
+                chosen = refinados
         except getattr(mod, "Blocked", ()) as e:  # a loja pediu captcha: tenta de novo na próxima rodada
             print(f"  ! {cfg['nome']} bloqueou ({e}); parando esta loja por agora")
             break

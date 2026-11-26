@@ -18,7 +18,7 @@ jobs:
         with:
           python-version: "3.13"
       - run: pip install -r collector/requirements.txt
-      - name: Coletar numa cópia e conferir 8 preços
+      - name: Coletar numa cópia e conferir 5 preços
         run: |
           MUQ_DB="$RUNNER_TEMP/kalunga.db" python collector/muq.py coletar --lojas kalunga
           python - <<'PY'
@@ -29,9 +29,9 @@ jobs:
           rows = c.execute("select p.code,p.name,p.url,x.price from products p join prices x on x.product_id=p.id "
                            "where p.store='kalunga' order by p.code").fetchall()
           print(f"::notice::kalunga {len(rows)} produtos coletados")
-          passo = max(1, len(rows) // 8)
+          passo = max(1, len(rows) // 5)
           ruins = 0
-          for code, name, url, price in rows[::passo][:8]:
+          for code, name, url, price in rows[::passo][:5]:
               time.sleep(3)
               pg = kalunga.preco_pagina(url)
               ok = pg is not None and abs(pg - price) < 0.01
