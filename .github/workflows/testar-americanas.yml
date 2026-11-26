@@ -1,0 +1,42 @@
+name: Testar Americanas
+
+# Sonda (não salva nada): consulta a API VTEX da Americanas na rede do GitHub e mostra, nas anotações,
+# vendedor, preço, estoque e formas de pagamento de poucos produtos. Serve para decidir se dá para coletar.
+on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/testar-americanas.yml"]
+  workflow_dispatch:
+
+jobs:
+  americanas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Sondar a API (6 buscas, 3 s entre elas)
+        run: |
+          python3 - <<'PY'
+          import json, time, urllib.request, urllib.parse, sys
+          buscas = ["smart tv 55", "notebook lenovo ideapad", "ssd 1tb nvme", "monitor gamer 27", "fone bluetooth jbl", "galaxy s24"]
+          total = 0
+          for q in buscas:
+              url = "https://www.americanas.com.br/api/catalog_system/pub/products/search?" + urllib.parse.urlencode({"ft": q, "_from": 0, "_to": 4})
+              req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0", "Accept": "application/json"})
+              try:
+                  data = json.load(urllib.request.urlopen(req, timeout=30))
+              except Exception as e:
+                  print(f"::warning::{q}: erro {e}")
+                  time.sleep(3); continue
+              print(f"::notice::{q}: {len(data)} itens")
+              for p in data[:3]:
+                  for it in p.get("items", [])[:1]:
+                      for s in it.get("sellers", [])[:2]:
+                          o = s.get("commertialOffer", {})
+                          pagos = [(x.get("paymentSystemName"), x.get("value")) for x in o.get("PaymentOptions", {}).get("paymentSystems", [])] if isinstance(o.get("PaymentOptions"), dict) else []
+                          inst = [(i.get("NumberOfInstallments"), i.get("Value"), i.get("PaymentSystemName")) for i in (o.get("Installments") or [])[:2]]
+                          print(f"::notice::{p.get('productName','')[:60]} | {s.get('sellerName')} | Price {o.get('Price')} List {o.get('ListPrice')} Qtd {o.get('AvailableQuantity')} | pix/pag {pagos[:3]} | parc {inst}")
+                  total += 1
+              time.sleep(3)
+          if total == 0:
+              sys.exit(1)
+          PY
