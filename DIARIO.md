@@ -274,3 +274,11 @@ Tentei criar o workflow `testar-navegador.yml` (Chromium abrindo uma busca de Ma
 - Registros de e-mail atuais (MX ".", SPF `-all`, DMARC reject) bloqueiam e-mails falsos em nome do domínio; trocar só ao ativar o Email Routing.
 - E-mail `contato@muquiranatech.com.br` ativo (Cloudflare Email Routing → Gmail do projeto; teste do dono chegou). LICENSE e privacidade.html passam a usar esse endereço.
 - Lenovo no site: `collector/lenovo.py` (lista pela API das categorias, preço do Pix pela API da ficha; 10 de 10 preços iguais à ficha; 175 produtos também pelo GitHub). Lomadee e Instagram: ver CLAUDE.md e `marca/instagram.py`.
+
+### 26/11/2026 noite — resumo da conversa com o dono
+- Lojas novas/maiores: Lenovo (175), Steam (21 → 448, mais vendidos), Xbox (322, página pública de jogos). Amazon passa a aproveitar 16 produtos por busca. PlayStation por navegação foi testada e descartada (preço da edição em destaque, não da padrão).
+- Coleta: o `schedule` do GitHub nunca disparou neste repositório. Ligado o "Relógio da coleta" (`relogio.yml`, aprovado pelo dono). Corrigido o navegador do Xbox depois da PlayStation e a condição do histórico de domingo (12:47).
+- Cupons dentro da janela do produto (`collector/cupons.py`, `data/cupons.json`, `data/cupons-auto.json`), selo e filtro "Com cupom". O dono não quer página genérica de cupons.
+- Cabeçalho: "Somente vendedores e lojas verificadas". Logo diagonal com cordinha no site, favicon e og.png. Instagram @muquiranatech; gerador de posts em `marca/instagram.py`.
+- Afiliados: Lomadee ativa (deep link da Lenovo cai na home: não ligar até corrigir); Awin aprovada com lojas pendentes; AliExpress e Shopee aguardando liberação da API (workflows "Testar AliExpress" e "Testar Shopee" prontos); Pichau contatada.
+**Precisa do dono:** chamado na Lomadee (Lenovo); guardar as chaves de AliExpress/Shopee quando liberarem; tirar o arquivo de chave da pasta do projeto.
