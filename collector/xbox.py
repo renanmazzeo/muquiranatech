@@ -78,9 +78,10 @@ def search(term):
     try:
         pg.goto(f"{BASE}/pt-BR/search?q={term.replace(' ', '%20')}", timeout=60000)
         try:
-            pg.wait_for_selector('a[href*="/games/store/"]', timeout=30000)
+            # o menu do topo também tem links /games/store/ (escondidos): espere o cartão com preço
+            pg.wait_for_selector('a[aria-label*="R$"][href*="/games/store/"]', state="attached", timeout=45000)
         except Exception:  # noqa: BLE001 — sem resultados
-            return []
+            pg.wait_for_timeout(3000)
         return parse(pg.content())
     finally:
         pg.close()
