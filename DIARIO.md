@@ -11,11 +11,14 @@ ESTADO: EM ANDAMENTO
 ## Precisa do dono
 Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apaga quando resolver.
 - [ ] Mercado Livre: criar o app e guardar as credenciais como secrets do GitHub (ver TAREFAS.md).
-- [ ] Amazon: o robô do PC foi instalado em 25/11, mas a Amazon estava bloqueando este PC por excesso de testes.
-      Conferir no `%LOCALAPPDATA%\MuquiranaTech\coleta.log` se as coletas seguintes deram certo.
+
 - [ ] Tarefa 5 (navegador Playwright nas lojas que bloqueiam robôs): o sistema de permissões da execução automática recusou criar o teste, por ser tentativa de passar por bloqueio anti-robô. Diga se autoriza (ou marque a tarefa `[-]` e atualize a tabela "Lojas").
-- [ ] Coleta agendada (cron de 3 h) não dispara desde 01:33 UTC de 26/11: conferir em GitHub → Actions se o workflow está ativo.
 - [ ] Opcional: Programa de Associados da Amazon; domínio próprio.
+
+---
+
+## 2026-11-26 11:00 UTC · dono (sessão local) · lojas novas visíveis e agendamento
+**Feito:** a ordem "melhores" do site agora intercala as lojas; antes, Amazon e Kalunga (sem histórico) ficavam todas no fim da lista e pareciam não existir. Agendamento da coleta movido para o minuto 17 (no minuto 0 o GitHub não disparava nenhuma rodada `schedule`). Amazon pelo PC confirmada (286 produtos). Pendências resolvidas removidas de "Precisa do dono".
 
 ---
 
