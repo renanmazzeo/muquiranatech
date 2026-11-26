@@ -222,6 +222,8 @@ def cmd_historico(a):
 def cmd_exportar(a):
     c = db()
     cutoff = (hoje() - dt.timedelta(days=7)).isoformat()  # some do site se a loja parou de listar
+    # e também se o preço não foi conferido nas últimas 36 h (produto esgotado, saiu da busca, robô parado)
+    recente = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(hours=36)).isoformat(timespec="minutes")
     produtos, nomes = [], {k: v["nome"] for k, v in watchlist()["lojas"].items()}
     # todos os preços numa passada só (com milhares de produtos, uma consulta por produto ficava lenta)
     dias, vivo = {}, {}
@@ -237,6 +239,8 @@ def cmd_exportar(a):
         hist = sorted(dias.get(pid, {}).items())
         cur = (vivo[pid],) if pid in vivo else None
         if not hist or not cur:
+            continue
+        if not checked_at or checked_at < recente:  # preço velho pode não bater com o da loja: fica fora do site
             continue
         produtos.append({
             "id": pid, "n": name, "cat": cat, "st": store, "url": url, "img": img,

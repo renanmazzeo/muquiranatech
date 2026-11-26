@@ -71,6 +71,15 @@ Preço normal = mediana dos preços de 31 a 90 dias atrás (`BF` em `index.html`
 - **Black Fraude**: hoje não está nem 3% abaixo do normal E (subiu 8% ou mais nos últimos 30 dias, OU o preço "de"
   promete 25% ou mais de desconto). Usamos 25% porque a KaBuM! já dá até 15% de desconto no Pix em tudo.
 - **Black Firmeza**: 8% ou mais abaixo do preço normal.
+- Os selos nunca contradizem o termômetro: Fraude só com "Segura a carteira"/"Cilada!" (mais de 10% acima do menor
+  já visto); Firmeza só com "Compra"/"Aprova". Preço bom com "de" inflado ganha só um aviso amarelo (`deInflado`).
+
+## Preço sempre atual
+- `exportar` deixa fora do site produto cujo preço não foi conferido nas últimas 36 h (`checked_at`).
+- O site esconde produto cuja oferta relâmpago (`ends`) já acabou, até a próxima coleta trazer o preço novo.
+- `data.js` é carregado com `?v=` que muda a cada 5 minutos (o navegador não reaproveita preço velho).
+- O dono pediu para NÃO mostrar a hora da última atualização no topo nem no rodapé (26/11); a hora em que o preço
+  foi visto fica só na janela do produto.
 
 ## Lojas (testes de 25/11/2026)
 | Loja | Situação |

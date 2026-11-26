@@ -230,7 +230,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--dim);fon
   .navbf{margin-left:auto}
   .search{order:3;flex-basis:100%;max-width:none}
   .hero{padding:24px 0 18px;gap:20px}.hero h1{font-size:30px}.hero p{font-size:14.5px}
-  .stats{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}.stats div{font-size:21px}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}.stats div{font-size:21px}.stats div:last-child:nth-child(odd){grid-column:span 2}
   .bf{padding:18px 14px;border-radius:16px}.bf h2{font-size:24px}
   .bfx svg{max-width:280px}
   .bf-list .bfi:nth-child(n+4){display:none}
@@ -298,6 +298,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--dim);fon
           <li>O preço <b>sobe nas semanas anteriores</b></li>
           <li>Na Black, ele só <b>volta ao preço normal</b> (ou fica acima)</li>
           <li>Ou o preço “de” é <b>inflado</b> para o desconto parecer enorme</li>
+          <li>Resultado: hoje está <b>mais de 10% acima</b> do menor preço já visto</li>
         </ul></div>
       </div>
       <div class="bfx fi">
@@ -329,7 +330,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--dim);fon
     <select class="sel" id="tier">
       <option value="all">Todos os status</option>
       <option value="0">Só “Até o Muquirana compra”</option>
-      <option value="1">Tudo que o Muquirana aprova</option>
+      <option value="1">“Compra” + “Muquirana aprova”</option>
       <option value="fraude">Só Black Fraude</option>
       <option value="firmeza">Só Black Firmeza</option>
     </select>
@@ -349,7 +350,9 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--dim);fon
 
 <div class="ov" id="ov"><div class="modal" id="modal"></div></div>
 
-<script src="data.js"></script><!-- gerado pelo coletor; se não existir, usa os dados fictícios -->
+<!-- data.js é gerado pelo coletor (se não existir, usa os dados fictícios). O "?v=" muda a cada 5 minutos
+     para o navegador não mostrar preços guardados de uma visita anterior. -->
+<script>document.write('<script src="data.js?v='+Math.floor(Date.now()/3e5)+'"><\/script>')</script>
 <script>
 /* ---------- base ---------- */
 const MES=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -516,12 +519,17 @@ function blackCheck(p){
   const vs=cur/normal-1,rise=peak/normal-1,claim=p.full>cur?1-cur/p.full:0;
   const pts90=pts.filter(([d])=>age(d)<=BF.normalDe);
   const r={normal,peak,peakDay,vs,rise,claim,cur,pts90,t};
-  if(vs<=BF.real)return{...r,kind:'firmeza'};
-  if(vs>BF.quaseNormal&&(rise>=BF.subiu||claim>=BF.deFalso))return{...r,kind:'fraude',why:rise>=BF.subiu?'esquenta':'de'};
-  return{...r,kind:'neutro'};
+  // os selos nunca contradizem o termômetro: Firmeza só quando o Muquirana aprova (até 10% acima do menor);
+  // Fraude só quando o preço de hoje NÃO é bom (mais de 10% acima do menor já visto)
+  const bom=p.s.tier<=1;
+  if(vs<=BF.real&&bom)return{...r,kind:'firmeza'};
+  if(vs>BF.quaseNormal&&(rise>=BF.subiu||claim>=BF.deFalso)&&!bom)return{...r,kind:'fraude',why:rise>=BF.subiu?'esquenta':'de'};
+  // preço bom, mas o "de" é inflado: avisa sem chamar de fraude
+  return{...r,kind:'neutro',deInflado:vs>BF.quaseNormal&&claim>=BF.deFalso};
 }
 
-const P=(REAL?REAL.produtos.map(fromReal):RAW.map((p,i)=>{p.id=i;p.h=buildHist(p.a,i);p.pts=monthPts(p.h);return p}))
+// oferta relâmpago que já acabou: o preço guardado não vale mais. Some até a próxima coleta trazer o preço novo.
+const P=(REAL?REAL.produtos.filter(r=>!(r.ends&&r.ends*1000<=Date.now())).map(fromReal):RAW.map((p,i)=>{p.id=i;p.h=buildHist(p.a,i);p.pts=monthPts(p.h);return p}))
   .map(p=>{p.s=stats(p);p.bf=blackCheck(p);p.url=p.url||STORES[p.st].s(p.n);return p});
 
 /* ---------- gráficos ---------- */
@@ -571,12 +579,10 @@ const $=id=>document.getElementById(id);
 
 const storeKeys=REAL?[...new Set(P.map(p=>p.st))]:Object.keys(STORES);
 const nPrecos=REAL?REAL.produtos.reduce((a,p)=>a+p.hist.length,0):P.reduce((a,p)=>a+p.h.filter(x=>x!=null).length,0);
-const gerado=REAL?new Date(REAL.gerado):null;
-const quando=gerado?(gerado.toDateString()===new Date().toDateString()?'hoje, ':gerado.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+', ')+gerado.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):null;
 const milhar=v=>v.toLocaleString('pt-BR');
-$('stats').innerHTML=[[milhar(P.length),'produtos monitorados'],[milhar(nPrecos),'preços registrados'],[milhar(P.filter(p=>p.s.tier<=1).length),'aprovados pelo Muquirana'],...(quando?[[quando,'última atualização']]:[])]
+$('stats').innerHTML=[[milhar(P.length),'produtos monitorados'],[milhar(nPrecos),'preços registrados'],[milhar(P.filter(p=>p.s.tier<=1).length),'aprovados pelo Muquirana']]
   .map(([v,l])=>`<div>${v}<small>${l}</small></div>`).join('');
-if(REAL)document.querySelector('footer .wrap').textContent=`MuquiranaTech · preços reais atualizados várias vezes por dia (última coleta: ${gerado.toLocaleString('pt-BR')}) · preço à vista, só vendedores confiáveis. Confira sempre na loja antes de comprar.`;
+if(REAL)document.querySelector('footer .wrap').textContent=`MuquiranaTech · preços reais atualizados várias vezes por dia · preço à vista, só vendedores confiáveis. Confira sempre na loja antes de comprar.`;
 {const sc=T.slice(0,4).reverse();
  $('legend').innerHTML=`<div class="thv"><div><div class="tube">${sc.map(t=>`<i style="background:${t.c}"></i>`).join('')}</div><div class="bulb"></div></div>
   <div class="lbl">${sc.map(t=>`<span style="--c:${t.c}">${t.k}</span>`).join('')}</div></div>
@@ -600,6 +606,7 @@ function card(p){
     ${s.tier===2||s.tier===3?`<div class="lost">Melhor preço perdido: <b>${fmt(s.min)}</b> em ${lbl(s.mi)}</div>`:''}
     ${p.bf.kind==='fraude'?`<div class="lost" style="--c:#ff4d6d"><b style="color:#ff4d6d">BLACK FRAUDE</b> · ${bfWhy(p.bf)}</div>`:''}
     ${p.bf.kind==='firmeza'?`<div class="lost" style="--c:#a6ff3b"><b style="color:#a6ff3b">BLACK FIRMEZA</b> · ${pct(p.bf.vs)} vs preço normal (${fmt(p.bf.normal)})</div>`:''}
+    ${p.bf.deInflado?`<div class="lost" style="--c:#ffb020">O “−${Math.round(p.bf.claim*100)}%” da loja é exagerado: o preço normal dele é ${fmt(p.bf.normal)}</div>`:''}
     <div class="foot"><a class="go" href="${p.url}" target="_blank" rel="noopener sponsored" onclick="event.stopPropagation()">Ver na loja ↗</a><span class="ping">${thermo(s)}</span></div>
   </article>`;
 }

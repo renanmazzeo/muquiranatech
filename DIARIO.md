@@ -17,6 +17,14 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 
 ---
 
+## 2026-11-26 14:00 UTC · dono + Claude · filtros e preços desatualizados
+**Problemas que o dono viu:** "Só Black Fraude" mostrava cartões "Até o Muquirana compra"; alguns preços diferentes da loja.
+**Feito:** selos coerentes com o termômetro (Fraude só acima de 10% do menor; Firmeza só até 10%); aviso amarelo
+para "de" inflado em preço bom; ofertas vencidas somem do site; `exportar` ignora preço com mais de 36 h; `data.js?v=`
+contra cache; removida a hora da última atualização do topo e do rodapé (pedido do dono).
+**Conferência:** teste no navegador: Fraude = 10 "Segura a carteira" + 13 "Cilada!"; Firmeza = só Compra/Aprova;
+200 ofertas vencidas às 10h escondidas; sem erros no console. Testes unitários ok.
+
 ## 2026-11-26 13:30 UTC · agente · tarefa 5d (PlayStation Store)
 **Saúde:** data.js gerado às 12:00 UTC · 4.152 KaBuM! · 286 Amazon · 64 Kalunga · 21 Steam · coletas do GitHub `success` (as últimas foram disparadas à mão; segue sem `schedule`).
 **Feito:** `collector/playstation.py` (lê nome, id e preço dos cartões da busca com navegador; ignora preço só para assinantes), 20 jogos na watchlist (loja `"onde": "github-nav"`), loja em `STORES` do site, 2 testes novos (30 no total, ok), workflow `testar-playstation.yml` e job separado `coletar-navegador` no `coletar.yml` (Playwright; mescla só `playstation`).
