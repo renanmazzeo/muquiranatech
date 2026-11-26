@@ -245,3 +245,4 @@ Tentei criar o workflow `testar-navegador.yml` (Chromium abrindo uma busca de Ma
 - No Cloudflare Pages, domínios personalizados `muquiranatech.com.br` e `www.muquiranatech.com.br` → `muquiranatech.pages.dev`. Os dois respondem 200.
 - Prévia do WhatsApp (`og:image`) e CLAUDE.md passam a usar o domínio novo.
 - Registros de e-mail atuais (MX ".", SPF `-all`, DMARC reject) bloqueiam e-mails falsos em nome do domínio; trocar só ao ativar o Email Routing.
+- E-mail `contato@muquiranatech.com.br` ativo (Cloudflare Email Routing → Gmail do projeto; teste do dono chegou). LICENSE e privacidade.html passam a usar esse endereço.

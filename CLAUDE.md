@@ -105,6 +105,7 @@ Preço normal = mediana dos preços de 31 a 90 dias atrás (`BF` em `index.html`
 ## Infra
 - Repositório: https://github.com/renanmazzeo/muquiranatech (público). GitHub CLI: `C:\Program Files\GitHub CLI\gh.exe`.
 - Site principal: https://muquiranatech.com.br (domínio no registro.br, expira 26/11/2027; DNS no Cloudflare; `www` também funciona).
+  E-mail público: contato@muquiranatech.com.br (Cloudflare Email Routing → Gmail do projeto).
   Endereço técnico do Cloudflare Pages: https://muquiranatech.pages.dev (conectado ao GitHub, publica a cada push).
   Também em https://renanmazzeo.github.io/muquiranatech/ (GitHub Pages).
   Cloudflare grátis: 500 builds por mês. Os robôs fazem cerca de 360 (KaBuM! a cada 3h + Amazon a cada 6h).
