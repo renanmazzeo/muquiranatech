@@ -140,7 +140,7 @@ O dono ainda vai criar o app. O agente deixa tudo pronto para funcionar no dia e
   os secrets.
   A tarefa fica `[x]` mesmo sem as credenciais; ligar de verdade fica em "Precisa do dono".
 
-### 4. [ ] Americanas
+### 4. [-] Americanas (bloqueada para robôs em 26/11)
 - A API VTEX pública responde: `americanas.com.br/api/catalog_system/pub/products/search?ft=...`.
 - Problemas vistos em 25/11: a busca traz itens de outras categorias (pede-se "smart tv 55" e vem rack), e o preço
   à vista na página pode ser diferente do `Price` da API (desconto no Pix).

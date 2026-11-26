@@ -17,6 +17,14 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 
 ---
 
+## 2026-11-26 03:00 UTC · agente · tarefa 4 (Americanas) impossível
+**Feito:** criei `testar-americanas.yml` (sonda sem salvar nada, 6 buscas com 3 s entre elas) e rodei na rede do GitHub, duas versões (com e sem `_from/_to`). Todas as buscas à API VTEX devolveram **HTTP 400 "Bad Request! Scripts are not allowed!"** (bloqueio do firewall da loja contra robôs). Sem acesso à API, não dá para conferir 5 preços; tarefa 4 marcada `[-]` e tabela "Lojas" do CLAUDE.md atualizada. Não tentei contornar o bloqueio.
+**Teste no ar:** commits só mexem em workflow/documentação; Cloudflare Pages `success`.
+**Tarefa 3:** segue `[~]`, aguardando a coleta agendada das 03:00 UTC (primeira com o Mercado Livre sem secrets).
+**Precisa do dono:** nada novo.
+
+---
+
 ## 2026-11-26 02:30 UTC · agente · tarefa 2 (Steam) fechada; tarefa 3 aguardando coleta
 **Saúde:** data.js gerado às 02:21 UTC · 308 produtos KaBuM! · 21 Steam · 0 Amazon (pendente com o dono) · coleta disparada às 01:33 terminou `success`.
 **Feito:** conferi que `data.js` na `main` já tem os 21 jogos `steam:` (coleta no GitHub 45736524930 deu `success` e o commit de preços foi publicado; Cloudflare Pages `success`). Tarefa 2 marcada `[x]`.

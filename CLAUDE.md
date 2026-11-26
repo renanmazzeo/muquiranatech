@@ -69,7 +69,7 @@ Preço normal = mediana dos preços de 31 a 90 dias atrás (`BF` em `index.html`
 | KaBuM! | ✅ GitHub (vendedores KaBuM!, Magalu e Fast Shop) |
 | Amazon | ✅ só pelo PC do dono (bloqueia o GitHub). No futuro: API oficial via Programa de Associados |
 | Mercado Livre | ⏳ só pela API oficial; o dono precisa criar o app em developers.mercadolivre.com.br |
-| Americanas | ⚠️ API VTEX pública responde, mas a busca traz itens errados e o preço no Pix difere da API |
+| Americanas | ❌ a API VTEX responde 400 "Scripts are not allowed" na rede do GitHub (26/11); sem preço confiável, não coletamos |
 | Steam | ✅ API pública (`store.steampowered.com/api/storesearch`), não implementada ainda |
 | Carrefour, Magalu, Casas Bahia, Pichau, Terabyte | ❌ 403/captcha para robôs |
 
