@@ -211,8 +211,8 @@ a mescla continua por loja (`mesclar --lojas <loja>`).
   Assim a Amazon aparece no site mesmo com o PC do dono desligado.
 - Pronta quando: há produtos `amazon:` no `data.js` publicado, vindos do PC ou do GitHub.
 
-### 5c. [~] Kalunga (funciona no GitHub com `requests`, rodada 1)
-Coletor pronto e conferido (8 fichas) e ligado em 26/11; falta ver a coleta agendada trazer `kalunga:` ao data.js. Coletor `collector/kalunga.py` a partir do HTML guardado em `docs/sondagens/html/kalunga-html.html` (pedido `html1`),
+### 5c. [x] Kalunga (funciona no GitHub com `requests`, rodada 1)
+Coletor pronto e conferido (8 fichas) e ligado em 26/11; `kalunga:` apareceu no data.js em 26/11 (57 produtos, Cloudflare `success`). Coletor `collector/kalunga.py` a partir do HTML guardado em `docs/sondagens/html/kalunga-html.html` (pedido `html1`),
 só vendedor Kalunga, conferência de 5 preços, `STORES` do site, `coletar.yml`. Mesmo padrão da tarefa 2.
 
 ### 5d. [~] Lojas oficiais de marcas e jogos que responderam na rodada 2 (GitHub)

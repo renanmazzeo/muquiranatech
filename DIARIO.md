@@ -19,6 +19,15 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 
 ---
 
+## 2026-11-26 10:30 UTC · agente · saúde, 5c fechada, PlayStation avaliada
+**Saúde:** data.js gerado às 08:39 UTC (cerca de 2 h) · 323 KaBuM! · 286 Amazon · 21 Steam · 57 Kalunga · coletas `success` (a de 08:28 UTC foi disparada à mão; segue sem aparecer coleta `schedule`: dono conferir o cron).
+**5c:** `[x]`. `kalunga:` está no data.js publicado (57 produtos) e o check "Cloudflare Pages" do commit ed8f9e4 deu `success`.
+**5d:** o HTML guardado da PlayStation Store traz nome, id e preço (`R$114,90` etc.) em `data-telemetry-meta` de cada cartão (`product-tile`), então dá para ler sem API; falta o coletor (job com Playwright), a conferência de 5 preços e a inclusão no `coletar.yml`. Nada publicado no site nesta execução (só TAREFAS e DIARIO).
+**Próximo passo:** coletor da PlayStation a partir de `docs/sondagens/html/playstation-html.html`, depois Lenovo/Xbox/Motorola/Apple.
+**Precisa do dono:** nada novo.
+
+---
+
 ## 2026-11-26 08:40 UTC · agente · saúde, coleta e 5d (sondagem html5)
 **Saúde:** data.js gerado às 04:35 UTC (4 h) · 308 KaBuM! · 286 Amazon · 21 Steam · 0 Kalunga · **a coleta agendada de 3 h não está disparando** (última `schedule` não existe; só `workflow_dispatch`; a última foi 01:33 UTC). O cron do GitHub é pouco confiável, mas vale o dono conferir em Actions se o workflow não está desativado.
 **Feito:** disparei uma coleta (08:28 UTC, `in_progress` ao escrever) para trazer `kalunga:` ao site. Sondagem `html5` no GitHub (navegador, HTML guardado em `docs/sondagens/html/`): Apple (43 preços na página), Lenovo (100), Motorola (15), PlayStation (61), Xbox (36): todas 200, sem bloqueio. Falta montar cada coletor (um por loja, em job com Playwright) e conferir 5 preços contra a ficha; nada publicado no site nesta execução.
