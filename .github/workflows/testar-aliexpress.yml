@@ -1,0 +1,59 @@
+# Teste da API de afiliados do AliExpress (secrets ALIEXPRESS_APP_KEY, ALIEXPRESS_APP_SECRET, ALIEXPRESS_TRACKING_ID).
+# Só leitura: busca alguns produtos com envio para o Brasil e mostra loja, preço em reais e avaliação,
+# para decidir como filtrar só lojas oficiais. Nunca imprime as chaves.
+name: Testar AliExpress
+on: workflow_dispatch
+permissions:
+  contents: read
+jobs:
+  testar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Testar a API
+        env:
+          AK: ${{ secrets.ALIEXPRESS_APP_KEY }}
+          AS: ${{ secrets.ALIEXPRESS_APP_SECRET }}
+          TID: ${{ secrets.ALIEXPRESS_TRACKING_ID }}
+        run: |
+          pip install -q requests
+          python - <<'EOF'
+          import hashlib, hmac, json, os, time, requests
+          AK, AS, TID = os.environ.get("AK"), os.environ.get("AS"), os.environ.get("TID")
+          if not (AK and AS):
+              raise SystemExit("Faltam os secrets ALIEXPRESS_APP_KEY e ALIEXPRESS_APP_SECRET")
+          URL = "https://api-sg.aliexpress.com/sync"
+
+          def chamar(metodo, **p):
+              p = {"method": metodo, "app_key": AK, "sign_method": "sha256",
+                   "timestamp": str(int(time.time() * 1000)), **{k: str(v) for k, v in p.items()}}
+              base = "".join(k + p[k] for k in sorted(p))
+              p["sign"] = hmac.new(AS.encode(), base.encode(), hashlib.sha256).hexdigest().upper()
+              time.sleep(1.5)
+              r = requests.post(URL, data=p, timeout=40)
+              try:
+                  return r.status_code, r.json()
+              except ValueError:
+                  return r.status_code, {"texto": r.text[:300]}
+
+          for termo in ["fone bluetooth", "carregador usb-c", "xiaomi", "baseus", "ugreen"]:
+              st, j = chamar("aliexpress.affiliate.product.query", keywords=termo, target_currency="BRL",
+                             target_language="PT", ship_to_country="BR", page_size=10,
+                             **({"tracking_id": TID} if TID else {}))
+              resp = next((v for k, v in j.items() if k.endswith("_response")), None)
+              if not resp:
+                  print(f"== {termo}: HTTP {st} {json.dumps(j)[:300]}")
+                  continue
+              res = resp.get("resp_result") or {}
+              print(f"== {termo}: código {res.get('resp_code')} {res.get('resp_msg')}")
+              ps = (((res.get("result") or {}).get("products") or {}).get("product")) or []
+              if ps:
+                  print("   campos:", sorted(ps[0].keys()))
+              for p in ps[:6]:
+                  print(f"   R$ {p.get('target_sale_price')} (de {p.get('target_original_price')}) "
+                        f"loja={p.get('shop_name') or p.get('shop_id')} aval={p.get('evaluate_rate')} "
+                        f"vendas={p.get('lastest_volume')} cat={p.get('first_level_category_name')} "
+                        f"| {str(p.get('product_title'))[:70]}")
+          EOF
