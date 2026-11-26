@@ -26,3 +26,7 @@ Depois é só abrir `index.html` no navegador.
 | Wayback Machine | ✅ histórico a partir das páginas de categoria/busca arquivadas |
 | Mercado Livre | ⏳ API gratuita, precisa de credenciais de app |
 | Pichau, Terabyte, Magalu | ⛔ bloqueiam robôs (Cloudflare/403), avaliar programas de afiliado |
+
+## Direitos
+© 2026 MuquiranaTech. Todos os direitos reservados. O repositório é público só para os robôs de coleta
+funcionarem; não há permissão para copiar ou reutilizar o código, os dados ou a marca. Ver [LICENSE](LICENSE).

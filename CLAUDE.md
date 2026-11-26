@@ -23,6 +23,11 @@ Wayback Machine (domingo) ─► histórico KaBuM! ─┘              Cloudflar
   Busca inteligente (`rank()`): sem acento, "rtx3060" = "rtx 3060", aceita 1 letra errada ou trocada (2 em palavras
   longas), sinônimos (`SIN`: celular/smartphone, fone/headset...); número tem que bater exato. Painel de resultados
   embaixo da busca; a grade mostra 60 produtos por vez ("Ver mais").
+- Outras páginas: `como-funciona.html` (explica Muquirômetro e Black Fraude: **se mudar os números no código, mude
+  aqui também**), `privacidade.html` (LGPD e aviso de afiliado), `og.png` (prévia no WhatsApp, 1200×630) e `favicon.svg`.
+- "O mesmo produto em outras lojas" (`codigos()`/`tracos()` em `index.html`): junta só com o mesmo código de modelo,
+  mesma categoria e sem conflito de DDR, capacidade, número de modelo ou polegadas. Conservador de propósito.
+- `LICENSE`: todos os direitos reservados (repositório público só para os robôs rodarem de graça).
 - `collector/muq.py`: comandos
   - `coletar [--lojas kabum,amazon]`: preço de hoje. Cada loja usa a `pausa` definida para ela na watchlist.
   - `historico --meses N` (padrão 12, nunca mais de 1 ano), `--max-minutos`: Wayback, só KaBuM!. Baixa primeiro

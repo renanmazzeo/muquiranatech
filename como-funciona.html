@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Como o Muquirana funciona · MuquiranaTech</title>
+<meta name="description" content="De onde vêm os preços, como o Muquirômetro decide se vale comprar e como a Black Fraude é descoberta. Em linguagem simples.">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="MuquiranaTech">
+<meta property="og:title" content="Como o Muquirana funciona">
+<meta property="og:description" content="O preço de hoje comparado com tudo o que o produto já custou, só em lojas confiáveis. Veja como o Muquirana decide se é promoção de verdade ou cilada.">
+<meta property="og:image" content="https://muquiranatech.pages.dev/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+:root{--bg:#06080d;--panel:#0d1320;--line:#1c2538;--txt:#e8eef9;--mut:#8b98b2;--dim:#5d6a85;--cy:#00e5ff;--li:#a6ff3b;--am:#ffb020;--rd:#ff4d6d;--mono:ui-monospace,'Cascadia Code',Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font:16px/1.6 'Segoe UI',Inter,system-ui,sans-serif}
+.wrap{max-width:780px;margin:0 auto;padding:0 22px}
+header{border-bottom:1px solid var(--line);padding:18px 0}
+header a{color:var(--txt);text-decoration:none;font-weight:800;font-size:22px;letter-spacing:-.5px}
+header b{color:var(--cy)}
+main{padding:34px 0 60px}
+h1{font-size:32px;letter-spacing:-.5px;line-height:1.2}
+.lead{color:var(--mut);font-size:18px;margin:10px 0 8px}
+h2{font-size:21px;margin:38px 0 12px}
+h2 em{font-style:normal;color:var(--cy);font:700 13px var(--mono);display:block;margin-bottom:2px;letter-spacing:1px}
+p,li{color:#cdd6e6}
+p+p{margin-top:10px}
+ul{padding-left:22px;margin-top:8px}
+li+li{margin-top:6px}
+a{color:var(--cy)}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-top:14px}
+.tiers{display:grid;gap:10px;margin-top:14px}
+.tier{display:grid;grid-template-columns:190px 1fr;gap:14px;align-items:center;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:12px;padding:12px 16px}
+.tier b{font:800 13px var(--mono);color:var(--c);text-transform:uppercase;letter-spacing:.5px}
+.bf{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.bf .box{margin:0;border-top:3px solid var(--c)}
+.bf h3{font:800 15px var(--mono);color:var(--c);margin-bottom:6px}
+.ex{font:13px var(--mono);color:var(--mut);margin-top:8px}
+.cta{display:inline-block;margin-top:30px;background:linear-gradient(90deg,var(--li),#5dffa0);color:#06080d;font-weight:800;padding:12px 22px;border-radius:12px;text-decoration:none}
+footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--dim);font:12px var(--mono)}
+footer a{color:var(--mut)}
+@media(max-width:640px){h1{font-size:26px}.tier{grid-template-columns:1fr;gap:2px}.bf{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><a href="./">Muquirana<b>Tech</b></a></div></header>
+<main class="wrap">
+  <h1>Como o Muquirana funciona</h1>
+  <p class="lead">Loja nenhuma conta quanto o produto já custou. O Muquirana conta: ele anota o preço todo dia e,
+  quando você olha uma oferta, compara com esse histórico.</p>
+
+  <h2><em>PASSO 1</em>De onde vêm os preços</h2>
+  <p>Um robô visita as lojas <b>várias vezes por dia</b> (a cada 3 a 6 horas) e anota o preço de cada produto.</p>
+  <ul>
+    <li><b>Só lojas e vendedores confiáveis:</b> Amazon (só o que é vendido e entregue pela própria Amazon),
+      KaBuM! (a própria loja e parceiros grandes como Magalu e Fast Shop), Samsung, Motorola, Kalunga,
+      Steam e PlayStation Store. Vendedor desconhecido de marketplace fica de fora.</li>
+    <li><b>Preço à vista:</b> o mesmo que a loja mostra para pagamento no Pix (quando ela dá desconto nele).</li>
+    <li><b>Sem preço velho:</b> se o robô não conseguiu conferir o preço nas últimas 36 horas, ou se a oferta
+      relâmpago acabou, o produto sai do site até a próxima conferência.</li>
+    <li>Para alguns produtos, o histórico de meses atrás vem de cópias antigas das páginas das lojas guardadas
+      pelo <a href="https://web.archive.org" target="_blank" rel="noopener">Internet Archive</a>.</li>
+  </ul>
+  <p>Mesmo assim, a loja pode mudar o preço a qualquer momento: <b>confira sempre na loja antes de comprar</b>.</p>
+
+  <h2><em>PASSO 2</em>O Muquirômetro: vale comprar hoje?</h2>
+  <p>O termômetro compara o preço de hoje com o <b>menor preço que o produto já teve</b>:</p>
+  <div class="tiers">
+    <div class="tier" style="--c:#a6ff3b"><b>Até o Muquirana compra</b><span>No máximo 2% acima do menor preço já visto. É hora de comprar.</span></div>
+    <div class="tier" style="--c:#00e5ff"><b>Muquirana aprova</b><span>Até 10% acima do menor preço. Bom negócio.</span></div>
+    <div class="tier" style="--c:#ffb020"><b>Segura a carteira</b><span>Até 30% acima do menor preço. Se puder, espere.</span></div>
+    <div class="tier" style="--c:#ff4d6d"><b>Cilada!</b><span>Mais de 30% acima do menor preço. Já esteve bem mais barato.</span></div>
+    <div class="tier" style="--c:#8b98b2"><b>Muquirana de olho</b><span>Produto com menos de 30 dias de histórico. Ainda é cedo para dar veredito.</span></div>
+  </div>
+
+  <h2><em>PASSO 3</em>Black Fraude × Black Firmeza</h2>
+  <p>Todo ano tem loja que sobe o preço antes da Black Friday só para “baixar” no dia. Para descobrir, o Muquirana
+  calcula o <b>preço normal</b>: o preço do meio entre todos os registrados de 1 a 3 meses atrás (ele ignora o
+  último mês, que é quando as lojas costumam “preparar” a promoção).</p>
+  <div class="bf">
+    <div class="box" style="--c:#ff4d6d"><h3>BLACK FRAUDE</h3>
+      <p>O preço de hoje <b>não está nem 3% abaixo do normal</b> e:</p>
+      <ul><li>subiu 8% ou mais no último mês, <b>ou</b></li>
+      <li>a loja anuncia 25% ou mais de desconto sobre um preço “de” inflado.</li></ul>
+      <p class="ex">E hoje está mais de 10% acima do menor preço já visto.</p></div>
+    <div class="box" style="--c:#a6ff3b"><h3>BLACK FIRMEZA</h3>
+      <p>O preço de hoje está <b>8% ou mais abaixo do preço normal</b> e perto do menor preço já visto.
+      Desconto de verdade, que dá para conferir no gráfico.</p></div>
+  </div>
+  <p style="margin-top:14px">Por que 25% no preço “de”? Porque algumas lojas já dão até 15% de desconto no Pix em
+  tudo, o ano inteiro. Um “desconto” menor que isso não quer dizer nada.</p>
+
+  <h2><em>PASSO 4</em>O mesmo produto em outras lojas</h2>
+  <p>Quando o mesmo modelo está à venda em mais de uma loja, a ficha do produto mostra o preço nas outras.
+  O Muquirana só junta quando o <b>código do modelo</b> é igual nos dois nomes (por exemplo “24B35HM2”).
+  Na dúvida, prefere não comparar a comparar errado.</p>
+
+  <h2><em>E O DINHEIRO?</em>Como o site se mantém</h2>
+  <p>Hoje o MuquiranaTech não recebe nada das lojas. No futuro, alguns links poderão ser de afiliado: a loja paga
+  uma pequena comissão quando você compra por eles, <b>sem custo extra para você</b>. A regra não muda: as contas
+  do Muquirômetro e da Black Fraude são as mesmas para todas as lojas. Detalhes em
+  <a href="privacidade.html">Privacidade e transparência</a>.</p>
+
+  <a class="cta" href="./">Ver as ofertas →</a>
+</main>
+<footer><div class="wrap"><a href="./">← Voltar para as ofertas</a> · <a href="privacidade.html">Privacidade e transparência</a></div></footer>
+</body>
+</html>

@@ -221,7 +221,7 @@ Uma de cada vez, só as que o coletor conseguir ler com preço confiável; as co
 **PlayStation Store: feita** (coletor, 5 preços conferidos, job `coletar-navegador` no `coletar.yml`; falta só ver `playstation:` no data.js). **Motorola: feita (26/11, `collector/motorola.py`, API VTEX, preço do Pix, 32 smartphones, 5 preços conferidos; falta ver `motorola:` no data.js).** Restam Lenovo e Xbox. **Samsung: feita na conversa do dono (26/11, `collector/samsung.py`). Apple: deixada de lado (26/11): cada página tem um formato, nomes em inglês, e a Apple quase nunca muda preço (o termômetro ficaria sempre igual); o agente não mexe.**
 Carrefour e Pichau só passaram no PC (`"onde": "pc"`): ver DIARIO.
 
-### 6. [ ] Site com muitas lojas e muitos produtos
+### 6. [x] Site com muitas lojas e muitos produtos (feita na conversa do dono, 26/11: "Ver mais", busca, logo e contagem nas lojas, "o mesmo produto em outras lojas" por código de modelo)
 - Lista que carrega aos poucos: 48 cards e um botão "Mostrar mais". Filtros, busca e ordenação valem sobre a
   lista inteira, e o contador mostra o total.
 - A busca ignora acentos e maiúsculas ("memoria" acha "Memória").
@@ -231,7 +231,7 @@ Carrefour e Pichau só passaram no PC (`"onde": "pc"`): ver DIARIO.
   (ex.: "VG279QM5F"), para não juntar produtos diferentes.
 - Pronto quando: funciona a 390 px e a 1320 px no Chrome headless, sem erro no console.
 
-### 7. [ ] "Como funciona" e credibilidade
+### 7. [x] "Como funciona" e credibilidade (feita na conversa do dono, 26/11: como-funciona.html, privacidade.html, og.png, favicon.svg, meta tags)
 - Uma seção ou janela "Como o Muquirana funciona", ligada a partir do topo e do rodapé: de onde vêm os preços
   (lojas e vendedores aceitos), de quanto em quanto tempo atualiza, o preço à vista no Pix, como funcionam o
   Muquirômetro e a Black Fraude (com os números do CLAUDE.md) e o aviso "confira sempre na loja".

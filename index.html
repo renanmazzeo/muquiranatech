@@ -4,6 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MuquiranaTech — antes de gastar, pergunta pro Muquirana</title>
+<meta name="description" content="Compare o preço de hoje com tudo o que o produto já custou. Celular, notebook, TV, games e hardware, só em lojas confiáveis. Promoção de verdade ou Black Fraude, o Muquirana avisa.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="MuquiranaTech">
+<meta property="og:title" content="MuquiranaTech: antes de gastar, pergunta pro Muquirana">
+<meta property="og:description" content="O preço de hoje comparado com o histórico, só em lojas confiáveis. Descubra se é promoção de verdade ou cilada.">
+<meta property="og:image" content="https://muquiranatech.pages.dev/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#06080d">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <style>
 :root{
   --bg:#06080d;--panel:#0d1320;--panel2:#111a2b;--line:#1c2538;--line2:#26314a;
@@ -97,6 +109,7 @@ header .wrap{display:flex;align-items:center;gap:20px;height:66px}
 .stores{display:flex;gap:6px;flex-wrap:wrap}
 .st{display:flex;align-items:center;gap:6px;font-size:12.5px;padding:5px 10px;border-radius:999px;border:1px solid var(--line2);cursor:pointer;color:var(--mut);background:transparent}
 .st i{width:8px;height:8px;border-radius:50%}
+.st small{font:11px var(--mono);color:var(--dim)}.st .slogo{width:14px;height:14px}
 .st.on{color:var(--txt);border-color:var(--txt);background:var(--panel2)}
 .bar .sp{flex:1}
 .sel{background:var(--panel);border:1px solid var(--line2);border-radius:8px;padding:7px 10px;font-size:13px;outline:none;cursor:pointer}
@@ -138,6 +151,10 @@ a.cta{display:block;text-align:center;text-decoration:none}
 .trust{display:flex;align-items:center;gap:5px;color:var(--mut);font-size:12px}
 .trust svg{color:var(--li);flex:none}
 .lost{font-size:12px;color:var(--mut);border-left:2px solid var(--c);padding-left:8px}
+.also{margin:0 0 16px}.also small{display:block;color:var(--dim);font-size:11.5px;margin-top:8px}
+.orow{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;border-top:1px solid var(--line);padding:9px 2px;cursor:pointer;text-align:left}
+.orow:first-of-type{border-top:0}.orow:hover{background:rgba(255,255,255,.03)}
+.orow span{flex:1}.orow b{font-family:var(--mono)}.orow em{font-style:normal;font-size:12px;min-width:92px;text-align:right}
 .lost b{color:var(--txt)}
 .empty{grid-column:1/-1;text-align:center;color:var(--mut);padding:60px 0;font-family:var(--mono)}
 
@@ -192,6 +209,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--dim);fon
 /* Black Fraude × Black Firmeza */
 .navbf{font:700 12px var(--mono);letter-spacing:.5px;color:var(--rd);border:1px solid rgba(255,77,109,.4);background:rgba(255,77,109,.08);padding:7px 12px;border-radius:999px;text-decoration:none;white-space:nowrap}
 .navbf:hover{background:rgba(255,77,109,.16)}
+.howto{color:var(--cy);font-weight:600;text-decoration:none;white-space:nowrap}.howto:hover{text-decoration:underline}
 .bf{margin:6px 0 34px;padding:26px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(135deg,rgba(255,77,109,.07),transparent 45%,rgba(166,255,59,.06)),var(--panel);scroll-margin-top:80px}
 .bf h2{font-size:30px;letter-spacing:-1px;font-weight:800}
 .bf h2 .fr{color:var(--rd)}.bf h2 .fi{color:var(--li)}.bf h2 .vs{color:var(--dim);font-weight:500;margin:0 6px}
@@ -270,7 +288,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--dim);fon
   <section class="hero">
     <div>
       <h1>Antes de gastar,<br>pergunta pro <span>Muquirana</span>.</h1>
-      <p>O Muquirana compara o preço de hoje com tudo o que o produto já custou, só nas lojas mais confiáveis do Brasil. Se já esteve mais barato, ele avisa. Promoção de verdade ou cilada, você descobre na hora, sem precisar entender de tecnologia.</p>
+      <p>O Muquirana compara o preço de hoje com tudo o que o produto já custou, só nas lojas mais confiáveis do Brasil. Se já esteve mais barato, ele avisa. Promoção de verdade ou cilada, você descobre na hora, sem precisar entender de tecnologia. <a class="howto" href="como-funciona.html">Como o Muquirana funciona →</a></p>
       <div class="stats" id="stats"></div>
     </div>
     <div class="legend">
@@ -534,6 +552,51 @@ function blackCheck(p){
 const P=(REAL?REAL.produtos.filter(r=>!(r.ends&&r.ends*1000<=Date.now())).map(fromReal):RAW.map((p,i)=>{p.id=i;p.h=buildHist(p.a,i);p.pts=monthPts(p.h);return p}))
   .map(p=>{p.s=stats(p);p.bf=blackCheck(p);p.url=p.url||STORES[p.st].s(p.n);return p});
 
+/* ---------- o mesmo produto em outras lojas ----------
+   Só junta quando os dois nomes têm o MESMO código de modelo (ex.: "AD4S320016G22-SGN", "24B35HM2"), na mesma
+   categoria, e nada se contradiz (DDR4 × DDR5, 256GB × 512GB, RTX 5060 × 5070). Na dúvida, não junta:
+   comparar produtos diferentes seria pior do que não comparar. Um código que aparece em 2 produtos da mesma
+   loja (ex.: o processador de vários notebooks) não serve. */
+const COD_SPEC=/^(\d+(gb|tb|mb|hz|mhz|ghz|w|mah|mp|mm|cm|m|v|a|k|fps|dpi|rpm|ms|p|x|bits?|pol)|ddr\d.*|lpddr.*|gddr.*|usb.*|wifi\d*|bt\d.*|ps\d|rtx\d+|gtx\d+|rx\d+|i[3579]\d+.*|r[3579]\d+.*|m\d(pro|max)?|sm\d|pcie\d|nvme\d*|5g|4g|4k|8k|hdmi\d.*|ipx?\d|ip\d+|cl\d+|win\d+|[asgx]\d{2})$/;
+const COD_NAO=new Set(['c3tech']); // marcas com número no nome não são código de modelo
+const semAcento=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+function codigos(n){
+  const o=new Set();
+  for(const t of n.match(/[A-Za-z0-9][A-Za-z0-9\-\/.]{3,}[A-Za-z0-9]/g)||[]){
+    const c=t.replace(/[-\/.]/g,'').toLowerCase();
+    if(c.length<5||!/\d/.test(c)||!/[a-z]/.test(c)||COD_SPEC.test(c)||/^\d+[a-z]{1,3}$/.test(c)||/^[a-z]{1,2}\d{1,3}$/.test(c)||COD_NAO.has(c))continue;
+    o.add(c);
+  }
+  return o;
+}
+function tracos(n){const s=semAcento(n);return[new Set(s.match(/ddr\d/g)||[]),new Set((s.match(/\b\d+ ?[gt]b\b/g)||[]).map(x=>x.replace(' ',''))),new Set(s.match(/\b\d{3,5}\b/g)||[]),
+  new Set((s.match(/\b\d{2,3}(?:[.,]\d)? ?(?:"|''|”|pol\b|polegadas)/g)||[]).map(x=>x.match(/\d+/)[0]))]} // tela: 50" × 55"
+const disjuntos=(a,b)=>a.size&&b.size&&![...a].some(x=>b.has(x));
+{
+  const cod=P.map(p=>codigos(p.n)),porLoja=new Map(),porCod=new Map();
+  P.forEach((p,i)=>cod[i].forEach(c=>{const k=p.st+'|'+c;porLoja.set(k,(porLoja.get(k)||0)+1)}));
+  P.forEach((p,i)=>{p.outras=[];cod[i].forEach(c=>{if(porLoja.get(p.st+'|'+c)===1){if(!porCod.has(c))porCod.set(c,[]);porCod.get(c).push(p)}})});
+  const tr=new Map();const T_=p=>tr.get(p)||(tr.set(p,tracos(p.n)),tr.get(p));
+  porCod.forEach(lista=>{
+    if(lista.length<2)return;
+    for(const a of lista)for(const b of lista){
+      if(a===b||a.st===b.st||a.cat!==b.cat||a.outras.includes(b))continue;
+      const[x,y]=[T_(a),T_(b)];
+      if(x.some((s,k)=>disjuntos(s,y[k])))continue;
+      a.outras.push(b);
+    }
+  });
+  // uma oferta por loja (a mais barata), da mais barata para a mais cara
+  P.forEach(p=>{const m=new Map();p.outras.forEach(o=>{if(!m.has(o.st)||o.s.cur<m.get(o.st).s.cur)m.set(o.st,o)});p.outras=[...m.values()].sort((a,b)=>a.s.cur-b.s.cur)});
+}
+function outrasLinha(p){
+  const o=p.outras[0];if(!o)return'';
+  const d=o.s.cur/p.s.cur-1;
+  if(Math.abs(d)<.005)return `<div class="lost" style="--c:var(--cy)">Mesmo preço na ${STORES[o.st].n}</div>`;
+  return d<0?`<div class="lost" style="--c:var(--am)">Mais barato na ${STORES[o.st].n}: <b>${fmtc(o.s.cur)}</b> (${pct(d)})</div>`
+            :`<div class="lost" style="--c:var(--cy)">Aqui está ${Math.round((1-p.s.cur/o.s.cur)*100)}% mais barato que na ${STORES[o.st].n} (${fmtc(o.s.cur)})</div>`;
+}
+
 /* ---------- gráficos ---------- */
 function spark(p){
   const s=p.s,W=260,H=48,lo=s.min*.94,hi=Math.max(s.max*1.03,s.min*1.01),X=i=>i/NN*W,Y=v=>H-4-(v-lo)/(hi-lo)*(H-8);
@@ -584,13 +647,14 @@ const nPrecos=REAL?REAL.produtos.reduce((a,p)=>a+p.hist.length,0):P.reduce((a,p)
 const milhar=v=>v.toLocaleString('pt-BR');
 $('stats').innerHTML=[[milhar(P.length),'produtos monitorados'],[milhar(nPrecos),'preços registrados'],[milhar(P.filter(p=>p.s.tier<=1).length),'aprovados pelo Muquirana']]
   .map(([v,l])=>`<div>${v}<small>${l}</small></div>`).join('');
-if(REAL)document.querySelector('footer .wrap').innerHTML=`MuquiranaTech · preços reais atualizados várias vezes por dia · preço à vista, só vendedores confiáveis. Confira sempre na loja antes de comprar. · <a href="privacidade.html" style="color:var(--mut)">Privacidade e transparência</a>`;
+if(REAL)document.querySelector('footer .wrap').innerHTML=`MuquiranaTech · preços reais atualizados várias vezes por dia · preço à vista, só vendedores confiáveis. Confira sempre na loja antes de comprar. · <a href="como-funciona.html" style="color:var(--mut)">Como funciona</a> · <a href="privacidade.html" style="color:var(--mut)">Privacidade e transparência</a>`;
 {const sc=T.slice(0,4).reverse();
  $('legend').innerHTML=`<div class="thv"><div><div class="tube">${sc.map(t=>`<i style="background:${t.c}"></i>`).join('')}</div><div class="bulb"></div></div>
   <div class="lbl">${sc.map(t=>`<span style="--c:${t.c}">${t.k}</span>`).join('')}</div></div>
   ${REAL?`<div class="watch"><span class="tag" style="--c:${T[4].c}">${T[4].k}</span></div>`:''}`;}
 $('cats').innerHTML=CATS.map(([k,l])=>`<button class="chip${k==='all'?' on':''}" data-k="${k}">${icon(k,16)}${l}</button>`).join('');
-$('stores').innerHTML=storeKeys.map(k=>[k,STORES[k]]).map(([k,s])=>`<button class="st" data-k="${k}"><i style="background:${s.c}"></i>${s.n}</button>`).join('');
+{const nLoja=k=>P.filter(p=>p.st===k).length;
+ $('stores').innerHTML=storeKeys.map(k=>[k,STORES[k]]).map(([k,s])=>`<button class="st" data-k="${k}">${REAL?logo(k,14):`<i style="background:${s.c}"></i>`}${s.n}${REAL?` <small>${milhar(nLoja(k))}</small>`:''}</button>`).join('');}
 
 function card(p){
   const s=p.s,t=T[s.tier],st=STORES[p.st],cl=CATS.find(c=>c[0]===p.cat)[1];
@@ -608,6 +672,7 @@ function card(p){
     ${s.tier===2||s.tier===3?`<div class="lost">Melhor preço perdido: <b>${fmt(s.min)}</b> em ${lbl(s.mi)}</div>`:''}
     ${p.bf.kind==='fraude'?`<div class="lost" style="--c:#ff4d6d"><b style="color:#ff4d6d">BLACK FRAUDE</b> · ${bfWhy(p.bf)}</div>`:''}
     ${p.bf.kind==='firmeza'?`<div class="lost" style="--c:#a6ff3b"><b style="color:#a6ff3b">BLACK FIRMEZA</b> · ${pct(p.bf.vs)} vs preço normal (${fmt(p.bf.normal)})</div>`:''}
+    ${outrasLinha(p)}
     ${p.bf.deInflado?`<div class="lost" style="--c:#ffb020">O “−${Math.round(p.bf.claim*100)}%” da loja é exagerado: o preço normal dele é ${fmt(p.bf.normal)}</div>`:''}
     <div class="foot"><a class="go" href="${p.url}" target="_blank" rel="noopener sponsored" onclick="event.stopPropagation()">Ver na loja ↗</a><span class="ping">${thermo(s)}</span></div>
   </article>`;
@@ -811,6 +876,9 @@ function openModal(p){
         ${s.off>=.01?`<div class="sub"><s>${fmtc(s.full)}</s> · <span class="off">−${Math.round(s.off*100)}% vs preço cheio</span></div>`:''}
         <div class="seen">${p.at?`Preço visto na loja ${dia(new Date(p.at))} às ${hm(new Date(p.at))}. Pode ter mudado desde então.`:''}${endsTxt(p)?` <b>⏱ ${endsTxt(p)}</b>`:''}</div></div>
       <a class="cta" href="${p.url}" target="_blank" rel="noopener sponsored">Ver na ${st.n} →</a></div>
+    ${p.outras.length?`<div class="box also"><h5>O mesmo produto em outras lojas</h5>${p.outras.map(o=>{const d=o.s.cur/s.cur-1;
+      return `<button class="orow" data-oid="${o.id}">${logo(o.st,16)}<span>${STORES[o.st].n}</span><b>${fmtc(o.s.cur)}</b><em style="color:${d<-.005?'#a6ff3b':d>.005?'#ff4d6d':'var(--mut)'}">${Math.abs(d)<.005?'mesmo preço':Math.abs(Math.round(d*100))+'% '+(d<0?'mais barato':'mais caro')}</em></button>`}).join('')}
+      <small>Juntamos só quando o código do modelo é o mesmo nas duas lojas. Toque para ver o histórico.</small></div>`:''}
     <div class="verdict"><div class="mthermo">${thermoBig(s)}</div><div><span class="tag">${t.k}</span><p style="margin-top:6px">${frase}</p></div></div>
     ${p.bf.kind==='fraude'||p.bf.kind==='firmeza'?`<div class="lost" style="--c:${p.bf.kind==='fraude'?'#ff4d6d':'#a6ff3b'};margin:-6px 0 16px"><b style="color:${p.bf.kind==='fraude'?'#ff4d6d':'#a6ff3b'}">${p.bf.kind==='fraude'?'BLACK FRAUDE':'BLACK FIRMEZA'}</b> · ${p.bf.kind==='fraude'?bfWhy(p.bf):pct(p.bf.vs)+' vs o preço normal dos 3 meses anteriores ('+fmt(p.bf.normal)+')'}</div>`:''}
     <div class="cw" id="cw">${chart(p)}<div class="tip" id="tip"></div></div>
@@ -822,6 +890,7 @@ function openModal(p){
     </div>`;
   if(!$('ov').classList.contains('open'))history.pushState({muq:1},'');
   $('ov').classList.add('open');m.scrollTop=0;
+  m.querySelectorAll('[data-oid]').forEach(b=>b.onclick=()=>openModal(P[b.dataset.oid]));
   // hover no gráfico
   const svg=m.querySelector('.chart'),hit=svg.querySelector('#hit'),tip=$('tip'),W=CW(),L=58,R=18;
   hit.onmousemove=e=>{

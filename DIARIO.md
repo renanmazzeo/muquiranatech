@@ -13,9 +13,17 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 - [ ] Mercado Livre: "Criar nova aplicação" está desabilitado na conta do dono (26/11). Se liberar (ou o suporte do ML responder), criar o app, guardar ML_CLIENT_ID/ML_CLIENT_SECRET nos secrets e rodar o workflow "Testar Mercado Livre". Agente: não insista no ML até lá.
 
 - [ ] Tarefa 5 (navegador Playwright nas lojas que bloqueiam robôs): o sistema de permissões da execução automática recusou criar o teste, por ser tentativa de passar por bloqueio anti-robô. Diga se autoriza (ou marque a tarefa `[-]` e atualize a tabela "Lojas").
-- [ ] Opcional: Programa de Associados da Amazon; domínio próprio.
+- [ ] Opcional: Programa de Associados da Amazon (depois do domínio no ar).
 
 ---
+
+## 2026-11-26 15:40 UTC · dono + Claude · Samsung, comparação entre lojas, "Como funciona", domínio
+**Feito:** Samsung no ar (150 produtos, catálogo VTEX, preço do Pix); Apple deixada de lado. Comparação "o mesmo
+produto em outras lojas" (37 grupos conferidos um a um; regras contra DDR4×DDR5, 5060×5070, 50"×55"). Contagem e
+logo no filtro de lojas. `como-funciona.html`, `privacidade.html`, `og.png`, `favicon.svg`, meta tags, `LICENSE`.
+**Domínio:** muquiranatech.com.br registrado (vence 26/11/2027), nameservers do Cloudflare em transição no registro.br.
+Falta: ligar o domínio no Pages (Custom domains), Email Routing `contato@`, trocar `og:image` para o domínio novo.
+**Mercado Livre:** dono pediu acesso à API; aguardando resposta.
 
 ## 2026-11-26 15:00 UTC · agente · tarefa 5d (Motorola)
 **Saúde:** data.js gerado às 14:26 UTC · 4.173 KaBuM! · 286 Amazon · 64 Kalunga · 20 PlayStation · 150 Samsung · 21 Steam · coletas do GitHub `success` (todas disparadas à mão; segue sem `schedule`).
