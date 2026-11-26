@@ -111,7 +111,7 @@ Por quê: sem testes, só descobrimos que uma loja mudou o formato quando o site
   `tests/` ou `index.html` (use `paths:`, para não rodar a cada commit de preços dos robôs).
 - Pronto quando: `python -m unittest` passa localmente e no GitHub.
 
-### 2. [ ] Steam (jogos de PC)
+### 2. [~] Steam (jogos de PC)
 API pública, funciona do GitHub.
 - `collector/steam.py` no mesmo formato do `kabum.py`: `store.steampowered.com/api/storesearch/?term=...&cc=br&l=portuguese`
   e, para o preço, `api/appdetails?appids=...&cc=br&filters=price_overview` (valores em centavos de real).

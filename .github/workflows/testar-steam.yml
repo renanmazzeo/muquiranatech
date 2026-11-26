@@ -1,0 +1,41 @@
+name: Testar Steam
+
+# Roda quando o coletor da Steam muda (ou na mão). Não salva nada: só confere, na rede do GitHub, se a
+# Steam responde e se o preço lido na busca é igual ao da API de detalhes. Resultado nas anotações.
+on:
+  push:
+    branches: [main]
+    paths: ["collector/steam.py", ".github/workflows/testar-steam.yml"]
+  workflow_dispatch:
+
+jobs:
+  steam:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r collector/requirements.txt
+      - name: Coletar numa cópia e conferir 5 preços
+        run: |
+          MUQ_DB="$RUNNER_TEMP/steam.db" python collector/muq.py coletar --lojas steam
+          python - <<'PY'
+          import os, sqlite3, sys, time
+          sys.path.insert(0, "collector")
+          import steam
+          c = sqlite3.connect(os.environ["RUNNER_TEMP"] + "/steam.db")
+          rows = c.execute("select p.code,p.name,x.price from products p join prices x on x.product_id=p.id "
+                           "where p.store='steam' order by p.code").fetchall()
+          print(f"::notice::steam {len(rows)} jogos coletados")
+          ruins = 0
+          for code, name, price in rows[:5]:
+              time.sleep(3)
+              d = steam.detalhes(code)
+              ok = d is not None and abs(d["final"] - price) < 0.01
+              ruins += not ok
+              print(f"::notice::{name}: coletor R$ {price} · detalhes {d} · {'OK' if ok else 'DIFERENTE'}")
+          if len(rows) < 10 or ruins:
+              sys.exit(1)
+          PY

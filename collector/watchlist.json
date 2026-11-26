@@ -10,6 +10,35 @@
       "pausa": 6,
       "vendedores_confiaveis": ["Amazon.com.br"],
       "not": ["capa", "pelicula", "capinha", "case para", "suporte para", "compativel", "para iphone", "para galaxy", "para samsung", "para ps5", "para playstation", "para xbox", "para nintendo", "para switch", "adesivo", "skin", "recondicionado", "usado", "pilha", "bateria recarregavel"]
+    },
+    "steam": {
+      "nome": "Steam",
+      "pausa": 3,
+      "vendedores_confiaveis": ["Steam"],
+      "not": ["soundtrack", "dlc", "demo", "upgrade"],
+      "buscas": [
+        {"q": "elden ring", "cat": "game", "must": ["elden ring"], "max": 1},
+        {"q": "baldurs gate 3", "cat": "game", "must": ["baldur"], "max": 1},
+        {"q": "cyberpunk 2077", "cat": "game", "must": ["cyberpunk 2077"], "max": 1},
+        {"q": "red dead redemption 2", "cat": "game", "must": ["red dead redemption 2"], "max": 1},
+        {"q": "hollow knight", "cat": "game", "must": ["hollow knight"], "max": 1},
+        {"q": "stardew valley", "cat": "game", "must": ["stardew valley"], "max": 1},
+        {"q": "terraria", "cat": "game", "must": ["terraria"], "max": 1},
+        {"q": "hogwarts legacy", "cat": "game", "must": ["hogwarts legacy"], "max": 1},
+        {"q": "the witcher 3", "cat": "game", "must": ["witcher 3"], "max": 1},
+        {"q": "grand theft auto v", "cat": "game", "must": ["grand theft auto v"], "max": 1},
+        {"q": "helldivers 2", "cat": "game", "must": ["helldivers"], "max": 1},
+        {"q": "palworld", "cat": "game", "must": ["palworld"], "max": 1},
+        {"q": "black myth wukong", "cat": "game", "must": ["wukong"], "max": 1},
+        {"q": "monster hunter wilds", "cat": "game", "must": ["monster hunter wilds"], "max": 1},
+        {"q": "forza horizon 5", "cat": "game", "must": ["forza horizon 5"], "max": 1},
+        {"q": "resident evil 4", "cat": "game", "must": ["resident evil 4"], "max": 1},
+        {"q": "sekiro shadows die twice", "cat": "game", "must": ["sekiro"], "max": 1},
+        {"q": "dark souls iii", "cat": "game", "must": ["dark souls iii"], "max": 1},
+        {"q": "euro truck simulator 2", "cat": "game", "must": ["euro truck simulator 2"], "max": 1},
+        {"q": "sid meiers civilization vi", "cat": "game", "must": ["civilization vi"], "max": 1},
+        {"q": "hades", "cat": "game", "must": ["hades"], "max": 1}
+      ]
     }
   },
   "buscas": [

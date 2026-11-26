@@ -17,6 +17,16 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 
 ---
 
+## 2026-11-26 02:00 UTC · agente · tarefa 2 (Steam), parte 1
+**Saúde:** data.js gerado às 00:50 UTC · 303 produtos KaBuM! · 0 Amazon (segue pendente com o dono) · coletas: última `success` às 23:50 UTC de 25/11, as 3 seguintes `cancelled` (à mão) e uma em andamento.
+**Feito:** criado `collector/steam.py` (busca pela API pública da Steam, preço final em reais, vendedor "Steam"), lista própria de 21 jogos populares na watchlist (`lojas.steam.buscas`; o coletor usa a lista da loja quando ela existe), `steam` em `LOJAS`, em `STORES` do site e no `coletar.yml` (coleta e mescla `kabum,steam`). 3 testes novos (17 no total, todos ok). Novo workflow `testar-steam.yml`: roda no push, coleta numa cópia do banco e confere 5 preços contra a API de detalhes, com o resultado nas anotações.
+**Como testei:** `python -m unittest` ok; coleta simulada de ponta a ponta numa cópia do banco com resposta de exemplo; YAML e JS do site conferidos. Esta nuvem não alcança a Steam (proxy 403), por isso a conferência real é a do workflow no GitHub.
+**Teste no ar:** (a preencher)
+**Falta:** ver o `testar-steam.yml` passar (cerca de 21 jogos, 5 preços iguais), disparar uma coleta no GitHub e ver os jogos no `data.js`. Só então marcar `[x]`.
+**Precisa do dono:** nada novo.
+
+---
+
 ## 2026-11-26 01:40 UTC · sessão com o dono · ajustes no roteiro do agente
 **Feito**
 - Tarefa 1 conferida e marcada `[x]`: o workflow Testes passou no GitHub (run 45735492909), e o check

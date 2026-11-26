@@ -29,10 +29,10 @@ jobs:
       - run: pip install -r collector/requirements.txt
 
       # coleta numa cópia do banco e só no fim mescla no banco real (o PC do dono coleta a Amazon ao mesmo tempo)
-      - name: Preço de hoje (KaBuM!)
+      - name: Preço de hoje (KaBuM! e Steam)
         run: |
           cp data/muquirana.db "$RUNNER_TEMP/coleta.db"
-          MUQ_DB="$RUNNER_TEMP/coleta.db" python collector/muq.py coletar --lojas kabum
+          MUQ_DB="$RUNNER_TEMP/coleta.db" python collector/muq.py coletar --lojas kabum,steam
 
       - name: Histórico (Wayback Machine)
         if: github.event.schedule == '0 12 * * 0' || inputs.historico == 'sim'
@@ -47,11 +47,11 @@ jobs:
           for i in 1 2 3 4 5; do
             # sempre parte da versão mais nova do repositório e mescla só o que esta coleta trouxe
             git fetch -q origin main && git reset -q --hard origin/main
-            python collector/muq.py mesclar "$RUNNER_TEMP/coleta.db" --lojas kabum --wayback
+            python collector/muq.py mesclar "$RUNNER_TEMP/coleta.db" --lojas kabum,steam --wayback
             python collector/muq.py exportar
             git add data/muquirana.db data.js
             git diff --cached --quiet && exit 0
-            git commit -q -m "Preços de $(TZ=America/Sao_Paulo date '+%F %Hh%M') · KaBuM!"
+            git commit -q -m "Preços de $(TZ=America/Sao_Paulo date '+%F %Hh%M') · KaBuM! e Steam"
             git push -q && exit 0
             sleep 15
           done

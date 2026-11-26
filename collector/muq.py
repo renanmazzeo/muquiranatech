@@ -19,10 +19,11 @@ sys.stdout.reconfigure(encoding="utf-8")
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import amazon  # noqa: E402
 import kabum  # noqa: E402
+import steam  # noqa: E402
 import wayback  # noqa: E402
 
 # lojas que o coletor sabe ler (cada módulo tem search(termo) -> itens no mesmo formato)
-LOJAS = {"kabum": kabum, "amazon": amazon}
+LOJAS = {"kabum": kabum, "amazon": amazon, "steam": steam}
 
 ROOT = Path(__file__).resolve().parent.parent
 DB = ROOT / "data" / "muquirana.db"
@@ -70,7 +71,7 @@ def cmd_coletar(a):
     lojas = a.lojas.split(",") if a.lojas else list(w["lojas"])
     for loja in lojas:
         cfg = w["lojas"][loja]
-        total = coletar_loja(c, loja, cfg, w["buscas"], today, now, cfg.get("pausa", a.pausa))
+        total = coletar_loja(c, loja, cfg, cfg.get("buscas", w["buscas"]), today, now, cfg.get("pausa", a.pausa))
         c.commit()
         print(f"== {w['lojas'][loja]['nome']}: {total} preços de hoje salvos.")
 
