@@ -239,3 +239,9 @@ Tentei criar o workflow `testar-navegador.yml` (Chromium abrindo uma busca de Ma
 **Próximo passo:** ...
 **Precisa do dono:** (se houver, copie também para a seção lá em cima)
 ```
+
+### 26/11/2026 — Domínio próprio no ar (conversa com o dono)
+- `muquiranatech.com.br` registrado no registro.br e com DNS no Cloudflare (servidores trocados às 14h03).
+- No Cloudflare Pages, domínios personalizados `muquiranatech.com.br` e `www.muquiranatech.com.br` → `muquiranatech.pages.dev`. Os dois respondem 200.
+- Prévia do WhatsApp (`og:image`) e CLAUDE.md passam a usar o domínio novo.
+- Registros de e-mail atuais (MX ".", SPF `-all`, DMARC reject) bloqueiam e-mails falsos em nome do domínio; trocar só ao ativar o Email Routing.
