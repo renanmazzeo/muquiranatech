@@ -59,3 +59,39 @@ jobs:
             sleep 15
           done
           exit 1
+
+  # lojas que só mostram o preço com navegador de verdade (PlayStation Store): job separado, é mais lento
+  coletar-navegador:
+    needs: coletar
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r collector/requirements.txt playwright
+      - run: python -m playwright install --with-deps chromium
+      - name: Preço de hoje (lojas com navegador)
+        run: |
+          cp data/muquirana.db "$RUNNER_TEMP/coleta.db"
+          MUQ_DB="$RUNNER_TEMP/coleta.db" python collector/muq.py coletar --lojas "$(python collector/muq.py lojas github-nav)"
+      - name: Salvar no repositório
+        if: ${{ !cancelled() }}
+        run: |
+          git config user.name "muquirana-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            python collector/muq.py mesclar "$RUNNER_TEMP/coleta.db" --lojas "$(python collector/muq.py lojas github-nav)"
+            python collector/muq.py exportar
+            git add data/muquirana.db data.js
+            git diff --cached --quiet && exit 0
+            git commit -q -m "Preços de $(TZ=America/Sao_Paulo date '+%F %Hh%M') · PlayStation Store"
+            git push -q && exit 0
+            sleep 15
+          done
+          exit 1

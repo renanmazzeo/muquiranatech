@@ -1,0 +1,52 @@
+name: Testar PlayStation Store
+
+# Roda quando o coletor da PlayStation muda (ou na mão). Não salva nada: coleta numa cópia do banco e confere
+# 5 preços contra a página do produto. Resultado nas anotações.
+on:
+  push:
+    branches: [main]
+    paths: ["collector/playstation.py", ".github/workflows/testar-playstation.yml"]
+  workflow_dispatch:
+
+jobs:
+  playstation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r collector/requirements.txt playwright
+      - run: python -m playwright install --with-deps chromium
+      - name: Coletar numa cópia e conferir 5 preços
+        run: |
+          MUQ_DB="$RUNNER_TEMP/ps.db" python collector/muq.py coletar --lojas playstation
+          python - <<'PY'
+          import os, re, sqlite3, sys, time
+          sys.path.insert(0, "collector")
+          import playstation
+          c = sqlite3.connect(os.environ["RUNNER_TEMP"] + "/ps.db")
+          rows = c.execute("select p.code,p.name,p.url,x.price from products p join prices x on x.product_id=p.id "
+                           "where p.store='playstation' order by p.code").fetchall()
+          print(f"::notice::playstation {len(rows)} jogos coletados")
+          passo = max(1, len(rows) // 5)
+          ruins = 0
+          pw = playstation._browser()
+          for code, name, url, price in rows[::passo][:5]:
+              time.sleep(4)
+              pg = pw.new_page(locale="pt-BR")
+              pg.goto(url, timeout=60000)
+              try:
+                  pg.wait_for_selector('[data-qa="mfeCtaMain#offer0#finalPrice"]', timeout=30000)
+                  txt = pg.inner_text('[data-qa="mfeCtaMain#offer0#finalPrice"]')
+              except Exception:
+                  txt = ""
+              pg.close()
+              v = playstation._reais(txt)
+              ok = v is not None and abs(v - price) < 0.01
+              ruins += not ok
+              print(f"::notice::{name[:40]}: busca R$ {price} · página '{txt}' · {'OK' if ok else 'DIFERENTE'}")
+          if len(rows) < 10 or ruins:
+              sys.exit(1)
+          PY
