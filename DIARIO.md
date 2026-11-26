@@ -11,7 +11,6 @@ ESTADO: EM ANDAMENTO
 ## Precisa do dono
 Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apaga quando resolver.
 - [ ] Mercado Livre: criar o app e guardar as credenciais como secrets do GitHub (ver TAREFAS.md).
-- [ ] Cloudflare: desligar os builds de prévia de branches, para os PRs do agente não gastarem o limite grátis.
 - [ ] Amazon: o robô do PC foi instalado em 25/11, mas a Amazon estava bloqueando este PC por excesso de testes.
       Conferir no `%LOCALAPPDATA%\MuquiranaTech\coleta.log` se as coletas seguintes deram certo.
 - [ ] Opcional: Programa de Associados da Amazon; domínio próprio.
@@ -45,7 +44,7 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 - Histórico de no máximo 1 ano; nesta primeira vez, 4 meses.
 - Ter todas as lojas possíveis, mesmo sem histórico: o histórico se forma a partir de agora.
 - Amazon coletada pelo PC do dono. Mercado Livre: o dono vai criar o app (pendente).
-- Agente autônomo na nuvem trabalhando pela fila do TAREFAS.md, sempre por pull request.
+- Agente autônomo na nuvem trabalhando pela fila do TAREFAS.md, publicando direto na main e testando o site no ar depois de cada publicação. O agente termina quando a fila acaba (ESTADO: CONCLUÍDO).
 
 **Lojas testadas** (25/11/2026): ver a tabela no CLAUDE.md.
 

@@ -13,23 +13,21 @@ O agente existe **só para terminar a construção do projeto**: deixar o site c
 
 ## Como cada execução funciona
 1. Leia o CLAUDE.md, este arquivo e as **3 últimas entradas** do DIARIO.md. Confira a linha `ESTADO:`.
-2. Veja seus pull requests abertos (`gh pr list --author @me`):
-   - se o dono comentou pedindo mudança, atenda **isso primeiro**, no mesmo branch;
-   - **no máximo 3 PRs seus abertos ao mesmo tempo**. Se já houver 3, só faça a checagem de saúde e encerre.
-3. Faça a **checagem de saúde** e depois **uma** tarefa: a primeira com `[ ]` cujo pré-requisito esteja
-   cumprido. Tarefa grande demais para uma execução? Entregue uma parte que funcione sozinha e marque `[~]`
-   (em andamento), dizendo no DIARIO.md o que falta.
-4. Registre a execução no DIARIO.md (modelo no fim daquele arquivo) e atualize o status da tarefa aqui.
-5. Pare. Não emende outra tarefa: o dono revisa um PR de cada vez.
+   Se a última entrada registrou um problema no site publicado, corrigi-lo é a tarefa desta execução.
+2. Faça a **checagem de saúde** e depois **uma** tarefa: a primeira `[~]` (continuar) ou `[ ]` cujo
+   pré-requisito esteja cumprido. Tarefa grande demais para uma execução? Publique uma parte que funcione
+   sozinha e marque `[~]` (em andamento), dizendo no DIARIO.md o que falta.
+3. **Teste antes de publicar** (ver "Publicar e testar no ar").
+4. Atualize o status aqui e registre a execução no DIARIO.md (modelo no fim daquele arquivo).
+5. **Publique na `main` e teste o site no ar.** Só então pare. Não emende outra tarefa.
 
-Status: `[ ]` a fazer · `[~]` em andamento · `[x]` feita (PR aceito) · `[-]` impossível (motivo no DIARIO.md).
-Uma tarefa só vira `[x]` quando o PR dela foi aceito. Enquanto o PR estiver aberto, deixe `[~]` e siga para a
-próxima, se não depender dela.
+Status: `[ ]` a fazer · `[~]` em andamento · `[x]` feita, publicada e testada no ar · `[-]` impossível
+(motivo no DIARIO.md).
 
 ## Regras (não negociáveis)
-- **Nunca faça push na `main`.** Trabalhe num branch `agente/<tarefa>` e abra um pull request em português,
-  explicando em linguagem simples o que muda para quem usa o site e como você testou.
-- O registro no DIARIO.md e a mudança de status neste arquivo vão **no mesmo PR** da tarefa.
+- **Publique direto na `main`** (é um protótipo; o dono quer ver tudo no portal). Mensagens de commit em
+  português, explicando em linguagem simples o que muda para quem usa o site.
+- **Nunca use `git push --force`** nem reescreva o histórico da `main`. Para desfazer algo, use `git revert`.
 - **Nunca altere** `data/muquirana.db` nem `data.js`: são dos robôs de coleta. Se seu branch tocar neles, desfaça.
 - **Nunca mexa** em credenciais ou segredos, no `coletar-pc.ps1`, nem nas configurações da Cloudflare ou do
   GitHub (Pages, secrets, branch protection).
@@ -38,14 +36,38 @@ próxima, se não depender dela.
   bloqueia IPs de servidor, e insistir pode atrapalhar a coleta do PC do dono).
 - **Só serviços gratuitos.** Serviço pago, cadastro em site, aceitar termos, qualquer coisa em nome do dono:
   **não faça**. Anote no DIARIO.md em "Precisa do dono".
-- Ficou em dúvida sobre o que o dono quer? Escolha a opção mais conservadora e pergunte no PR.
-- **Preço tem que ser igual ao da loja.** Toda loja nova precisa, antes do PR, de uma conferência de 5 produtos:
+- Ficou em dúvida sobre o que o dono quer? Escolha a opção mais conservadora e deixe a pergunta em
+  "Precisa do dono" no DIARIO.md.
+- **Preço tem que ser igual ao da loja.** Toda loja nova precisa, antes de publicar, de uma conferência de 5 produtos:
   o preço que o coletor lê contra o preço que a página do produto mostra (à vista/Pix). Se não bater, não publique
-  a loja: explique no PR. Foi assim que pegamos o bug das ofertas da KaBuM! em 25/11.
+  a loja: explique no DIARIO.md. Foi assim que pegamos o bug das ofertas da KaBuM! em 25/11.
 - **Só vendedores confiáveis:** a própria loja ou lojas oficiais das marcas. Nada de marketplace genérico.
-- Teste antes de abrir o PR: `python -m unittest` (depois da tarefa 1) e, no site, o `index.html` no Chrome
-  headless (se houver) a 1320 px e a 390 px de largura, sem erro no console.
 - Commits terminam com `Co-Authored-By: Claude <noreply@anthropic.com>`.
+
+## Publicar e testar no ar
+**Antes de publicar**
+- Python: `python -m unittest` (depois da tarefa 1) e `ast.parse` em cada arquivo alterado. Coletor alterado:
+  rode a coleta da loja numa cópia (`MUQ_DB=/tmp/teste.db`), nunca no banco real.
+- Site: abra o `index.html` com o `data.js` atual no Chrome headless (se houver) a 1320 px e a 390 px, sem erro
+  no console. Sem Chrome: ao menos carregue o `<script>` com `node` para pegar erro de sintaxe.
+- Workflow alterado: confira o YAML com cuidado (um erro ali para a coleta).
+
+**Publicar** (os robôs fazem commits na `main` várias vezes por dia)
+```
+git pull --rebase origin main      # conflito em data/ ou data.js: fique com a versão da main, nunca a sua
+git push origin HEAD:main
+```
+Push recusado? `git pull --rebase` de novo e repita. Até 3 tentativas.
+
+**Depois de publicar: testar no ar** (obrigatório)
+- Espere cerca de 2 minutos e baixe https://muquiranatech.pages.dev/ e https://muquiranatech.pages.dev/data.js.
+  Confira que o HTML publicado contém a sua mudança (procure um trecho novo) e que o `data.js` carrega.
+- Se houver Chrome headless, abra o site publicado a 390 px e confira que os cards aparecem, sem erro no console.
+- Mexeu no coletor ou no workflow? Dispare `gh workflow run "Coletar preços"`, espere terminar
+  (`gh run watch`) e confira: sucesso e produtos da loja no `data.js` novo.
+- **Algo quebrou no ar?** Corrija na hora. Se não conseguir em poucos minutos, `git revert` do seu commit,
+  publique o revert, confira que o site voltou e registre no DIARIO.md o que aconteceu.
+- Anote no DIARIO.md o resultado do teste no ar.
 
 ---
 
@@ -66,8 +88,9 @@ Por quê: sem testes, só descobrimos que uma loja mudou o formato quando o site
 - Testes com `unittest` (sem dependências novas): a oferta da KaBuM! só vale dentro de `startsAt..endsAt`;
   `pick` respeita `must`, `not` e vendedores; `amazon.parse` ignora patrocinados; `mesclar` não duplica e não
   apaga a outra loja.
-- Workflow `.github/workflows/testes.yml` rodando os testes em cada pull request.
-- Pronto quando: `python -m unittest` passa localmente e no PR.
+- Workflow `.github/workflows/testes.yml` rodando os testes a cada push na `main` que mude `collector/`,
+  `tests/` ou `index.html` (use `paths:`, para não rodar a cada commit de preços dos robôs).
+- Pronto quando: `python -m unittest` passa localmente e no GitHub.
 
 ### 2. [ ] Steam (jogos de PC)
 API pública, funciona do GitHub.
@@ -77,7 +100,8 @@ API pública, funciona do GitHub.
   fazem sentido para a Steam, use `{"skip": true}`.
 - Inclua `steam` em `LOJAS` (`muq.py`), em `STORES` (`index.html`, cor `#1b2838`, domínio `store.steampowered.com`)
   e no `coletar.yml` (`--lojas kabum,steam`, mescla com `--lojas kabum,steam`).
-- Pronto quando: a coleta local com `--lojas steam` traz cerca de 20 jogos e 5 conferidos batem com a Steam.
+- Pronto quando: a coleta local com `--lojas steam` traz cerca de 20 jogos, 5 conferidos batem com a Steam e,
+  depois de publicar, uma coleta disparada no GitHub coloca os jogos da Steam no site.
 
 ### 3. [ ] Mercado Livre (API oficial), deixar pronto para ligar
 O dono ainda vai criar o app. O agente deixa tudo pronto para funcionar no dia em que os secrets existirem.
@@ -87,9 +111,10 @@ O dono ainda vai criar o app. O agente deixa tudo pronto para funcionar no dia e
 - No `coletar.yml`, passe os secrets como variáveis de ambiente; sem eles, o coletor pula o Mercado Livre e
   escreve uma linha no log, sem falhar.
 - Em `STORES` no site, a entrada `ml` já existe.
-- Um guia curto em português no PR: como o dono cria o app (developers.mercadolivre.com.br) e cadastra os dois
+- Um guia curto em português (`docs/mercado-livre.md`): como o dono cria o app (developers.mercadolivre.com.br) e cadastra os dois
   secrets no GitHub (Settings → Secrets and variables → Actions).
-- Pronto quando: os testes com uma resposta de exemplo da API passam e o workflow roda sem erro sem os secrets.
+- Pronto quando: os testes com uma resposta de exemplo da API passam e o workflow publicado roda sem erro sem
+  os secrets.
   A tarefa fica `[x]` mesmo sem as credenciais; ligar de verdade fica em "Precisa do dono".
 
 ### 4. [ ] Americanas
@@ -132,17 +157,18 @@ Magalu, Casas Bahia, Pichau, Terabyte e Carrefour devolvem 403/captcha para `req
 - Script `collector/revisar.py` que lê o `data.js` e lista suspeitos: preço muito fora da mediana da categoria
   (menos de 25% ou mais de 400%), nome sem nenhuma palavra do `must` da busca, ou acessório (capa, película,
   suporte, cabo, pilha) em categoria de aparelho.
-- Corrija a watchlist com `must`/`not` a partir da lista. **Não remova buscas inteiras** sem explicar no PR.
-- Pronto quando: o script roda e o PR traz o que foi encontrado e o que foi ajustado.
+- Corrija a watchlist com `must`/`not` a partir da lista. **Não remova buscas inteiras** sem explicar no DIARIO.md.
+- Pronto quando: o script roda e o DIARIO.md traz o que foi encontrado e o que foi ajustado.
 
 ### 9. [ ] Tarefa final: revisão geral e encerramento
 Só quando todas as tarefas acima estiverem `[x]` ou `[-]`.
 - Abra o site no Chrome headless a 390 px e a 1320 px, com os dados atuais, e confira: todas as lojas ativas
-  aparecem, ficha do produto, Black Fraude, filtros, "Mostrar mais" e "Como funciona".
+  aparecem, ficha do produto, Black Fraude, filtros, "Mostrar mais" e "Como funciona". Faça isso no site
+  publicado (https://muquiranatech.pages.dev).
 - Atualize o README.md (o que é, lojas, como rodar) e o CLAUDE.md (arquitetura e tabela de lojas).
 - No DIARIO.md: um resumo final do que ficou pronto, do que ficou impossível e do que depende do dono, e
   `ESTADO: CONCLUÍDO`.
-- No PR, peça ao dono que desligue o agendamento em https://claude.ai/code/routines.
+- Em "Precisa do dono" no DIARIO.md: desligar o agendamento em https://claude.ai/code/routines.
 
 ## Fora do escopo do agente
 Ficam para o dono, ou para uma conversa com o Claude depois:
