@@ -13,7 +13,13 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 - [ ] Mercado Livre: criar o app e guardar as credenciais como secrets do GitHub (ver TAREFAS.md).
 - [ ] Amazon: o robô do PC foi instalado em 25/11, mas a Amazon estava bloqueando este PC por excesso de testes.
       Conferir no `%LOCALAPPDATA%\MuquiranaTech\coleta.log` se as coletas seguintes deram certo.
+- [ ] Tarefa 5 (navegador Playwright nas lojas que bloqueiam robôs): o sistema de permissões da execução automática recusou criar o teste, por ser tentativa de passar por bloqueio anti-robô. Diga se autoriza (ou marque a tarefa `[-]` e atualize a tabela "Lojas").
 - [ ] Opcional: Programa de Associados da Amazon; domínio próprio.
+
+---
+
+## 2026-11-26 03:10 UTC · agente · tarefa 5 travada
+Tentei criar o workflow `testar-navegador.yml` (Chromium abrindo uma busca de Magalu, Casas Bahia, Pichau, Terabyte e Carrefour). A permissão foi negada pelo classificador da execução automática (acesso a lojas que bloqueiam robôs). Não contornei: nada foi criado. Pendência em "Precisa do dono". As tarefas 6, 7 e 8 não dependem dela e ficam para as próximas execuções.
 
 ---
 
