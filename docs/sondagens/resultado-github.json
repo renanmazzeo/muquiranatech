@@ -1,51 +1,29 @@
 {
- "id": "2026-11-26-html2",
+ "id": "2026-11-26-html3",
  "onde": "github",
- "quando": "2026-11-26T04:34+00:00",
+ "quando": "2026-11-26T04:42+00:00",
  "resultados": [
   {
-   "nome": "kalunga-html",
+   "nome": "kalunga-produto",
    "modo": "requests",
-   "url": "https://www.kalunga.com.br/busca/mouse",
+   "url": "https://www.kalunga.com.br/prod/mouse-gamer-sem-fio-logitech-g305-lightspeed-com-6-botoes-programaveis-e-ate-12-000-dpi-preto-cx-1-un/442535",
    "loja": null,
    "q": null,
    "status": 200,
-   "tamanho": 817517,
-   "precos_na_pagina": 101,
+   "tamanho": 741674,
+   "precos_na_pagina": 25,
    "exemplos_de_preco": [
-    "R$ 28,50",
+    "R$ 218,41",
     "R$ 59,90",
-    "R$ 44,90",
-    "R$ 29,90",
-    "R$ 22,90"
+    "R$ 11,49",
+    "R$ 218,41",
+    "R$ 218,41"
    ],
    "bloqueio_detectado": false,
-   "titulo": "Mouse - Busca em Kalunga - Informática, Papelaria e Materiais para Escritório",
+   "titulo": "Mouse Gamer Sem Fio Logitech G305 LIGHTSPEED com 6 Botões Programáveis e Até 12.000 DPI - Preto CX 1 UN - Gamers - Kalun",
    "json": false,
    "funcionou": true,
-   "url_final": "https://www.kalunga.com.br/busca/mouse"
-  },
-  {
-   "nome": "samsung-html",
-   "modo": "playwright",
-   "url": "https://shop.samsung.com/br/search?searchText=galaxy",
-   "loja": null,
-   "q": null,
-   "status": 200,
-   "tamanho": 2303293,
-   "precos_na_pagina": 250,
-   "exemplos_de_preco": [
-    "R$16.199,00",
-    "R$3.599,90",
-    "R$12.599,10",
-    "R$13.999,00",
-    "R$ 777,72"
-   ],
-   "bloqueio_detectado": false,
-   "titulo": "Ofertas de Celulares, TVs, Notebook e mais | Samsung Brasil",
-   "json": false,
-   "funcionou": true,
-   "url_final": "https://www.samsung.com/br/offer/deals/"
+   "url_final": "https://www.kalunga.com.br/prod/mouse-gamer-sem-fio-logitech-g305-lightspeed-com-6-botoes-programaveis-e-ate-12-000-dpi-preto-cx-1-un/442535"
   }
  ]
 }
