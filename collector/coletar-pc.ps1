@@ -1,4 +1,5 @@
-# MuquiranaTech: coleta da Amazon feita pelo PC do dono (a Amazon bloqueia o robô do GitHub).
+# MuquiranaTech: robô do PC do dono. Coleta as lojas que bloqueiam o GitHub (ex.: Amazon) e roda os testes
+# de lojas que o agente autônomo pede em docs/sondagens/pedido-pc.json (resultado em resultado-pc.json).
 #
 # Roda numa cópia própria do repositório em %LOCALAPPDATA%\MuquiranaTech\repo, nunca na pasta de trabalho,
 # porque faz "git reset --hard" para sempre partir da versão mais nova do GitHub.
@@ -8,7 +9,7 @@
 #   Instalar ou reinstalar:  powershell -ExecutionPolicy Bypass -File collector\coletar-pc.ps1 -Instalar
 #   Rodar agora, na mão:     powershell -ExecutionPolicy Bypass -File "$env:LOCALAPPDATA\MuquiranaTech\repo\collector\coletar-pc.ps1"
 #   Ver o log:               notepad "$env:LOCALAPPDATA\MuquiranaTech\coleta.log"
-param([switch]$Instalar, [string]$Lojas = "amazon")
+param([switch]$Instalar, [string]$Lojas = "")  # sem -Lojas: as lojas com "onde": "pc" na watchlist
 
 $ErrorActionPreference = "Stop"
 $env:PYTHONIOENCODING = "utf-8"
@@ -69,29 +70,72 @@ try {
     $py = Join-Path $Repo ".venv\Scripts\python.exe"
     $muq = Join-Path $Repo "collector\muq.py"
     $copia = Join-Path $Home_ "coleta.db"
-    Write-Log "Início da coleta: $Lojas"
     Invoke-Git fetch -q origin main | Out-Null
     Invoke-Git reset -q --hard origin/main | Out-Null
-    Copy-Item (Join-Path $Repo "data\muquirana.db") $copia -Force
-    $env:MUQ_DB = $copia
-    $saida = Invoke-Py $muq coletar --lojas $Lojas
-    Remove-Item Env:MUQ_DB
-    $saida | Where-Object { $_ -match "^==|!" } | ForEach-Object { Write-Log $_ }
+
+    # dependências: o agente pode acrescentar pacotes ao requirements.txt; instala só o que faltar
+    Invoke-Py -m pip install -q --disable-pip-version-check -r (Join-Path $Repo "collector\requirements.txt") | Out-Null
+    # navegador de verdade (Playwright + Chromium) para lojas que bloqueiam robôs; instala uma vez só
+    $marca = Join-Path $Home_ "playwright-ok"
+    if (-not (Test-Path $marca)) {
+        Write-Log "Instalando o navegador para testes (uma vez só)..."
+        Invoke-Py -m pip install -q --disable-pip-version-check playwright | Out-Null
+        Invoke-Py -m playwright install chromium | Out-Null
+        if ($LASTEXITCODE -eq 0) { New-Item -ItemType File $marca | Out-Null }
+    }
+
+    # quais lojas este PC coleta: as marcadas "onde": "pc" na watchlist (o agente decide), ou -Lojas
+    if (-not $Lojas) { $Lojas = (Invoke-Py $muq lojas pc | Select-Object -Last 1).Trim() }
+    if ($Lojas) {
+        Write-Log "Início da coleta: $Lojas"
+        Copy-Item (Join-Path $Repo "data\muquirana.db") $copia -Force
+        $env:MUQ_DB = $copia
+        $saida = Invoke-Py $muq coletar --lojas $Lojas
+        Remove-Item Env:MUQ_DB
+        $saida | Where-Object { $_ -match "^==|!" } | ForEach-Object { Write-Log $_ }
+    }
+
+    # pedido de teste do agente: roda quando o id do pedido é diferente do id do último resultado
+    $pedido = Join-Path $Repo "docs\sondagens\pedido-pc.json"
+    $resultadoRepo = "docs/sondagens/resultado-pc.json"
+    $resultado = Join-Path $Home_ "resultado-pc.json"
+    $temResultado = $false
+    if (Test-Path $pedido) {
+        $idPedido = (Get-Content $pedido -Raw -Encoding utf8 | ConvertFrom-Json).id
+        $idFeito = $null
+        $anterior = Join-Path $Repo $resultadoRepo
+        if (Test-Path $anterior) { $idFeito = (Get-Content $anterior -Raw -Encoding utf8 | ConvertFrom-Json).id }
+        if ($idPedido -and $idPedido -ne $idFeito) {
+            Write-Log "Sondagem pedida pelo agente: $idPedido"
+            Invoke-Py $muq testar $pedido --onde pc --saida $resultado | ForEach-Object { Write-Log $_ }
+            $temResultado = Test-Path $resultado
+        }
+    }
+    if (-not $Lojas -and -not $temResultado) { Write-Log "Nada para fazer nesta rodada."; return }
 
     for ($i = 1; $i -le 5; $i++) {
         # parte da versão mais nova do GitHub e mescla só os preços desta coleta
         Invoke-Git fetch -q origin main | Out-Null
         Invoke-Git reset -q --hard origin/main | Out-Null
-        Invoke-Py $muq mesclar $copia --lojas $Lojas | ForEach-Object { Write-Log $_ }
-        Invoke-Py $muq exportar | ForEach-Object { Write-Log $_ }
-        Invoke-Git add data/muquirana.db data.js | Out-Null
+        if ($Lojas) {
+            Invoke-Py $muq mesclar $copia --lojas $Lojas | ForEach-Object { Write-Log $_ }
+            Invoke-Py $muq exportar | ForEach-Object { Write-Log $_ }
+            Invoke-Git add data/muquirana.db data.js | Out-Null
+        }
+        if ($temResultado) {
+            Copy-Item $resultado (Join-Path $Repo $resultadoRepo) -Force
+            Invoke-Git add $resultadoRepo | Out-Null
+        }
         $ErrorActionPreference = "Continue"
         & git -C $Repo diff --cached --quiet
         $semMudanca = ($LASTEXITCODE -eq 0)
         $ErrorActionPreference = "Stop"
         if ($semMudanca) { Write-Log "Nada novo para enviar."; break }
         $quando = Get-Date -Format "yyyy-MM-dd HH'h'mm"
-        Invoke-Git commit -q -m "Preços de $quando · Amazon (PC)" | Out-Null
+        $oque = @()
+        if ($Lojas) { $oque += "preços ($Lojas)" }
+        if ($temResultado) { $oque += "sondagem" }
+        Invoke-Git commit -q -m "PC $quando · $($oque -join ' + ')" | Out-Null
         $ErrorActionPreference = "Continue"
         & git -C $Repo push -q 2>&1 | Out-Null
         $ok = ($LASTEXITCODE -eq 0)

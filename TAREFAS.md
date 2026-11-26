@@ -35,7 +35,7 @@ Status: `[ ]` a fazer · `[~]` em andamento · `[x]` feita, publicada e testada 
   português, explicando em linguagem simples o que muda para quem usa o site.
 - **Nunca use `git push --force`** nem reescreva o histórico da `main`. Para desfazer algo, use `git revert`.
 - **Nunca altere** `data/muquirana.db` nem `data.js`: são dos robôs de coleta. Se seu branch tocar neles, desfaça.
-- **Nunca mexa** em credenciais ou segredos, no `coletar-pc.ps1`, nem nas configurações da Cloudflare ou do
+- **Nunca mexa** em credenciais ou segredos, no `coletar-pc.ps1` (use `docs/sondagens/` e o `"onde": "pc"` da watchlist), nem nas configurações da Cloudflare ou do
   GitHub (Pages, secrets, branch protection).
 - **Nunca aumente** a frequência dos robôs: o plano grátis da Cloudflare tem 500 builds por mês.
 - **Requisições às lojas:** no máximo 30 por tarefa, com 3 s ou mais entre elas.
@@ -150,13 +150,34 @@ O dono ainda vai criar o app. O agente deixa tudo pronto para funcionar no dia e
 - Se o preço não bater de jeito nenhum, marque `[-]` e explique no DIARIO.md.
 
 ### 5. [ ] Testar TODAS as lojas importantes (pedido do dono: todas devem aparecer no site)
-O dono quer o máximo de lojas confiáveis no site. Teste **cada uma** da lista abaixo, na rede do GitHub Actions,
-com um workflow de teste (sem salvar dados) que escreve o resultado como anotação (`::notice::`), uma busca
-simples por loja (ex.: "smart tv 55" ou "iphone"). Para cada loja, tente nesta ordem até uma funcionar:
+O dono quer o máximo de lojas confiáveis no site, e **quer que você encontre um caminho que funcione: pelo GitHub
+ou pelo PC dele. Sempre teste, e se não der, tente a próxima alternativa.** Só marque uma loja como impossível
+depois de esgotar **todas** as combinações abaixo, nos **dois** lugares.
+
+**Os dois lugares, e como testar em cada um** (ponte em `docs/sondagens/`, veja o LEIA-ME de lá):
+- **GitHub:** escreva `docs/sondagens/pedido-github.json` com um `id` novo e publique. O workflow `sondar.yml`
+  roda em ~3 min, com `requests` e com navegador de verdade (Playwright), e grava `resultado-github.json`.
+  Leia com `git pull` (espere com laço curto).
+- **PC do dono:** escreva `docs/sondagens/pedido-pc.json` com um `id` novo e publique. O robô do PC executa na
+  próxima rodada (a cada 6h, só com o PC ligado) e grava `resultado-pc.json`. O PC tem IP residencial: muitas
+  lojas que bloqueiam o GitHub (datacenter) liberam o PC. Enquanto espera, siga com outras lojas e tarefas.
+- Já existe um **pedido inicial** nos dois lugares (Magalu, Casas Bahia, Pichau, Terabyte, Carrefour, Fast Shop,
+  Kalunga, Mercado Livre e Amazon), em requests e navegador. Comece lendo esses resultados.
+
+**Para cada loja, tente nesta ordem até uma funcionar, primeiro no GitHub e depois no PC:**
 1. API pública da loja (muitas lojas brasileiras usam VTEX: `/api/catalog_system/pub/products/search?ft=...`;
-   outras têm JSON embutido na página, como o `__NEXT_DATA__` da KaBuM!);
-2. `requests` com cabeçalhos de navegador;
-3. **Playwright com Chromium** (grátis), abrindo a página de busca como um navegador de verdade.
+   outras têm JSON embutido na página, como o `__NEXT_DATA__` da KaBuM!, ou uma API interna que a própria página
+   chama: procure no HTML por URLs de API);
+2. `requests` com cabeçalhos de navegador, outra URL de busca, a URL de categoria em vez da busca;
+3. **Playwright com Chromium** (grátis), abrindo a página de busca como um navegador de verdade;
+4. as mesmas três coisas **no PC do dono**.
+Registre cada tentativa (lugar, jeito, resultado) na tabela do DIARIO.md.
+
+**Onde a loja fica:** funcionou no GitHub → coleta no GitHub. Só funcionou no PC → marque `"onde": "pc"` na loja,
+em `lojas` no `collector/watchlist.json` (o robô do PC passa a coletá-la sozinho; não precisa mexer no
+`coletar-pc.ps1`). O PC só coleta com ele ligado, então prefira o GitHub quando os dois funcionarem.
+Se a loja precisar de Playwright no PC, acrescente `playwright` ao `collector/requirements.txt` (o robô do PC
+instala sozinho o que faltar).
 
 Lojas para testar (registre o resultado de **todas** numa tabela no DIARIO.md e na tabela "Lojas" do CLAUDE.md):
 - **Grandes varejistas:** Magazine Luiza, Casas Bahia, Ponto, Extra, Carrefour, Fast Shop, Americanas
@@ -182,6 +203,9 @@ a mescla continua por loja (`mesclar --lojas <loja>`).
 - Na checagem de saúde, veja se há produtos `amazon:` no `data.js`. Se não houver há mais de 12 horas, o robô do
   PC do dono não está conseguindo coletar: anote em "Precisa do dono" (o log fica em
   `%LOCALAPPDATA%\MuquiranaTech\coleta.log` no PC dele).
+- O teste `amazon-coletor` no `resultado-pc.json` diz se o PC do dono está conseguindo coletar a Amazon. Se o PC
+  estiver bloqueado (503), tente reduzir o ritmo (`pausa` maior na watchlist) ou outra URL de busca, e peça um
+  teste novo ao PC.
 - Se o teste da tarefa 5 mostrou que a Amazon funciona com Playwright no GitHub, implemente a coleta da Amazon
   no GitHub (job separado, mesmo filtro de vendedor e as mesmas buscas/ajustes da watchlist) e confira 5 preços.
   Assim a Amazon aparece no site mesmo com o PC do dono desligado.

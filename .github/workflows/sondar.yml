@@ -1,0 +1,54 @@
+name: Sondar lojas (GitHub)
+
+# O agente escreve docs/sondagens/pedido-github.json (ver collector/sondar.py) e faz push.
+# Este workflow roda os testes na rede do GitHub, com requests e com navegador de verdade (Playwright),
+# e grava o resultado em docs/sondagens/resultado-github.json. Não mexe nos preços.
+on:
+  push:
+    branches: [main]
+    paths: ["docs/sondagens/pedido-github.json"]
+  workflow_dispatch:
+
+concurrency: sondar-github
+
+jobs:
+  sondar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Instalar (requests + Playwright com Chromium)
+        run: |
+          pip install -q -r collector/requirements.txt playwright
+          python -m playwright install --with-deps chromium
+      - name: Rodar o pedido
+        run: |
+          python collector/muq.py testar docs/sondagens/pedido-github.json --onde github \
+            --saida "$RUNNER_TEMP/resultado.json"
+          python - <<'PY'
+          import json, os
+          r = json.load(open(os.environ["RUNNER_TEMP"] + "/resultado.json", encoding="utf-8"))
+          for t in r["resultados"]:
+              ok = "OK" if t.get("funcionou") else "NAO"
+              info = t.get("erro") or f"status={t.get('status')} precos={t.get('precos_na_pagina', t.get('itens'))}"
+              print(f"::notice title={t['nome']}::{ok} {info}")
+          PY
+      - name: Salvar o resultado no repositório
+        run: |
+          git config user.name "muquirana-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            cp "$RUNNER_TEMP/resultado.json" docs/sondagens/resultado-github.json
+            git add docs/sondagens/resultado-github.json
+            git diff --cached --quiet && exit 0
+            git commit -q -m "Sondagem de lojas (GitHub): resultado"
+            git push -q && exit 0
+            sleep 10
+          done
+          exit 1

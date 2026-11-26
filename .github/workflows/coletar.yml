@@ -35,7 +35,7 @@ jobs:
           ML_CLIENT_SECRET: ${{ secrets.ML_CLIENT_SECRET }}
         run: |
           cp data/muquirana.db "$RUNNER_TEMP/coleta.db"
-          MUQ_DB="$RUNNER_TEMP/coleta.db" python collector/muq.py coletar --lojas kabum,steam,ml
+          MUQ_DB="$RUNNER_TEMP/coleta.db" python collector/muq.py coletar --lojas "$(python collector/muq.py lojas github)"
 
       - name: Histórico (Wayback Machine)
         if: github.event.schedule == '0 12 * * 0' || inputs.historico == 'sim'
@@ -50,7 +50,7 @@ jobs:
           for i in 1 2 3 4 5; do
             # sempre parte da versão mais nova do repositório e mescla só o que esta coleta trouxe
             git fetch -q origin main && git reset -q --hard origin/main
-            python collector/muq.py mesclar "$RUNNER_TEMP/coleta.db" --lojas kabum,steam,ml --wayback
+            python collector/muq.py mesclar "$RUNNER_TEMP/coleta.db" --lojas "$(python collector/muq.py lojas github)" --wayback
             python collector/muq.py exportar
             git add data/muquirana.db data.js
             git diff --cached --quiet && exit 0

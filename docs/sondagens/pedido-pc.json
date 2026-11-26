@@ -1,0 +1,90 @@
+{
+ "id": "2026-11-26-inicial",
+ "testes": [
+  {
+   "nome": "magalu-requests",
+   "url": "https://www.magazineluiza.com.br/busca/smart+tv+55/",
+   "modo": "requests"
+  },
+  {
+   "nome": "magalu-navegador",
+   "url": "https://www.magazineluiza.com.br/busca/smart+tv+55/",
+   "modo": "playwright"
+  },
+  {
+   "nome": "casasbahia-requests",
+   "url": "https://www.casasbahia.com.br/smart-tv-55/b",
+   "modo": "requests"
+  },
+  {
+   "nome": "casasbahia-navegador",
+   "url": "https://www.casasbahia.com.br/smart-tv-55/b",
+   "modo": "playwright"
+  },
+  {
+   "nome": "pichau-requests",
+   "url": "https://www.pichau.com.br/search?q=rtx%205070",
+   "modo": "requests"
+  },
+  {
+   "nome": "pichau-navegador",
+   "url": "https://www.pichau.com.br/search?q=rtx%205070",
+   "modo": "playwright"
+  },
+  {
+   "nome": "terabyte-requests",
+   "url": "https://www.terabyteshop.com.br/busca?str=rtx+5070",
+   "modo": "requests"
+  },
+  {
+   "nome": "terabyte-navegador",
+   "url": "https://www.terabyteshop.com.br/busca?str=rtx+5070",
+   "modo": "playwright"
+  },
+  {
+   "nome": "carrefour-requests",
+   "url": "https://www.carrefour.com.br/busca/smart%20tv%2055",
+   "modo": "requests"
+  },
+  {
+   "nome": "carrefour-navegador",
+   "url": "https://www.carrefour.com.br/busca/smart%20tv%2055",
+   "modo": "playwright"
+  },
+  {
+   "nome": "fastshop-requests",
+   "url": "https://www.fastshop.com.br/web/s/iphone",
+   "modo": "requests"
+  },
+  {
+   "nome": "fastshop-navegador",
+   "url": "https://www.fastshop.com.br/web/s/iphone",
+   "modo": "playwright"
+  },
+  {
+   "nome": "kalunga-requests",
+   "url": "https://www.kalunga.com.br/busca/1?q=mouse",
+   "modo": "requests"
+  },
+  {
+   "nome": "kalunga-navegador",
+   "url": "https://www.kalunga.com.br/busca/1?q=mouse",
+   "modo": "playwright"
+  },
+  {
+   "nome": "mercadolivre-requests",
+   "url": "https://lista.mercadolivre.com.br/smart-tv-55",
+   "modo": "requests"
+  },
+  {
+   "nome": "mercadolivre-navegador",
+   "url": "https://lista.mercadolivre.com.br/smart-tv-55",
+   "modo": "playwright"
+  },
+  {
+   "nome": "amazon-coletor",
+   "loja": "amazon",
+   "q": "echo-dot"
+  }
+ ]
+}

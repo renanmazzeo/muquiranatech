@@ -227,10 +227,39 @@ def cmd_mesclar(a):
     print(f"Mesclado de {a.origem}: lojas {', '.join(lojas)} · {n} preços ao vivo · {w} preços da Wayback")
 
 
+def cmd_testar(a):
+    """Roda um pedido de sondagem (ver sondar.py) e grava o resultado em JSON.
+
+    O agente autônomo usa isto para descobrir se uma loja funciona pela rede do GitHub
+    (workflow sondar.yml) ou pelo PC do dono (coletar-pc.ps1 lê docs/sondagens/pedido-pc.json).
+    """
+    import sondar
+    pedido = json.loads(Path(a.origem).read_text("utf-8"))
+    print(f"Sondagem {pedido.get('id')} ({a.onde}): {len(pedido.get('testes', []))} testes")
+    res = {"id": pedido.get("id"), "onde": a.onde,
+           "quando": dt.datetime.now(dt.timezone.utc).isoformat(timespec="minutes"),
+           "resultados": sondar.rodar(pedido, LOJAS, pausa=a.pausa)}
+    if a.saida:
+        Path(a.saida).parent.mkdir(parents=True, exist_ok=True)
+        with open(a.saida, "w", encoding="utf-8", newline="\n") as f:
+            json.dump(res, f, ensure_ascii=False, indent=1)
+            f.write("\n")
+    ok = sum(1 for r in res["resultados"] if r.get("funcionou"))
+    print(f"{ok} de {len(res['resultados'])} testes funcionaram")
+
+
+def lojas_do(onde):
+    """Lojas que este robô coleta: "onde" na watchlist ("github", o padrão, ou "pc")."""
+    return [k for k, v in watchlist()["lojas"].items() if v.get("onde", "github") == onde and k in LOJAS]
+
+
 def main():
     p = argparse.ArgumentParser(description="Coletor de preços do MuquiranaTech")
-    p.add_argument("comando", choices=["coletar", "historico", "exportar", "tudo", "mesclar"])
-    p.add_argument("origem", nargs="?", help="mesclar: banco (cópia) de onde vêm os dados novos")
+    p.add_argument("comando", choices=["coletar", "historico", "exportar", "tudo", "mesclar", "testar", "lojas"])
+    p.add_argument("origem", nargs="?", help="mesclar: banco (cópia) de onde vêm os dados novos; "
+                                             "testar: arquivo do pedido; lojas: github ou pc")
+    p.add_argument("--saida", help="testar: arquivo JSON onde gravar o resultado")
+    p.add_argument("--onde", default="github", help="testar: onde o teste está rodando (github ou pc)")
     p.add_argument("--wayback", action="store_true", help="mesclar: incluir também o histórico da Wayback")
     p.add_argument("--desde-dia", default=(dt.datetime.now(BRT).date() - dt.timedelta(days=1)).isoformat(),
                    help="mesclar: preços ao vivo a partir deste dia (padrão: ontem)")
@@ -248,6 +277,10 @@ def main():
         cmd_historico(a)
     if a.comando == "mesclar":
         cmd_mesclar(a)
+    if a.comando == "testar":
+        cmd_testar(a)
+    if a.comando == "lojas":  # usado pelos robôs: imprime as lojas daquele lugar, separadas por vírgula
+        print(",".join(lojas_do(a.origem or "github")))
     if a.comando in ("exportar", "tudo"):
         cmd_exportar(a)
 
