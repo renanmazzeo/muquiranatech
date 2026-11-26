@@ -584,7 +584,7 @@ const nPrecos=REAL?REAL.produtos.reduce((a,p)=>a+p.hist.length,0):P.reduce((a,p)
 const milhar=v=>v.toLocaleString('pt-BR');
 $('stats').innerHTML=[[milhar(P.length),'produtos monitorados'],[milhar(nPrecos),'preços registrados'],[milhar(P.filter(p=>p.s.tier<=1).length),'aprovados pelo Muquirana']]
   .map(([v,l])=>`<div>${v}<small>${l}</small></div>`).join('');
-if(REAL)document.querySelector('footer .wrap').textContent=`MuquiranaTech · preços reais atualizados várias vezes por dia · preço à vista, só vendedores confiáveis. Confira sempre na loja antes de comprar.`;
+if(REAL)document.querySelector('footer .wrap').innerHTML=`MuquiranaTech · preços reais atualizados várias vezes por dia · preço à vista, só vendedores confiáveis. Confira sempre na loja antes de comprar. · <a href="privacidade.html" style="color:var(--mut)">Privacidade e transparência</a>`;
 {const sc=T.slice(0,4).reverse();
  $('legend').innerHTML=`<div class="thv"><div><div class="tube">${sc.map(t=>`<i style="background:${t.c}"></i>`).join('')}</div><div class="bulb"></div></div>
   <div class="lbl">${sc.map(t=>`<span style="--c:${t.c}">${t.k}</span>`).join('')}</div></div>
