@@ -14,12 +14,16 @@ O agente existe **só para terminar a construção do projeto**: deixar o site c
 ## Como cada execução funciona
 1. Leia o CLAUDE.md, este arquivo e as **3 últimas entradas** do DIARIO.md. Confira a linha `ESTADO:`.
    Se a última entrada registrou um problema no site publicado, corrigi-lo é a tarefa desta execução.
-2. Faça a **checagem de saúde** e depois **uma** tarefa: a primeira `[~]` (continuar) ou `[ ]` cujo
-   pré-requisito esteja cumprido. Tarefa grande demais para uma execução? Publique uma parte que funcione
-   sozinha e marque `[~]` (em andamento), dizendo no DIARIO.md o que falta.
-3. **Teste antes de publicar** (ver "Publicar e testar no ar").
-4. Atualize o status aqui e registre a execução no DIARIO.md (modelo no fim daquele arquivo).
-5. **Publique na `main` e teste o site no ar.** Só então pare. Não emende outra tarefa.
+2. Faça a **checagem de saúde**.
+3. **Trabalhe em sequência, uma tarefa de cada vez, até acabar a fila ou a sua cota.** Para cada tarefa
+   (a primeira `[~]` ou `[ ]` cujo pré-requisito esteja cumprido):
+   1. **Teste antes de publicar** (ver "Publicar e testar no ar").
+   2. Atualize o status aqui e acrescente o que fez na entrada desta execução no DIARIO.md.
+   3. **Publique na `main` e teste no ar.** Só depois passe para a próxima tarefa.
+   Tarefa grande? Publique cada parte que funcione sozinha e marque `[~]`, dizendo no DIARIO.md o que falta.
+   A execução pode ser cortada a qualquer momento (cota esgotada): nada importante pode ficar só na sua cópia.
+4. Só pare antes do fim da fila se: a próxima tarefa depende de algo que ainda não aconteceu (marque e diga o
+   quê), ou algo no ar quebrou e você não conseguiu consertar nem reverter.
 
 Status: `[ ]` a fazer · `[~]` em andamento · `[x]` feita, publicada e testada no ar · `[-]` impossível
 (motivo no DIARIO.md).
@@ -32,7 +36,7 @@ Status: `[ ]` a fazer · `[~]` em andamento · `[x]` feita, publicada e testada 
 - **Nunca mexa** em credenciais ou segredos, no `coletar-pc.ps1`, nem nas configurações da Cloudflare ou do
   GitHub (Pages, secrets, branch protection).
 - **Nunca aumente** a frequência dos robôs: o plano grátis da Cloudflare tem 500 builds por mês.
-- **Requisições às lojas:** no máximo 30 por execução, com 3 s ou mais entre elas. **Nunca acesse a Amazon** (ela
+- **Requisições às lojas:** no máximo 30 por tarefa, com 3 s ou mais entre elas. **Nunca acesse a Amazon** (ela
   bloqueia IPs de servidor, e insistir pode atrapalhar a coleta do PC do dono).
 - **Só serviços gratuitos.** Serviço pago, cadastro em site, aceitar termos, qualquer coisa em nome do dono:
   **não faça**. Anote no DIARIO.md em "Precisa do dono".
@@ -60,13 +64,24 @@ git push origin HEAD:main
 Push recusado? `git pull --rebase` de novo e repita. Até 3 tentativas.
 
 **Depois de publicar: testar no ar** (obrigatório)
-- Espere cerca de 2 minutos e baixe https://muquiranatech.pages.dev/ e https://muquiranatech.pages.dev/data.js.
-  Confira que o HTML publicado contém a sua mudança (procure um trecho novo) e que o `data.js` carrega.
-- Se houver Chrome headless, abra o site publicado a 390 px e confira que os cards aparecem, sem erro no console.
-- Mexeu no coletor ou no workflow? Dispare `gh workflow run "Coletar preços"`, espere terminar
-  (`gh run watch`) e confira: sucesso e produtos da loja no `data.js` novo. **Sem `gh` com login** (comum na
-  nuvem): rode a coleta dessa loja localmente numa cópia (`MUQ_DB=/tmp/teste.db`) para provar que funciona, e
-  na próxima execução confira o resultado da coleta agendada (que roda a cada 3h) pela API pública (abaixo).
+
+O ambiente na nuvem **não consegue abrir** `muquiranatech.pages.dev` nem `github.io` (o proxy devolve 403), mas
+consegue usar `api.github.com` sem login (repositório público, limite de 60 chamadas por hora). O teste no ar é
+feito por ela. **Não use `sleep` longo** (é bloqueado): espere com um laço curto, por exemplo
+`for i in $(seq 30); do <checagem> && break; sleep 10; done`.
+- **A Cloudflare publicou?** Espere o check "Cloudflare Pages" do seu commit terminar e confira `success`:
+  `curl -s https://api.github.com/repos/renanmazzeo/muquiranatech/commits/<sha>/check-runs` (campos `name`,
+  `status`, `conclusion`). Um `failure` ali quer dizer que o site **não** foi atualizado.
+- **O conteúdo publicado é o seu?** O site é cópia exata do commit. Confira no commit publicado
+  (`https://api.github.com/repos/renanmazzeo/muquiranatech/contents/index.html?ref=<sha>`, conteúdo em base64)
+  que a sua mudança está lá, e rode nele o teste do Chrome headless (ou `node`) de "Antes de publicar".
+- **Os testes passaram?** Confira o check "testar" (workflow Testes) do seu commit, quando ele rodar.
+- **Mexeu no coletor de uma loja?** Rodar a coleta aqui pode não provar nada (a rede da nuvem pode ser
+  bloqueada pela loja, e a do GitHub Actions é outra). Para testar na rede do GitHub, use um workflow que rode
+  no `push` (filtrado por `paths:`) e escreva o resultado como anotação (`echo "::notice::kabum 60 itens"`).
+  Anotações são públicas: `GET /repos/.../check-runs/<id>/annotations`. Um teste sem produtos deve terminar em
+  `failure`. Na execução seguinte, confira também a coleta agendada (checagem de saúde).
+- Mexeu no workflow de coleta? Confira na checagem de saúde da próxima execução que a coleta agendada deu certo.
 - **Algo quebrou no ar?** Corrija na hora. Se não conseguir em poucos minutos, `git revert` do seu commit,
   publique o revert, confira que o site voltou e registre no DIARIO.md o que aconteceu.
 - Anote no DIARIO.md o resultado do teste no ar.
@@ -84,7 +99,7 @@ Push recusado? `git pull --rebase` de novo e repita. Até 3 tentativas.
 
 ## Tarefas
 
-### 1. [~] Testes automáticos dos leitores de loja
+### 1. [x] Testes automáticos dos leitores de loja
 Por quê: sem testes, só descobrimos que uma loja mudou o formato quando o site mostra preço errado.
 - Crie `tests/` com páginas salvas (fixtures pequenas, cortando o que não interessa) da KaBuM!, incluindo um
   produto **com oferta ativa** e um **sem oferta**. Para a Amazon, **não baixe nada**: monte um HTML mínimo

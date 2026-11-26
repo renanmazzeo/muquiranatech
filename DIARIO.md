@@ -17,6 +17,19 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 
 ---
 
+## 2026-11-26 01:40 UTC · sessão com o dono · ajustes no roteiro do agente
+**Feito**
+- Tarefa 1 conferida e marcada `[x]`: o workflow Testes passou no GitHub (run 45735492909), e o check
+  "Cloudflare Pages" do commit cc30b58 deu `success`.
+- Roteiro mudado a pedido do dono: o agente faz **várias tarefas por execução**, uma de cada vez, até acabar a
+  fila ou a cota, em vez de parar depois de uma.
+- "Teste no ar" refeito para funcionar na nuvem: a nuvem não abre pages.dev nem github.io, então o teste usa a API
+  pública do GitHub (check "Cloudflare Pages" do commit, conteúdo do commit publicado, anotações de workflow).
+- Sem `sleep` longo: espera com laço curto.
+- Agendamento a cada 2h (antes 6h).
+
+---
+
 ## 2026-11-26 01:30 UTC · agente · tarefa 1 (testes dos leitores de loja)
 **Saúde:** data.js gerado às 00:50 UTC (ok, menos de 6 h) · 303 produtos KaBuM! · 0 Amazon (o robô do PC ainda não publicou nada: ver "Precisa do dono") · coletas: última `success` às 23:50 UTC; as 3 seguintes `cancelled` (provavelmente à mão) e uma em andamento.
 **Feito:** criada a pasta `tests/` com 14 testes (`python -m unittest`): oferta da KaBuM! só vale dentro de `startsAt..endsAt`, caixa aberta é ignorada, `pick` respeita vendedor, `must`, `not` e limite, `amazon.parse` ignora patrocinados e lê o preço riscado, e `mesclar` não duplica nem apaga a outra loja. Criado o workflow `testes.yml` (roda só quando mudam `collector/`, `tests/` ou `index.html`). As páginas de teste (fixtures) são pequenas e montadas à mão no formato real (`__NEXT_DATA__`), sem baixar nada das lojas.
