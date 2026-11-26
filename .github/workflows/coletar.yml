@@ -2,8 +2,8 @@ name: Coletar preços
 
 on:
   schedule:
-    - cron: "0 */3 * * *"    # a cada 3 horas: preços mudam várias vezes por dia em promoções
-    - cron: "0 12 * * 0"     # domingo 09h: também busca histórico novo na Wayback
+    - cron: "17 */3 * * *"   # a cada 3 horas (minuto 17: no minuto 0 o GitHub atrasa ou pula): preços mudam várias vezes por dia em promoções
+    - cron: "47 12 * * 0"    # domingo 09h: também busca histórico novo na Wayback
   workflow_dispatch:
     inputs:
       historico:
