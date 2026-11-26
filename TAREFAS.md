@@ -215,7 +215,7 @@ a mescla continua por loja (`mesclar --lojas <loja>`).
 Coletor pronto e conferido (8 fichas) e ligado em 26/11; falta ver a coleta agendada trazer `kalunga:` ao data.js. Coletor `collector/kalunga.py` a partir do HTML guardado em `docs/sondagens/html/kalunga-html.html` (pedido `html1`),
 só vendedor Kalunga, conferência de 5 preços, `STORES` do site, `coletar.yml`. Mesmo padrão da tarefa 2.
 
-### 5d. [ ] Lojas oficiais de marcas e jogos que responderam na rodada 2 (GitHub)
+### 5d. [~] Lojas oficiais de marcas e jogos que responderam na rodada 2 (GitHub)
 Dell (requests), Samsung (navegador), Apple, Lenovo (navegador), Motorola, PlayStation Store, Xbox (navegador).
 Uma de cada vez, só as que o coletor conseguir ler com preço confiável; as com navegador vão em job separado.
 Carrefour e Pichau só passaram no PC (`"onde": "pc"`): ver DIARIO.

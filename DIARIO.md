@@ -14,7 +14,16 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 - [ ] Amazon: o robô do PC foi instalado em 25/11, mas a Amazon estava bloqueando este PC por excesso de testes.
       Conferir no `%LOCALAPPDATA%\MuquiranaTech\coleta.log` se as coletas seguintes deram certo.
 - [ ] Tarefa 5 (navegador Playwright nas lojas que bloqueiam robôs): o sistema de permissões da execução automática recusou criar o teste, por ser tentativa de passar por bloqueio anti-robô. Diga se autoriza (ou marque a tarefa `[-]` e atualize a tabela "Lojas").
+- [ ] Coleta agendada (cron de 3 h) não dispara desde 01:33 UTC de 26/11: conferir em GitHub → Actions se o workflow está ativo.
 - [ ] Opcional: Programa de Associados da Amazon; domínio próprio.
+
+---
+
+## 2026-11-26 08:40 UTC · agente · saúde, coleta e 5d (sondagem html5)
+**Saúde:** data.js gerado às 04:35 UTC (4 h) · 308 KaBuM! · 286 Amazon · 21 Steam · 0 Kalunga · **a coleta agendada de 3 h não está disparando** (última `schedule` não existe; só `workflow_dispatch`; a última foi 01:33 UTC). O cron do GitHub é pouco confiável, mas vale o dono conferir em Actions se o workflow não está desativado.
+**Feito:** disparei uma coleta (08:28 UTC, `in_progress` ao escrever) para trazer `kalunga:` ao site. Sondagem `html5` no GitHub (navegador, HTML guardado em `docs/sondagens/html/`): Apple (43 preços na página), Lenovo (100), Motorola (15), PlayStation (61), Xbox (36): todas 200, sem bloqueio. Falta montar cada coletor (um por loja, em job com Playwright) e conferir 5 preços contra a ficha; nada publicado no site nesta execução.
+**Próximo passo:** conferir `kalunga:` no data.js (5c → `[x]`); começar o coletor da PlayStation Store ou Lenovo a partir do HTML guardado.
+**Precisa do dono:** conferir se o agendamento (cron) do workflow "Coletar preços" está ativo em Actions.
 
 ---
 
