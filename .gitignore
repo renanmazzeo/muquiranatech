@@ -2,3 +2,9 @@
 __pycache__/
 *.pyc
 .env
+
+# chaves e senhas nunca vão para o GitHub (repositório público)
+*CHAVE*
+*chave*
+*.key
+*senha*
