@@ -17,6 +17,15 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 
 ---
 
+## 2026-11-26 16:30 UTC · agente · saúde e tarefa 8 (revisar.py)
+**Saúde:** data.js gerado às 14:26 UTC (2 h) · 4.173 KaBuM! · 286 Amazon · 64 Kalunga · 20 PlayStation · 150 Samsung · 21 Steam · 0 Motorola (a coleta de 14:09 é anterior à loja) · nenhuma coleta `schedule` desde 25/11 (só `workflow_dispatch`, todas `success`). Disparei uma coleta à mão (16:3x UTC) para trazer `motorola:`.
+**Feito:** `collector/revisar.py` (só leitura; lê data.js e lista preço fora de 25%–400% da mediana da categoria e acessório em categoria de aparelho). Resultado: 1.097 suspeitos, quase todos falsos alarmes (a mediana da categoria mistura produtos de faixas muito diferentes: TV 98" × TV box, monitor OLED × monitor comum, jogos de R$ 12 × R$ 300). Achados reais: Amazon traz carregadores/power banks e controles na categoria `celular`/`console` (acessórios de 9 itens na Amazon e 19 na KaBuM!). Não removi buscas nem mexi na watchlist: o dono aceita acessórios das lojas, e a categoria aproximada não engana o preço. Sugestão futura: comparar preço só entre produtos da mesma busca, não da categoria inteira.
+**Teste no ar:** só script novo e documentos; site não mudou (sem teste de Cloudflare necessário).
+**Próximo passo:** conferir `motorola:`; Lenovo e Xbox (navegador) na 5d; depois tarefa final (9) quando a 5d fechar.
+**Precisa do dono:** nada novo.
+
+---
+
 ## 2026-11-26 15:40 UTC · dono + Claude · Samsung, comparação entre lojas, "Como funciona", domínio
 **Feito:** Samsung no ar (150 produtos, catálogo VTEX, preço do Pix); Apple deixada de lado. Comparação "o mesmo
 produto em outras lojas" (37 grupos conferidos um a um; regras contra DDR4×DDR5, 5060×5070, 50"×55"). Contagem e

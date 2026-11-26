@@ -239,7 +239,7 @@ Carrefour e Pichau só passaram no PC (`"onde": "pc"`): ver DIARIO.
   para o link ficar bonito no WhatsApp.
 - Pronto quando: o texto está em português simples, sem jargão, e os números batem com o código.
 
-### 8. [ ] Qualidade dos dados
+### 8. [x] Qualidade dos dados (script feito 26/11; achados no DIARIO; watchlist não alterada)
 - Script `collector/revisar.py` que lê o `data.js` e lista suspeitos: preço muito fora da mediana da categoria
   (menos de 25% ou mais de 400%), nome sem nenhuma palavra do `must` da busca, ou acessório (capa, película,
   suporte, cabo, pilha) em categoria de aparelho.
