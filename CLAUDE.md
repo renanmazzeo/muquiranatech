@@ -1,31 +1,53 @@
 # MuquiranaTech: contexto do projeto
 
-Portal de ofertas de tecnologia que compara o preço de hoje com o histórico, só com vendedores confiáveis.
-Público: leigo em tecnologia. Todo o texto do site é em português do Brasil.
+Portal de ofertas de tecnologia que compara o preço de hoje com o histórico, só com lojas e vendedores confiáveis.
+Público: leigo em tecnologia. Todo o texto do site e dos commits é em português do Brasil.
+
+> **Agente autônomo (tarefa agendada)?** Leia também [TAREFAS.md](TAREFAS.md) (o que fazer e as regras)
+> e [DIARIO.md](DIARIO.md) (o que já foi feito). Registre no DIARIO.md tudo o que fizer.
 
 ## Regras do dono
 - **Só serviços gratuitos.** Hospedagem, banco de dados e automação precisam ter plano grátis que aguente o uso.
-- Mostrar no computador antes de publicar mudanças grandes no site. Todo push na `main` vai ao ar no GitHub Pages.
-- O site precisa transmitir credibilidade: dados reais, data da última atualização, só lojas e vendedores confiáveis.
+- Mudanças grandes no site: testar antes. Todo push na `main` vai ao ar na hora (Cloudflare Pages e GitHub Pages).
+- O site precisa transmitir credibilidade: preço igual ao da loja, hora da coleta, só vendedores confiáveis.
+- O dono não é desenvolvedor: explicar em linguagem simples.
 
-## Como funciona
+## Arquitetura
+```
+GitHub Actions (a cada 3h) ──► coleta KaBuM! ─┐
+PC do dono (a cada 6h)        ► coleta Amazon ─┼─► mescla em data/muquirana.db ─► exporta data.js ─► push na main
+                                               │                                                    │
+Wayback Machine (domingo) ─► histórico KaBuM! ─┘              Cloudflare Pages / GitHub Pages ◄─────┘
+```
 - `index.html`: o site inteiro (HTML, CSS e JS num arquivo só). Lê `data.js`; sem ele, mostra dados fictícios.
-- `collector/muq.py`: comandos `coletar`, `historico`, `exportar` e `tudo`.
-  - `historico --meses N` (padrão 12, nunca mais de 1 ano), `--max-minutos` para parar antes do limite do GitHub.
-  - Baixa primeiro as cópias mais recentes da Wayback e pula as que já baixou (tabela `wayback_done`).
-- `collector/kabum.py`: lê o `__NEXT_DATA__` das páginas de busca da KaBuM!. `pick()` filtra por vendedor
-  confiável, disponibilidade, palavras obrigatórias (`must`) e proibidas (`not`).
-  **Ofertas:** em promoções o preço real fica em `offer` (`priceWithDiscount`, `startsAt`/`endsAt`). `_item()` usa a
-  oferta ativa no instante da página (agora, ou a data da cópia na Wayback). Ignorar a oferta foi o bug de
-  25/11/2026, quando o site mostrava preços mais altos que os da loja. O preço "Prime" (só para assinantes) não é usado.
-- `collector/watchlist.json`: 112 buscas (cerca de 300 produtos). Para testar uma busca nova, rode `kabum.search` e
-  `kabum.pick` antes de adicionar e confira se o produto bate com o nome.
-- `data/muquirana.db`: SQLite (`products`, com `offer_ends` e `checked_at`; `prices`, com `source` live ou wayback).
-  Um preço por produto por dia (dia no fuso de Brasília); a última coleta do dia substitui as anteriores.
-- `.github/workflows/coletar.yml`: coleta a cada 3 horas; domingo às 9h também busca histórico. O robô faz
-  `pull --rebase -X theirs` antes do push, para não perder a coleta se houver outro push no meio.
-  Rodar na mão: `gh workflow run "Coletar preços" -f historico=sim -f meses=4`.
-  O robô faz commit de `data.js` e do `.db`: sempre rode `git pull` antes de mexer.
+- `collector/muq.py`: comandos
+  - `coletar [--lojas kabum,amazon]`: preço de hoje. Cada loja usa a `pausa` definida para ela na watchlist.
+  - `historico --meses N` (padrão 12, nunca mais de 1 ano), `--max-minutos`: Wayback, só KaBuM!. Baixa primeiro
+    as cópias mais recentes e pula as que já baixou (tabela `wayback_done`).
+  - `mesclar <copia.db> --lojas X [--wayback]`: junta no banco real só as linhas da loja X vindas de uma cópia.
+  - `exportar`: gera `data.js` (sempre com fim de linha LF).
+  - `MUQ_DB=<arquivo>`: faz qualquer comando usar outro banco. Os robôs coletam numa cópia e só no fim fazem
+    `git fetch` + `reset` + `mesclar` + `exportar` + push. Assim um robô nunca apaga a coleta do outro.
+- `collector/kabum.py`: lê o `__NEXT_DATA__` das buscas da KaBuM!. **Ofertas:** em promoções o preço real fica em
+  `offer` (`priceWithDiscount`, `startsAt`/`endsAt`). `_item()` usa a oferta ativa no instante da página (agora, ou a
+  data da cópia na Wayback). Ignorar a oferta foi o bug de 25/11/2026, quando o site mostrava preços mais altos que
+  os da loja. O preço "Prime" (só para assinantes) não é usado. `pick()` (usado por todas as lojas) filtra por
+  vendedor confiável, disponibilidade, palavras obrigatórias (`must`) e proibidas (`not`).
+- `collector/amazon.py`: busca com filtro `rh=p_6:A1ZZFT5FULY4LN` (só "vendido e entregue pela Amazon.com.br");
+  ignora anúncios patrocinados. **A Amazon bloqueia IPs do GitHub (503)**, por isso ela é coletada pelo PC do
+  dono. Se pedirem muitas buscas seguidas, o PC também é bloqueado por algumas horas: nunca rode testes em massa.
+- `collector/coletar-pc.ps1`: o robô do PC. Fica numa cópia própria do repositório em
+  `%LOCALAPPDATA%\MuquiranaTech\repo`, com log em `%LOCALAPPDATA%\MuquiranaTech\coleta.log`. Tarefa do Windows:
+  "MuquiranaTech - Amazon". Para reinstalar: `-Instalar`.
+- `collector/watchlist.json`: `lojas` (nome, vendedores confiáveis, `not` e `pausa` por loja) e 112 `buscas`
+  comuns (`q`, `cat`, `must`, `not`, `max`), com ajustes por loja (ex.: `"amazon": {"must": [...]}` ou
+  `{"skip": true}`). Antes de adicionar uma busca, teste o `search` + `pick` e confira se o produto bate com o nome.
+- `data/muquirana.db`: SQLite. `products` (inclui `offer_ends` e `checked_at`) e `prices` (`source` = live ou
+  wayback). Um preço por produto por dia (dia no fuso de Brasília); a última coleta do dia substitui as anteriores.
+- `.github/workflows/coletar.yml`: KaBuM! a cada 3h; domingo às 9h também busca histórico. Para rodar na mão:
+  `gh workflow run "Coletar preços" -f historico=sim -f meses=4`.
+- `.github/workflows/testar-lojas.yml`: teste rápido para ver se as lojas respondem ao robô do GitHub (não salva nada).
+- Os robôs fazem commit de `data.js` e do `.db` várias vezes por dia: **sempre rode `git pull` antes de mexer**.
 
 ## Muquirômetro (termômetro, sem nota e sem descrição)
 Faixa pelo quanto o preço de hoje está acima do menor preço já visto (`up`):
@@ -41,23 +63,21 @@ Preço normal = mediana dos preços de 31 a 90 dias atrás (`BF` em `index.html`
   promete 25% ou mais de desconto). Usamos 25% porque a KaBuM! já dá até 15% de desconto no Pix em tudo.
 - **Black Firmeza**: 8% ou mais abaixo do preço normal.
 
-## Fontes
-- KaBuM!: funciona (vendedores KaBuM!, Magalu e Fast Shop).
-- Wayback Machine: histórico.
-- Mercado Livre: falta criar as credenciais do app na API (necessário para Xbox, Xiaomi, Meta Quest e pendrives, que
-  na KaBuM! só têm vendedores pequenos).
-- Pichau, Terabyte e Magalu bloqueiam robôs; avaliar programas de afiliado.
+## Lojas (testes de 25/11/2026)
+| Loja | Situação |
+|---|---|
+| KaBuM! | ✅ GitHub (vendedores KaBuM!, Magalu e Fast Shop) |
+| Amazon | ✅ só pelo PC do dono (bloqueia o GitHub). No futuro: API oficial via Programa de Associados |
+| Mercado Livre | ⏳ só pela API oficial; o dono precisa criar o app em developers.mercadolivre.com.br |
+| Americanas | ⚠️ API VTEX pública responde, mas a busca traz itens errados e o preço no Pix difere da API |
+| Steam | ✅ API pública (`store.steampowered.com/api/storesearch`), não implementada ainda |
+| Carrefour, Magalu, Casas Bahia, Pichau, Terabyte | ❌ 403/captcha para robôs |
 
 ## Infra
-- Repositório: https://github.com/renanmazzeo/muquiranatech (público). GitHub CLI em `C:\Program Files\GitHub CLI\gh.exe`.
+- Repositório: https://github.com/renanmazzeo/muquiranatech (público). GitHub CLI: `C:\Program Files\GitHub CLI\gh.exe`.
 - Site principal: https://muquiranatech.pages.dev (Cloudflare Pages, conectado ao GitHub, publica a cada push).
-  Também continua em https://renanmazzeo.github.io/muquiranatech/ (GitHub Pages).
+  Também em https://renanmazzeo.github.io/muquiranatech/ (GitHub Pages).
+  Cloudflare grátis: 500 builds por mês. Os robôs fazem cerca de 360 (KaBuM! a cada 3h + Amazon a cada 6h).
+  **Não aumente a frequência**, e pull requests também geram builds de prévia.
   A Netlify foi descartada porque o plano grátis novo só permite cerca de 20 deploys por mês.
-  Cloudflare: 500 builds por mês; o robô faz cerca de 240 (a cada 3h).
-- Banco: SQLite no git basta por enquanto. Quando o repositório passar de cerca de 1 GB, migrar para o Cloudflare D1
-  (grátis, 5 GB).
-
-## Pendências
-- Conferir o resultado do primeiro histórico da Wayback (4 meses) e se a Black Fraude flagrou produtos de verdade.
-- Integrar o Mercado Livre.
-- Domínio próprio (.com.br, cerca de R$ 40 por ano no Registro.br) é opcional e fica para o futuro.
+- Banco: SQLite no git basta por enquanto. Quando o repositório passar de cerca de 1 GB, migrar para o Cloudflare D1.
