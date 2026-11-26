@@ -9,6 +9,7 @@ Uso (na pasta muquiranatech):
 import argparse
 import datetime as dt
 import json
+import os
 import sqlite3
 import sys
 import time
@@ -16,11 +17,18 @@ from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8")
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import amazon  # noqa: E402
 import kabum  # noqa: E402
 import wayback  # noqa: E402
 
+# lojas que o coletor sabe ler (cada módulo tem search(termo) -> itens no mesmo formato)
+LOJAS = {"kabum": kabum, "amazon": amazon}
+
 ROOT = Path(__file__).resolve().parent.parent
 DB = ROOT / "data" / "muquirana.db"
+# MUQ_DB: coletar numa cópia do banco e depois "mesclar" no banco real (ver cmd_mesclar)
+if os.environ.get("MUQ_DB"):
+    DB = Path(os.environ["MUQ_DB"]).resolve()
 WATCH = Path(__file__).with_name("watchlist.json")
 
 
@@ -56,36 +64,56 @@ def watchlist():
 
 
 def cmd_coletar(a):
-    c, today, total = db(), hoje().isoformat(), 0
+    c, today = db(), hoje().isoformat()
     now = dt.datetime.now(dt.timezone.utc).isoformat(timespec="minutes")
-    w = watchlist()["kabum"]
-    for q in w["buscas"]:
+    w = watchlist()
+    lojas = a.lojas.split(",") if a.lojas else list(w["lojas"])
+    for loja in lojas:
+        total = coletar_loja(c, loja, w["lojas"][loja], w["buscas"], today, now, a.pausa)
+        c.commit()
+        print(f"== {w['lojas'][loja]['nome']}: {total} preços de hoje salvos.")
+
+
+def coletar_loja(c, loja, cfg, buscas, today, now, pausa):
+    mod, total, erros = LOJAS[loja], 0, 0
+    print(f"== {cfg['nome']}")
+    for base in buscas:
+        q = {**base, **base.get(loja, {})}  # ajustes só desta loja (ex.: "amazon": {"must": [...]})
+        if q.get("skip"):
+            continue
         try:
-            chosen = kabum.pick(kabum.search(q["q"]), q.get("must", []), q.get("max", 4),
-                                w["vendedores_confiaveis"], q.get("not", []))
+            chosen = kabum.pick(mod.search(q["q"]), q.get("must", []), q.get("max", 4),
+                                cfg["vendedores_confiaveis"], q.get("not", []) + cfg.get("not", []))
+        except getattr(mod, "Blocked", ()) as e:  # a loja pediu captcha: tenta de novo na próxima rodada
+            print(f"  ! {cfg['nome']} bloqueou ({e}); parando esta loja por agora")
+            break
         except Exception as e:  # noqa: BLE001 — uma busca com erro não derruba as outras
             print(f"  ! {q['q']}: {e}")
+            erros += 1
+            if erros >= 10:
+                print(f"  ! erros demais em {cfg['nome']}; parando esta loja por agora")
+                break
             continue
         for it in chosen:
-            pid = "kabum:" + it["code"]
+            pid = f"{loja}:{it['code']}"
             c.execute("""insert into products
               (id,store,code,name,cat,url,img,seller,list_price,first_seen,last_seen,offer_ends,checked_at)
               values(?,?,?,?,?,?,?,?,?,?,?,?,?)
               on conflict(id) do update set name=excluded.name, url=excluded.url, img=excluded.img,
               seller=excluded.seller, list_price=excluded.list_price, last_seen=excluded.last_seen,
               offer_ends=excluded.offer_ends, checked_at=excluded.checked_at""",
-                      (pid, "kabum", it["code"], it["name"], q["cat"], it["url"], it["img"],
+                      (pid, loja, it["code"], it["name"], q["cat"], it["url"], it["img"],
                        it["seller"], it["list_price"], today, today, it["offer_ends"], now))
             c.execute("insert or replace into prices values(?,?,?,?)", (pid, today, it["price"], "live"))
             total += 1
         print(f"  {q['q']:<28} {len(chosen)} produtos")
-        time.sleep(a.pausa)
-    c.commit()
-    print(f"{total} preços de hoje salvos.")
+        time.sleep(pausa)
+    return total
 
 
 def cmd_historico(a):
-    c, w = db(), watchlist()["kabum"]
+    c, wl = db(), watchlist()
+    w = {**wl["lojas"]["kabum"], "buscas": wl["buscas"]}  # histórico da Wayback: só KaBuM! por enquanto
     known = {r[0] for r in c.execute("select code from products where store='kabum'")}
     if not known:
         print('Nenhum produto ainda. Rode "coletar" primeiro.')
@@ -149,7 +177,9 @@ def cmd_exportar(a):
             continue
         produtos.append({
             "id": pid, "n": name, "cat": cat, "st": store, "url": url, "img": img,
-            "seller": None if "kabum" in kabum.norm(seller) else f"Vendido por {seller} · parceiro oficial KaBuM!",
+            # vendido pela própria loja: o site escreve "Vendido e entregue por <loja>"
+            "seller": None if store in kabum.norm(seller).replace(".com.br", "") else
+            f"Vendido por {seller} · parceiro oficial {watchlist()['lojas'][store]['nome']}",
             "full": list_price, "cur": cur[0], "hist": [[d, p] for d, p in hist],
             "at": checked_at,  # quando o preço de hoje foi visto na loja (UTC)
             "ends": offer_ends,  # fim da oferta relâmpago, se houver (epoch)
@@ -161,10 +191,45 @@ def cmd_exportar(a):
     print(f"{len(produtos)} produtos exportados para {out.name}")
 
 
+def cmd_mesclar(a):
+    """Junta no banco real só o que uma coleta feita numa cópia (a.origem) produziu.
+
+    Dois robôs coletam ao mesmo tempo (GitHub: KaBuM!; PC do dono: Amazon). Cada um coleta numa cópia
+    e, logo antes do push, faz git pull e mescla aqui só as linhas das lojas dele. Assim um nunca apaga
+    a coleta do outro, o que aconteceria se o git escolhesse um dos dois arquivos .db inteiro.
+    """
+    c = db()
+    c.execute("attach database ? as o", (str(Path(a.origem).resolve()),))
+    lojas = a.lojas.split(",") if a.lojas else [r[0] for r in c.execute("select distinct store from o.products")]
+    marks = ",".join("?" * len(lojas))
+    c.execute(f"""insert into products(id,store,code,name,cat,url,img,seller,list_price,first_seen,last_seen,
+                                       offer_ends,checked_at)
+        select id,store,code,name,cat,url,img,seller,list_price,first_seen,last_seen,offer_ends,checked_at
+        from o.products where store in ({marks})
+        on conflict(id) do update set name=excluded.name, cat=excluded.cat, url=excluded.url, img=excluded.img,
+          seller=excluded.seller, list_price=excluded.list_price, last_seen=max(last_seen, excluded.last_seen),
+          first_seen=min(first_seen, excluded.first_seen), offer_ends=excluded.offer_ends,
+          checked_at=max(coalesce(checked_at,''), coalesce(excluded.checked_at,''))""", lojas)
+    n = c.execute(f"""insert or replace into prices select x.* from o.prices x
+        join o.products p on p.id=x.product_id
+        where p.store in ({marks}) and x.source='live' and x.day>=?""", (*lojas, a.desde_dia)).rowcount
+    w = 0
+    if a.wayback:
+        w = c.execute("insert or ignore into prices select * from o.prices where source='wayback'").rowcount
+        c.execute("insert or ignore into wayback_done select * from o.wayback_done")
+    c.commit()
+    print(f"Mesclado de {a.origem}: lojas {', '.join(lojas)} · {n} preços ao vivo · {w} preços da Wayback")
+
+
 def main():
     p = argparse.ArgumentParser(description="Coletor de preços do MuquiranaTech")
-    p.add_argument("comando", choices=["coletar", "historico", "exportar", "tudo"])
+    p.add_argument("comando", choices=["coletar", "historico", "exportar", "tudo", "mesclar"])
+    p.add_argument("origem", nargs="?", help="mesclar: banco (cópia) de onde vêm os dados novos")
+    p.add_argument("--wayback", action="store_true", help="mesclar: incluir também o histórico da Wayback")
+    p.add_argument("--desde-dia", default=(dt.datetime.now(BRT).date() - dt.timedelta(days=1)).isoformat(),
+                   help="mesclar: preços ao vivo a partir deste dia (padrão: ontem)")
     p.add_argument("--pausa", type=float, default=2.0, help="segundos entre requisições (seja gentil)")
+    p.add_argument("--lojas", help="só estas lojas, separadas por vírgula (ex.: kabum,amazon)")
     p.add_argument("--meses", type=int, default=12, help="histórico Wayback dos últimos N meses (padrão: 12)")
     p.add_argument("--desde", help="ou a partir deste ano/mês exato (AAAA ou AAAAMM)")
     p.add_argument("--por-mes", type=int, default=2, help="cópias da Wayback por mês e por página")
@@ -175,6 +240,8 @@ def main():
         cmd_coletar(a)
     if a.comando == "historico":
         cmd_historico(a)
+    if a.comando == "mesclar":
+        cmd_mesclar(a)
     if a.comando in ("exportar", "tudo"):
         cmd_exportar(a)
 
