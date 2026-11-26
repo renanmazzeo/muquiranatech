@@ -17,6 +17,15 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 
 ---
 
+## 2026-11-26 01:30 UTC · agente · tarefa 1 (testes dos leitores de loja)
+**Saúde:** data.js gerado às 00:50 UTC (ok, menos de 6 h) · 303 produtos KaBuM! · 0 Amazon (o robô do PC ainda não publicou nada: ver "Precisa do dono") · coletas: última `success` às 23:50 UTC; as 3 seguintes `cancelled` (provavelmente à mão) e uma em andamento.
+**Feito:** criada a pasta `tests/` com 14 testes (`python -m unittest`): oferta da KaBuM! só vale dentro de `startsAt..endsAt`, caixa aberta é ignorada, `pick` respeita vendedor, `must`, `not` e limite, `amazon.parse` ignora patrocinados e lê o preço riscado, e `mesclar` não duplica nem apaga a outra loja. Criado o workflow `testes.yml` (roda só quando mudam `collector/`, `tests/` ou `index.html`). As páginas de teste (fixtures) são pequenas e montadas à mão no formato real (`__NEXT_DATA__`), sem baixar nada das lojas.
+**Como testei:** `python -m unittest` local: 14 testes ok. Falta ver o workflow passar no GitHub, por isso a tarefa 1 fica `[~]`.
+**Próximo passo:** na próxima execução, conferir se `testes.yml` passou no GitHub; se sim, marcar tarefa 1 como `[x]`.
+**Precisa do dono:** nada novo.
+
+---
+
 ## 2026-11-25 (noite) · sessão com o dono · montagem do projeto
 **Feito**
 - Repositório público `renanmazzeo/muquiranatech` criado. Site no GitHub Pages e depois na Cloudflare Pages

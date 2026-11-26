@@ -1,0 +1,23 @@
+name: Testes
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "collector/**"
+      - "tests/**"
+      - "index.html"
+      - ".github/workflows/testes.yml"
+  workflow_dispatch:
+
+jobs:
+  testar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r collector/requirements.txt
+      - run: python -m unittest -v

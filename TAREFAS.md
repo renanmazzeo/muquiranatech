@@ -84,7 +84,7 @@ Push recusado? `git pull --rebase` de novo e repita. Até 3 tentativas.
 
 ## Tarefas
 
-### 1. [ ] Testes automáticos dos leitores de loja
+### 1. [~] Testes automáticos dos leitores de loja
 Por quê: sem testes, só descobrimos que uma loja mudou o formato quando o site mostra preço errado.
 - Crie `tests/` com páginas salvas (fixtures pequenas, cortando o que não interessa) da KaBuM!, incluindo um
   produto **com oferta ativa** e um **sem oferta**. Para a Amazon, **não baixe nada**: monte um HTML mínimo
