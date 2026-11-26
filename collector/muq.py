@@ -36,7 +36,19 @@ def db():
       primary key(product_id, day, source));
     create table if not exists wayback_done(key text primary key);
     """)
+    cols = {r[1] for r in c.execute("pragma table_info(products)")}
+    for col in ("offer_ends integer", "checked_at text"):  # colunas novas em bancos antigos
+        if col.split()[0] not in cols:
+            c.execute(f"alter table products add column {col}")
     return c
+
+
+BRT = dt.timezone(dt.timedelta(hours=-3))  # Brasília (sem horário de verão desde 2019)
+
+
+def hoje():
+    """Data de hoje no Brasil (o robô do GitHub roda em UTC)."""
+    return dt.datetime.now(BRT).date()
 
 
 def watchlist():
@@ -44,7 +56,8 @@ def watchlist():
 
 
 def cmd_coletar(a):
-    c, today, total = db(), dt.date.today().isoformat(), 0
+    c, today, total = db(), hoje().isoformat(), 0
+    now = dt.datetime.now(dt.timezone.utc).isoformat(timespec="minutes")
     w = watchlist()["kabum"]
     for q in w["buscas"]:
         try:
@@ -55,11 +68,14 @@ def cmd_coletar(a):
             continue
         for it in chosen:
             pid = "kabum:" + it["code"]
-            c.execute("""insert into products values(?,?,?,?,?,?,?,?,?,?,?)
+            c.execute("""insert into products
+              (id,store,code,name,cat,url,img,seller,list_price,first_seen,last_seen,offer_ends,checked_at)
+              values(?,?,?,?,?,?,?,?,?,?,?,?,?)
               on conflict(id) do update set name=excluded.name, url=excluded.url, img=excluded.img,
-              seller=excluded.seller, list_price=excluded.list_price, last_seen=excluded.last_seen""",
+              seller=excluded.seller, list_price=excluded.list_price, last_seen=excluded.last_seen,
+              offer_ends=excluded.offer_ends, checked_at=excluded.checked_at""",
                       (pid, "kabum", it["code"], it["name"], q["cat"], it["url"], it["img"],
-                       it["seller"], it["list_price"], today, today))
+                       it["seller"], it["list_price"], today, today, it["offer_ends"], now))
             c.execute("insert or replace into prices values(?,?,?,?)", (pid, today, it["price"], "live"))
             total += 1
         print(f"  {q['q']:<28} {len(chosen)} produtos")
@@ -76,8 +92,8 @@ def cmd_historico(a):
         return
     pages = ["kabum.com.br/" + p for p in w["wayback_paginas"]]
     pages += ["kabum.com.br/busca/" + q["q"] for q in w["buscas"]]
-    hoje = dt.date.today()
-    m = hoje.year * 12 + hoje.month - 1 - a.meses
+    d0 = hoje()
+    m = d0.year * 12 + d0.month - 1 - a.meses
     desde = a.desde or f"{m // 12}{m % 12 + 1:02d}"
     print(f"Histórico desde {desde[:4]}/{desde[4:] or '01'} ({a.meses} meses)")
     done = {r[0] for r in c.execute("select key from wayback_done")}
@@ -106,7 +122,7 @@ def cmd_historico(a):
             print(f"   ! {ts} {original}: {e}")
             continue
         day, hits = f"{ts[:4]}-{ts[4:6]}-{ts[6:8]}", 0
-        for it in kabum.parse(html):
+        for it in kabum.parse(html, at=wayback.epoch(ts)):
             if it["code"] in known:
                 c.execute("insert or replace into prices values(?,?,?,?)",
                           ("kabum:" + it["code"], day, it["price"], "wayback"))
@@ -119,10 +135,11 @@ def cmd_historico(a):
 
 def cmd_exportar(a):
     c = db()
-    cutoff = (dt.date.today() - dt.timedelta(days=7)).isoformat()  # some do site se a loja parou de listar
+    cutoff = (hoje() - dt.timedelta(days=7)).isoformat()  # some do site se a loja parou de listar
     produtos = []
-    for pid, store, name, cat, url, img, seller, list_price in c.execute(
-            "select id,store,name,cat,url,img,seller,list_price from products where last_seen>=? order by id",
+    for pid, store, name, cat, url, img, seller, list_price, offer_ends, checked_at in c.execute(
+            "select id,store,name,cat,url,img,seller,list_price,offer_ends,checked_at from products"
+            " where last_seen>=? order by id",
             (cutoff,)).fetchall():
         hist = c.execute("select day, min(price) from prices where product_id=? group by day order by day",
                          (pid,)).fetchall()
@@ -134,6 +151,8 @@ def cmd_exportar(a):
             "id": pid, "n": name, "cat": cat, "st": store, "url": url, "img": img,
             "seller": None if "kabum" in kabum.norm(seller) else f"Vendido por {seller} · parceiro oficial KaBuM!",
             "full": list_price, "cur": cur[0], "hist": [[d, p] for d, p in hist],
+            "at": checked_at,  # quando o preço de hoje foi visto na loja (UTC)
+            "ends": offer_ends,  # fim da oferta relâmpago, se houver (epoch)
         })
     payload = {"gerado": dt.datetime.now(dt.timezone.utc).isoformat(timespec="minutes"), "produtos": produtos}
     out = ROOT / "data.js"

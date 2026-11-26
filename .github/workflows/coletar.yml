@@ -2,7 +2,7 @@ name: Coletar preços
 
 on:
   schedule:
-    - cron: "0 9,21 * * *"   # 06h e 18h (horário de Brasília): preço do dia
+    - cron: "0 */3 * * *"    # a cada 3 horas: preços mudam várias vezes por dia em promoções
     - cron: "0 12 * * 0"     # domingo 09h: também busca histórico novo na Wayback
   workflow_dispatch:
     inputs:
@@ -46,5 +46,11 @@ jobs:
           git config user.name "muquirana-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/muquirana.db data.js
-          git diff --cached --quiet || git commit -m "Preços de $(date -u +%F)"
-          git push
+          git diff --cached --quiet && exit 0
+          git commit -m "Preços de $(TZ=America/Sao_Paulo date '+%F %Hh%M')"
+          # alguém pode ter feito push durante a coleta: junta e tenta de novo (os dados são só nossos)
+          for i in 1 2 3; do
+            git pull --rebase -X theirs && git push && exit 0
+            sleep 10
+          done
+          exit 1

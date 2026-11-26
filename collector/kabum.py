@@ -6,6 +6,7 @@ essa lista em qualquer lugar do JSON, para continuar funcionando em páginas ant
 """
 import json
 import re
+import time
 import unicodedata
 
 import requests
@@ -32,8 +33,26 @@ def _num(x):
         return None
 
 
-def _item(o):
-    price = _num(o.get("priceWithDiscount")) or _num(o.get("price"))
+def _offer(o, at):
+    """Oferta relâmpago/Black Friday ("OFERTAS KABUM") válida no instante `at`, aberta a todos e com estoque."""
+    of = o.get("offer")
+    if not isinstance(of, dict) or of.get("isPrimeExclusive") or of.get("isLoggedUserExclusive"):
+        return None
+    try:
+        if not of["startsAt"] <= at <= of["endsAt"]:
+            return None
+    except (KeyError, TypeError):
+        return None
+    if "quantityAvailable" in of and not of["quantityAvailable"]:
+        return None
+    return of
+
+
+def _item(o, at=None):
+    """`at` = instante (epoch) em que a página foi vista: agora, ou a data da cópia na Wayback."""
+    of = _offer(o, time.time() if at is None else at)
+    src = of or o  # durante uma oferta, o preço que vale é o dela
+    price = _num(src.get("priceWithDiscount")) or _num(src.get("price"))
     if not price:
         return None
     code = str(o["code"])
@@ -42,7 +61,7 @@ def _item(o):
     if not isinstance(img, str):
         imgs = o.get("images") or []
         img = imgs[0] if imgs and isinstance(imgs[0], str) else None
-    list_price = max(v for v in (_num(o.get("oldPrice")), _num(o.get("price")), price) if v)
+    list_price = max(v for v in (_num(o.get("oldPrice")), _num(o.get("price")), _num(src.get("price")), price) if v)
     flags = o.get("flags") or {}
     if flags.get("isOpenbox"):  # produto de mostruário / caixa aberta: fora
         return None
@@ -56,11 +75,13 @@ def _item(o):
         "img": img,
         "url": f"{BASE}/produto/{code}/{friendly}" if friendly else f"{BASE}/produto/{code}",
         "available": bool(available),
+        "offer_ends": of["endsAt"] if of else None,
     }
 
 
-def parse(html):
-    """Extrai todos os produtos de uma página da KaBuM! (na ordem em que aparecem)."""
+def parse(html, at=None):
+    """Extrai todos os produtos de uma página da KaBuM! (na ordem em que aparecem).
+    `at` (epoch): quando a página foi vista, para saber quais ofertas valiam. Padrão: agora."""
     m = re.search(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', html, re.S)
     if not m:
         return []
@@ -78,7 +99,7 @@ def parse(html):
                     pass
         elif isinstance(o, dict):
             if "code" in o and "name" in o and ("priceWithDiscount" in o or "price" in o):
-                it = _item(o)
+                it = _item(o, at)
                 if it and it["code"] not in found:
                     found[it["code"]] = it
             for v in o.values():

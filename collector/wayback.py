@@ -1,4 +1,5 @@
 """Cópias antigas de páginas via Wayback Machine (Internet Archive) — gratuito."""
+import calendar
 import time
 
 import requests
@@ -40,3 +41,8 @@ def snapshots(url, since="2023", per_month=2):
 def fetch(ts, original):
     """HTML original da cópia (o sufixo id_ evita a barra/reescrita da Wayback)."""
     return _get(f"https://web.archive.org/web/{ts}id_/{original}").text
+
+
+def epoch(ts):
+    """Timestamp da Wayback (AAAAMMDDhhmmss, UTC) em segundos desde 1970."""
+    return calendar.timegm(time.strptime(ts[:14].ljust(14, "0"), "%Y%m%d%H%M%S"))

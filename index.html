@@ -123,7 +123,19 @@ a.cta{display:block;text-align:center;text-decoration:none}
 .ov{position:fixed;inset:0;background:rgba(2,4,8,.75);backdrop-filter:blur(6px);display:none;place-items:center;z-index:50;padding:20px}
 .ov.open{display:grid}
 .modal{width:min(880px,100%);max-height:92vh;overflow:auto;background:var(--panel);border:1px solid var(--line2);border-radius:20px;padding:24px;position:relative;box-shadow:0 30px 80px -20px var(--c)}
-.x{position:absolute;right:16px;top:16px;width:34px;height:34px;border-radius:9px;border:1px solid var(--line2);background:var(--panel2);cursor:pointer;font-size:18px}
+/* botão fechar: fica sempre visível, mesmo rolando a ficha */
+.x{position:sticky;top:0;float:right;margin:-8px -8px 0 8px;z-index:5;width:42px;height:42px;border-radius:12px;border:1px solid var(--line2);background:var(--panel2);cursor:pointer;font-size:24px;line-height:1;box-shadow:0 4px 16px rgba(0,0,0,.5)}
+.x:hover{border-color:var(--txt)}
+.mprice{display:flex;flex-wrap:wrap;align-items:center;gap:14px 24px;margin-top:16px;padding:14px 16px;border-radius:14px;background:#0a0f1a;border:1px solid var(--line2)}
+.mprice .now{flex:1 1 260px}
+.mprice strong{font:800 36px var(--mono);letter-spacing:-1.5px;color:var(--txt)}
+.mprice .pix{font-size:13px;color:var(--li);font-weight:600;margin-left:6px}
+.mprice .sub{margin-top:2px;font-size:13px;color:var(--mut)}
+.mprice .sub s{color:var(--dim)}
+.mprice .seen{margin-top:6px;font-size:12px;color:var(--dim)}
+.mprice .seen b{color:var(--am);font-weight:600}
+.mprice .cta{margin:0;flex:1 1 220px}
+.ends{font:600 11.5px var(--mono);color:var(--am)}
 .mh{display:flex;gap:16px;align-items:center;padding-right:40px}
 .mh .thumb{width:68px;height:68px}
 .mh h2{font-size:22px;letter-spacing:-.4px}
@@ -150,7 +162,9 @@ td small{color:var(--dim)}
 .box ul{list-style:none;display:grid;gap:7px;font-size:13px;color:var(--mut)}
 .box li{display:flex;gap:7px;align-items:flex-start}
 .box li svg{color:var(--li);flex:none;margin-top:2px}
-.cta{margin-top:14px;width:100%;padding:12px;border-radius:10px;border:0;background:var(--c);color:#041014;font-weight:700;cursor:pointer;font-size:15px}
+/* botão da loja: sempre chamativo, independente da faixa do Muquirômetro */
+.cta{margin-top:14px;width:100%;padding:14px;border-radius:12px;border:0;background:linear-gradient(90deg,#a6ff3b,#4dffb8);color:#04140a;font-weight:800;cursor:pointer;font-size:16px;letter-spacing:.2px;box-shadow:0 6px 24px -6px rgba(166,255,59,.6);transition:transform .15s,box-shadow .15s}
+.cta:hover{transform:translateY(-1px);box-shadow:0 10px 30px -6px rgba(166,255,59,.8)}
 footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--dim);font-size:12px;font-family:var(--mono)}
 
 /* Black Fraude × Black Firmeza */
@@ -200,8 +214,9 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--dim);fon
   .bf-list .bfi:nth-child(n+4){display:none}
   .grid{grid-template-columns:1fr}
   .bar .sp{display:none}.sel{flex:1 1 45%}
-  .ov{padding:0;place-items:end center}
-  .modal{border-radius:18px 18px 0 0;padding:18px 14px;max-height:94vh}
+  .ov{padding:7vh 0 0;place-items:end center}
+  .modal{border-radius:18px 18px 0 0;padding:18px 14px;max-height:93vh;max-height:calc(100dvh - 7vh)}
+  .mprice strong{font-size:30px}
   .mh h2{font-size:17px}.mh .thumb{width:54px;height:54px}
   .verdict{flex-direction:column;align-items:stretch}
   .mthermo{flex:none}
@@ -326,6 +341,10 @@ const yearOf=i=>Math.floor((M0+i)/12);
 const yearMarks=()=>[...Array(N).keys()].filter(i=>i===0||(M0+i)%12===0);
 const dBR=d=>d.split('-').reverse().join('/');
 const fmt=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
+const fmtc=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); // com centavos: igual ao da loja
+const hm=d=>d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+const dia=d=>d.toDateString()===new Date().toDateString()?'hoje':d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+const endsTxt=p=>p.ends&&p.ends*1000>Date.now()?`oferta até ${dia(new Date(p.ends*1000))} às ${hm(new Date(p.ends*1000))}`:'';
 const pct=v=>(v>0?'+':'')+Math.round(v*100)+'%';
 const short=v=>v>=1000?'R$'+(v/1000).toFixed(1).replace('.',',')+'k':'R$'+Math.round(v);
 
@@ -444,7 +463,7 @@ function stats(p){
 function fromReal(r,i){
   const h=Array(N).fill(null);
   r.hist.forEach(([d,v])=>{const k=mAbs(d)-M0;if(k>=0&&k<N)h[k]=h[k]==null?v:Math.min(h[k],v)});
-  return{id:i,n:r.n,cat:r.cat,st:r.st,url:r.url,img:r.img,seller:r.seller,full:r.full,cur:r.cur,h,first:r.hist[0][0],pts:r.hist};
+  return{id:i,n:r.n,cat:r.cat,st:r.st,url:r.url,img:r.img,seller:r.seller,full:r.full,cur:r.cur,h,first:r.hist[0][0],pts:r.hist,at:r.at,ends:r.ends};
 }
 // fictício: um ponto por mês (dia 15), para a Black Fraude funcionar também na demonstração
 const monthPts=h=>h.map((v,i)=>v==null?null:[`${Math.floor((M0+i)/12)}-${String((M0+i)%12+1).padStart(2,'0')}-15`,v]).filter(Boolean);
@@ -543,7 +562,8 @@ function card(p){
   return `<article class="card" style="--c:${t.c}" data-id="${p.id}">
     <div class="top"><span class="store">${logo(p.st)}${st.n}</span><span class="tag">${t.k}</span></div>
     <div class="prod"><div class="thumb">${thumb(p,28)}</div><div><h4>${p.n}</h4><div class="cat">${cl}</div></div></div>
-    <div class="price"><strong>${fmt(s.cur)}</strong>${s.off>=.01?`<s>${fmt(s.full)}</s><span class="off">−${Math.round(s.off*100)}% vs cheio</span>`:'<span class="off" style="color:var(--dim)">à vista</span>'}</div>
+    <div class="price"><strong>${fmtc(s.cur)}</strong>${s.off>=.01?`<s>${fmt(s.full)}</s><span class="off">−${Math.round(s.off*100)}% vs cheio</span>`:'<span class="off" style="color:var(--dim)">à vista</span>'}</div>
+    ${endsTxt(p)?`<div class="ends">⏱ ${endsTxt(p)}</div>`:''}
     <div class="cmp">
       <div><small>Menor já visto</small><b>${fmt(s.min)}</b> <em style="color:var(--dim)">${lbl(s.mi)}</em></div>
       <div><small>Hoje vs menor</small><b style="color:${t.c}">${s.fresh?'acompanhando desde '+dBR(p.first).slice(0,5):novo?'É O MENOR!':pct(s.up)+' mais caro'}</b></div>
@@ -607,8 +627,11 @@ $('tier').onchange=e=>{S.tier=e.target.value;render()};
 $('sort').onchange=e=>{S.sort=e.target.value;render()};
 $('q').oninput=e=>{S.q=e.target.value;render()};
 $('grid').onclick=e=>{const c=e.target.closest('.card');if(c)openModal(P[c.dataset.id])};
-$('ov').onclick=e=>{if(e.target.id==='ov'||e.target.closest('.x'))$('ov').classList.remove('open')};
-addEventListener('keydown',e=>{if(e.key==='Escape')$('ov').classList.remove('open')});
+// fechar: X, toque fora, Esc ou o botão "voltar" do celular
+function closeModal(){if(history.state&&history.state.muq)history.back();else $('ov').classList.remove('open')}
+addEventListener('popstate',()=>$('ov').classList.remove('open'));
+$('ov').onclick=e=>{if(e.target.id==='ov'||e.target.closest('.x'))closeModal()};
+addEventListener('keydown',e=>{if(e.key==='Escape'&&$('ov').classList.contains('open'))closeModal()});
 
 /* ---------- modal ---------- */
 function openModal(p){
@@ -622,19 +645,24 @@ function openModal(p){
     ? `Hoje está <b>${Math.round(s.off*100)}% abaixo do preço cheio</b> e no menor patamar já registrado. Momento de comprar.`
     : `Hoje está <b>${Math.round(s.off*100)}% abaixo do preço cheio</b>, mas <b>${pct(s.up)} mais caro que o menor preço já visto</b> (${fmt(s.min)} em ${lbl(s.mi)}).`;
   const m=$('modal');m.style.setProperty('--c',t.c);
-  m.innerHTML=`<button class="x">×</button>
+  m.innerHTML=`<button class="x" aria-label="Fechar">×</button>
     <div class="mh"><div class="thumb" style="--c:${t.c};color:${t.c}">${thumb(p,34)}</div>
       <div><span class="store">${logo(p.st,18)}${st.n}</span><h2>${p.n}</h2><div class="trust" style="margin-top:4px">${shield(13)}${p.seller||'Vendido e entregue por '+st.n}</div></div></div>
+    <div class="mprice"><div class="now"><strong>${fmtc(s.cur)}</strong><span class="pix">à vista no Pix</span>
+        ${s.off>=.01?`<div class="sub"><s>${fmtc(s.full)}</s> · <span class="off">−${Math.round(s.off*100)}% vs preço cheio</span></div>`:''}
+        <div class="seen">${p.at?`Preço visto na loja ${dia(new Date(p.at))} às ${hm(new Date(p.at))}. Pode ter mudado desde então.`:''}${endsTxt(p)?` <b>⏱ ${endsTxt(p)}</b>`:''}</div></div>
+      <a class="cta" href="${p.url}" target="_blank" rel="noopener sponsored">Ver na ${st.n} →</a></div>
     <div class="verdict"><div class="mthermo">${thermoBig(s)}</div><div><span class="tag">${t.k}</span><p style="margin-top:6px">${frase}</p></div></div>
     ${p.bf.kind==='fraude'||p.bf.kind==='firmeza'?`<div class="lost" style="--c:${p.bf.kind==='fraude'?'#ff4d6d':'#a6ff3b'};margin:-6px 0 16px"><b style="color:${p.bf.kind==='fraude'?'#ff4d6d':'#a6ff3b'}">${p.bf.kind==='fraude'?'BLACK FRAUDE':'BLACK FIRMEZA'}</b> · ${p.bf.kind==='fraude'?bfWhy(p.bf):pct(p.bf.vs)+' vs o preço normal dos 3 meses anteriores ('+fmt(p.bf.normal)+')'}</div>`:''}
     <div class="cw" id="cw">${chart(p)}<div class="tip" id="tip"></div></div>
     <div class="mg">
-      <div class="box"><h5>Hoje (${fmt(s.cur)}) comparado com</h5><table>${rows}</table></div>
+      <div class="box"><h5>Hoje (${fmtc(s.cur)}) comparado com</h5><table>${rows}</table></div>
       <div class="box"><h5>Por que essa loja é confiável</h5><ul>
         ${(p.st==='ml'?[p.seller,'Reputação verde no Mercado Livre','+10 mil vendas concluídas','Compra garantida pelo Mercado Livre']:[p.seller||'Vendido e entregue por '+st.n,'Nota fiscal e garantia oficial','Boa reputação em sites de reclamação']).map(x=>`<li>${shield(13)}${x}</li>`).join('')}
         </ul><a class="cta" href="${p.url}" target="_blank" rel="noopener sponsored">Ir para a ${st.n} →</a></div>
     </div>`;
-  $('ov').classList.add('open');
+  if(!$('ov').classList.contains('open'))history.pushState({muq:1},'');
+  $('ov').classList.add('open');m.scrollTop=0;
   // hover no gráfico
   const svg=m.querySelector('.chart'),hit=svg.querySelector('#hit'),tip=$('tip'),W=CW(),L=58,R=18;
   hit.onmousemove=e=>{
