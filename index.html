@@ -581,8 +581,11 @@ function render(){
   const q=S.q.toLowerCase();
   const okTier=p=>S.tier==='all'||(S.tier==='fraude'||S.tier==='firmeza'?p.bf.kind===S.tier:p.s.tier<=+S.tier);
   let list=P.filter(p=>(S.cat==='all'||p.cat===S.cat)&&(!S.stores.size||S.stores.has(p.st))&&okTier(p)&&(!q||p.n.toLowerCase().includes(q)));
-  const f={ping:(a,b)=>(b.s.score??-1)-(a.s.score??-1),off:(a,b)=>b.s.off-a.s.off,low:(a,b)=>a.s.cur-b.s.cur,high:(a,b)=>b.s.cur-a.s.cur}[S.sort];
+  const f={ping:(a,b)=>(b.s.score??-1)-(a.s.score??-1)||b.s.off-a.s.off,off:(a,b)=>b.s.off-a.s.off,low:(a,b)=>a.s.cur-b.s.cur,high:(a,b)=>b.s.cur-a.s.cur}[S.sort];
   list.sort(f);
+  // "melhores": intercala as lojas (1 de cada por vez), senão as lojas novas, sem histórico, iam todas pro fim
+  if(S.sort==='ping'){const g={};list.forEach(p=>(g[p.st]=g[p.st]||[]).push(p));const ks=Object.keys(g);list=[];
+    for(let i=0;list.length<ks.reduce((a,k)=>a+g[k].length,0);i++)ks.forEach(k=>g[k][i]&&list.push(g[k][i]));}
   $('count').textContent=`> ${list.length} oferta${list.length===1?'':'s'} encontrada${list.length===1?'':'s'}`;
   $('grid').innerHTML=list.length?list.map(card).join(''):'<div class="empty">Nenhuma oferta com esses filtros. Tente tirar algum.</div>';
 }
