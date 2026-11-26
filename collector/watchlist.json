@@ -27,7 +27,7 @@
       "pausa": 6,
       "vendedores_confiaveis": ["Amazon.com.br"],
       "not": ["capa", "pelicula", "capinha", "case para", "suporte para", "compativel", "para iphone", "para galaxy", "para samsung", "para ps5", "para playstation", "para xbox", "para nintendo", "para switch", "adesivo", "skin", "recondicionado", "usado", "pilha", "bateria recarregavel"],
-      "max_busca": 8
+      "max_busca": 16
     },
     "ml": {
       "nome": "Mercado Livre",
