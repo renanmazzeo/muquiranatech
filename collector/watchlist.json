@@ -112,6 +112,19 @@
         {"path": "2084", "cat": "monitor", "fixa": true}
       ]
     },
+    "lenovo": {
+      "nome": "Lenovo",
+      "pausa": 2,
+      "vendedores_confiaveis": ["Lenovo"],
+      "not": ["recondicionado", "usado", "seminovo", "vitrine", "outlet"],
+      "catalogo_not": [" + ", "kit "],
+      "buscas": [],
+      "catalogo": [
+        {"path": "6d2170a3-c01c-476f-b6b4-63460d7d7719", "cat": "notebook", "fixa": true},
+        {"path": "515d707d-d48c-46e6-9223-0aadef53842b", "cat": "notebook", "fixa": true},
+        {"path": "d97fd14c-bdf2-4bcb-b686-140f4cc1c4aa", "cat": "monitor", "fixa": true}
+      ]
+    },
     "motorola": {
       "nome": "Motorola",
       "pausa": 2,

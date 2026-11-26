@@ -26,11 +26,12 @@ import playstation  # noqa: E402
 import xbox  # noqa: E402
 import samsung  # noqa: E402
 import motorola  # noqa: E402
+import lenovo  # noqa: E402
 import wayback  # noqa: E402
 import categorias  # noqa: E402
 
 # lojas que o coletor sabe ler (cada módulo tem search(termo) -> itens no mesmo formato)
-LOJAS = {"kabum": kabum, "amazon": amazon, "steam": steam, "kalunga": kalunga, "playstation": playstation, "xbox": xbox, "samsung": samsung, "motorola": motorola, "ml": mercadolivre}
+LOJAS = {"kabum": kabum, "amazon": amazon, "steam": steam, "kalunga": kalunga, "playstation": playstation, "xbox": xbox, "samsung": samsung, "motorola": motorola, "lenovo": lenovo, "ml": mercadolivre}
 
 ROOT = Path(__file__).resolve().parent.parent
 DB = ROOT / "data" / "muquirana.db"
