@@ -1,9 +1,45 @@
 {
- "id": "2026-11-26-html3",
+ "id": "2026-11-26-html4",
  "testes": [
   {
-   "nome": "kalunga-produto",
-   "url": "https://www.kalunga.com.br/prod/mouse-gamer-sem-fio-logitech-g305-lightspeed-com-6-botoes-programaveis-e-ate-12-000-dpi-preto-cx-1-un/442535",
+   "nome": "kalunga-p0",
+   "url": "https://www.kalunga.com.br/prod/mouse-sem-fio-usb-slim-box-1200dpi-preto-mo307-multilaser-cx-1-un/442311",
+   "modo": "requests",
+   "guardar": true
+  },
+  {
+   "nome": "kalunga-p1",
+   "url": "https://www.kalunga.com.br/prod/mouse-pad-com-apoio-de-punho-em-gel-preto-24-8x22-6cm-app-tech-pt-1-un/464357",
+   "modo": "requests",
+   "guardar": true
+  },
+  {
+   "nome": "kalunga-p2",
+   "url": "https://www.kalunga.com.br/prod/mouse-wireless-1600dpi-rosa-mw7030p-ergo-pilha-alcalina-pequena-aa-optimum-com4-5019457-duracell-bt-4-un-cx-1-un/981525",
+   "modo": "requests",
+   "guardar": true
+  },
+  {
+   "nome": "kalunga-p3",
+   "url": "https://www.kalunga.com.br/prod/mouse-pad-com-base-emborrachada-70cm-x-30cm-preto-tbp7x3-app-tech-pt-1-un/464429",
+   "modo": "requests",
+   "guardar": true
+  },
+  {
+   "nome": "kalunga-p4",
+   "url": "https://www.kalunga.com.br/prod/mouse-com-fio-1000-dpi-cinza-mf300g-ergo-cx-1-un/435256",
+   "modo": "requests",
+   "guardar": true
+  },
+  {
+   "nome": "kalunga-p5",
+   "url": "https://www.kalunga.com.br/prod/mouse-pad-com-apoio-de-punho-em-gel-24-8x22-6cm-soothing-rosa-pastel-spiral-pt-1-un/464437",
+   "modo": "requests",
+   "guardar": true
+  },
+  {
+   "nome": "kalunga-p6",
+   "url": "https://www.kalunga.com.br/prod/mouse-sem-fio-1200dpi-cinza-mw253-app-tech-cx-1-un/436332",
    "modo": "requests",
    "guardar": true
   }
