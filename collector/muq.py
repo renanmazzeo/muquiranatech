@@ -23,6 +23,7 @@ import mercadolivre  # noqa: E402
 import steam  # noqa: E402
 import kalunga  # noqa: E402
 import wayback  # noqa: E402
+import categorias  # noqa: E402
 
 # lojas que o coletor sabe ler (cada módulo tem search(termo) -> itens no mesmo formato)
 LOJAS = {"kabum": kabum, "amazon": amazon, "steam": steam, "kalunga": kalunga, "ml": mercadolivre}
@@ -42,15 +43,28 @@ def db():
     create table if not exists products(
       id text primary key, store text, code text, name text, cat text, url text, img text,
       seller text, list_price real, first_seen text, last_seen text);
-    create table if not exists prices(
-      product_id text, day text, price real, source text,  -- source: live | wayback
-      primary key(product_id, day, source));
     create table if not exists wayback_done(key text primary key);
     """)
     cols = {r[1] for r in c.execute("pragma table_info(products)")}
     for col in ("offer_ends integer", "checked_at text"):  # colunas novas em bancos antigos
         if col.split()[0] not in cols:
             c.execute(f"alter table products add column {col}")
+    # preços ordenados por DIA (without rowid): a coleta de hoje só acrescenta páginas no fim do arquivo.
+    # Ordenado por produto, cada coleta mexia no arquivo inteiro e o .db pesava muito mais no histórico do git.
+    sql = (c.execute("select sql from sqlite_master where name='prices'").fetchone() or [""])[0]
+    if "primary key(day" not in sql:
+        c.executescript("""
+        create table prices_novo(
+          product_id text, day text, price real, source text,  -- source: live | wayback
+          primary key(day, product_id, source)) without rowid;
+        """)
+        if sql:
+            c.execute("insert into prices_novo select product_id, day, price, source from prices")
+            c.execute("drop table prices")
+        c.execute("alter table prices_novo rename to prices")
+        c.commit()
+        if sql:
+            c.execute("vacuum")
     return c
 
 
@@ -89,7 +103,10 @@ def coletar_loja(c, loja, cfg, buscas, today, now, pausa):
         if q.get("skip"):
             continue
         try:
-            chosen = kabum.pick(mod.search(q["q"]), q.get("must", []), q.get("max", 4),
+            # "max_busca" da loja: quantos produtos aproveitar de cada página de busca, no mínimo (mesmo
+            # número de acessos à loja, mais variedade de modelos e marcas)
+            limite = max(q.get("max", 4), cfg.get("max_busca", 0))
+            chosen = kabum.pick(mod.search(q["q"]), q.get("must", []), limite,
                                 cfg["vendedores_confiaveis"], q.get("not", []) + cfg.get("not", []))
             if hasattr(mod, "refinar"):  # loja cuja lista de busca não traz o preço final: confere na ficha
                 refinados = []
@@ -110,20 +127,45 @@ def coletar_loja(c, loja, cfg, buscas, today, now, pausa):
                 break
             continue
         for it in chosen:
-            pid = f"{loja}:{it['code']}"
-            c.execute("""insert into products
-              (id,store,code,name,cat,url,img,seller,list_price,first_seen,last_seen,offer_ends,checked_at)
-              values(?,?,?,?,?,?,?,?,?,?,?,?,?)
-              on conflict(id) do update set name=excluded.name, url=excluded.url, img=excluded.img,
-              seller=excluded.seller, list_price=excluded.list_price, last_seen=excluded.last_seen,
-              offer_ends=excluded.offer_ends, checked_at=excluded.checked_at""",
-                      (pid, loja, it["code"], it["name"], q["cat"], it["url"], it["img"],
-                       it["seller"], it["list_price"], today, today, it["offer_ends"], now))
-            c.execute("insert or replace into prices values(?,?,?,?)", (pid, today, it["price"], "live"))
+            salvar(c, loja, it, q["cat"], today, now)
             total += 1
         print(f"  {q['q']:<28} {len(chosen)} produtos")
         time.sleep(pausa)
+    # catálogo: a categoria inteira da loja, só o que a própria loja vende (ver kabum.catalogo)
+    if cfg.get("catalogo") and hasattr(mod, "catalogo"):
+        evitar = [kabum.norm(w) for w in cfg.get("not", []) + cfg.get("catalogo_not", [])]
+        for cat in cfg["catalogo"]:
+            try:
+                itens = mod.catalogo(cat["path"], pausa=pausa)
+            except Exception as e:  # noqa: BLE001
+                print(f"  ! catálogo {cat['path']}: {e}")
+                continue
+            n = 0
+            for it in itens:
+                nome = kabum.norm(it["name"])
+                if not it["available"] or any(w in nome for w in evitar):
+                    continue
+                salvar(c, loja, it, categorias.classificar(it["name"], cat.get("cat", "perif")), today, now)
+                n += 1
+            total += n
+            print(f"  catálogo {cat['path']:<32} {n} produtos")
+            time.sleep(pausa)
     return total
+
+
+def salvar(c, loja, it, cat, today, now):
+    """Grava o produto e o preço de hoje. A categoria só vale na 1ª vez (a de uma busca não é trocada)."""
+    pid = f"{loja}:{it['code']}"
+    c.execute("""insert into products
+      (id,store,code,name,cat,url,img,seller,list_price,first_seen,last_seen,offer_ends,checked_at)
+      values(?,?,?,?,?,?,?,?,?,?,?,?,?)
+      on conflict(id) do update set name=excluded.name, url=excluded.url, img=excluded.img,
+      seller=excluded.seller, list_price=excluded.list_price, last_seen=excluded.last_seen,
+      offer_ends=excluded.offer_ends, checked_at=excluded.checked_at""",
+              (pid, loja, it["code"], it["name"], cat, it["url"], it["img"],
+               it["seller"], it["list_price"], today, today, it["offer_ends"], now))
+    c.execute("insert or replace into prices(product_id,day,price,source) values(?,?,?,?)",
+              (pid, today, it["price"], "live"))
 
 
 def cmd_historico(a):
@@ -179,22 +221,27 @@ def cmd_historico(a):
 def cmd_exportar(a):
     c = db()
     cutoff = (hoje() - dt.timedelta(days=7)).isoformat()  # some do site se a loja parou de listar
-    produtos = []
+    produtos, nomes = [], {k: v["nome"] for k, v in watchlist()["lojas"].items()}
+    # todos os preços numa passada só (com milhares de produtos, uma consulta por produto ficava lenta)
+    dias, vivo = {}, {}
+    for pid, day, price, source in c.execute("select product_id, day, price, source from prices order by day"):
+        d = dias.setdefault(pid, {})
+        d[day] = min(price, d.get(day, price))
+        if source == "live":
+            vivo[pid] = price  # o último dia (ordem por dia) fica
     for pid, store, name, cat, url, img, seller, list_price, offer_ends, checked_at in c.execute(
             "select id,store,name,cat,url,img,seller,list_price,offer_ends,checked_at from products"
             " where last_seen>=? order by id",
             (cutoff,)).fetchall():
-        hist = c.execute("select day, min(price) from prices where product_id=? group by day order by day",
-                         (pid,)).fetchall()
-        cur = c.execute("select price from prices where product_id=? and source='live' order by day desc limit 1",
-                        (pid,)).fetchone()
+        hist = sorted(dias.get(pid, {}).items())
+        cur = (vivo[pid],) if pid in vivo else None
         if not hist or not cur:
             continue
         produtos.append({
             "id": pid, "n": name, "cat": cat, "st": store, "url": url, "img": img,
             # vendido pela própria loja: o site escreve "Vendido e entregue por <loja>"
             "seller": None if store in kabum.norm(seller).replace(".com.br", "") else
-            f"Vendido por {seller} · parceiro oficial {watchlist()['lojas'][store]['nome']}",
+            f"Vendido por {seller} · parceiro oficial {nomes[store]}",
             "full": list_price, "cur": cur[0], "hist": [[d, p] for d, p in hist],
             "at": checked_at,  # quando o preço de hoje foi visto na loja (UTC)
             "ends": offer_ends,  # fim da oferta relâmpago, se houver (epoch)

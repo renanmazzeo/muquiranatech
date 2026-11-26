@@ -118,6 +118,28 @@ def search(term):
     return parse(r.text)
 
 
+# filtro "Vendido pela KaBuM!" da própria loja (facet_filters = JSON em base64)
+SO_KABUM = "eyJrYWJ1bV9wcm9kdWN0IjpbInRydWUiXX0="  # {"kabum_product":["true"]}
+
+
+def catalogo(path, max_paginas=40, pausa=3.0):
+    """Todos os produtos VENDIDOS PELA PRÓPRIA KaBuM! numa categoria (ex.: "/hardware/placa-de-video-vga"),
+    100 por página. Sem parâmetro de ordenação: o robots.txt da KaBuM! pede que robôs não usem "sort"."""
+    itens, pagina, total = {}, 1, 1
+    while pagina <= min(total, max_paginas):
+        r = requests.get(f"{BASE}{path}?page_number={pagina}&page_size=100&facet_filters={SO_KABUM}",
+                         headers=HEADERS, timeout=40)
+        r.raise_for_status()
+        m = re.search(r'totalPagesCount\\?":(\d+)', r.text)
+        total = int(m.group(1)) if m else 1
+        for it in parse(r.text):
+            itens.setdefault(it["code"], it)
+        pagina += 1
+        if pagina <= min(total, max_paginas):
+            time.sleep(pausa)
+    return list(itens.values())
+
+
 def pick(items, must=(), limit=4, sellers=("KaBuM!",), exclude=()):
     """Só vendedores confiáveis (KaBuM! e parceiros grandes), disponíveis, com as palavras exigidas
     e sem as palavras proibidas (ex.: busca "ssd 2tb" não pode trazer um PS5 "com SSD de 2TB")."""

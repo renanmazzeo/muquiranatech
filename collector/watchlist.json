@@ -3,14 +3,31 @@
     "kabum": {
       "nome": "KaBuM!",
       "vendedores_confiaveis": ["KaBuM!", "Magalu", "Fast Shop"],
-      "wayback_paginas": ["hardware/placa-de-video-vga", "hardware/processadores", "hardware/memoria-ram", "hardware/ssd-2-5", "hardware/placas-mae", "hardware/fontes", "monitores", "perifericos", "perifericos/-mouse-gamer", "perifericos/teclado-gamer", "perifericos/headset-gamer", "gamer", "gamer/playstation", "gamer/nintendo", "gamer/xbox", "celular-smartphone", "celular-smartphone/smartphones", "tv", "tv/smart-tv", "computadores/notebooks", "audio", "audio/caixa-de-som", ""]
+      "wayback_paginas": ["hardware/placa-de-video-vga", "hardware/processadores", "hardware/memoria-ram", "hardware/ssd-2-5", "hardware/placas-mae", "hardware/fontes", "monitores", "perifericos", "perifericos/-mouse-gamer", "perifericos/teclado-gamer", "perifericos/headset-gamer", "gamer", "gamer/playstation", "gamer/nintendo", "gamer/xbox", "celular-smartphone", "celular-smartphone/smartphones", "tv", "tv/smart-tv", "computadores/notebooks", "audio", "audio/caixa-de-som", ""],
+      "catalogo": [
+        {"path": "/hardware", "cat": "gab"},
+        {"path": "/perifericos", "cat": "perif"},
+        {"path": "/computadores", "cat": "perif"},
+        {"path": "/gamer", "cat": "console"},
+        {"path": "/audio", "cat": "audio"},
+        {"path": "/celular-smartphone", "cat": "celular"},
+        {"path": "/tablets-ipads-e-e-readers", "cat": "tablet"},
+        {"path": "/conectividade", "cat": "rede"},
+        {"path": "/espaco-gamer", "cat": "perif"},
+        {"path": "/cameras-e-drones", "cat": "perif"},
+        {"path": "/projetores", "cat": "tv"},
+        {"path": "/casa-inteligente", "cat": "casa"},
+        {"path": "/tv", "cat": "tv"}
+      ],
+      "catalogo_not": ["usado", "recondicionado", "seminovo", "vitrine", "mostruario"]
     },
     "amazon": {
       "nome": "Amazon",
       "onde": "pc",
       "pausa": 6,
       "vendedores_confiaveis": ["Amazon.com.br"],
-      "not": ["capa", "pelicula", "capinha", "case para", "suporte para", "compativel", "para iphone", "para galaxy", "para samsung", "para ps5", "para playstation", "para xbox", "para nintendo", "para switch", "adesivo", "skin", "recondicionado", "usado", "pilha", "bateria recarregavel"]
+      "not": ["capa", "pelicula", "capinha", "case para", "suporte para", "compativel", "para iphone", "para galaxy", "para samsung", "para ps5", "para playstation", "para xbox", "para nintendo", "para switch", "adesivo", "skin", "recondicionado", "usado", "pilha", "bateria recarregavel"],
+      "max_busca": 8
     },
     "ml": {
       "nome": "Mercado Livre",
@@ -19,7 +36,10 @@
       "not": ["capa", "pelicula", "capinha", "case para", "suporte para", "compativel", "usado", "recondicionado"]
     },
     "kalunga": {
-      "nome": "Kalunga", "pausa": 3, "vendedores_confiaveis": ["Kalunga"], "not": ["recondicionado", "usado"],
+      "nome": "Kalunga",
+      "pausa": 3,
+      "vendedores_confiaveis": ["Kalunga"],
+      "not": ["recondicionado", "usado"],
       "buscas": [
         {"q": "mouse gamer", "cat": "perif", "must": ["mouse"], "max": 5, "not": ["pad"]},
         {"q": "mouse sem fio", "cat": "perif", "must": ["mouse"], "max": 4, "not": ["pad"]},
@@ -185,6 +205,18 @@
     {"q": "camera-de-seguranca", "cat": "casa", "must": ["camera"], "max": 3},
     {"q": "lampada-inteligente", "cat": "casa", "must": ["lampada"], "max": 2},
     {"q": "robo-aspirador", "cat": "casa", "must": ["aspirador"], "max": 2},
-    {"q": "impressora-multifuncional", "cat": "casa", "must": ["impressora"], "max": 3}
- ]
+    {"q": "impressora-multifuncional", "cat": "casa", "must": ["impressora"], "max": 3},
+    {"q": "rtx-3050", "cat": "gpu", "must": ["placa de video", "3050"], "max": 3},
+    {"q": "rtx-3060", "cat": "gpu", "must": ["placa de video", "3060"], "max": 3, "not": ["3060 ti"]},
+    {"q": "rtx-4060", "cat": "gpu", "must": ["placa de video", "4060"], "max": 3, "not": ["4060 ti"]},
+    {"q": "rtx-4060-ti", "cat": "gpu", "must": ["placa de video", "4060 ti"], "max": 3},
+    {"q": "rtx-4070", "cat": "gpu", "must": ["placa de video", "4070"], "max": 3},
+    {"q": "rx-6600", "cat": "gpu", "must": ["placa de video", "6600"], "max": 3},
+    {"q": "rx-7700-xt", "cat": "gpu", "must": ["placa de video", "7700"], "max": 3},
+    {"q": "ryzen-5-5500", "cat": "cpu", "must": ["processador", "5500"], "max": 3},
+    {"q": "ryzen-7-5700x", "cat": "cpu", "must": ["processador", "5700"], "max": 3},
+    {"q": "ryzen-7-5800x3d", "cat": "cpu", "must": ["processador", "5800x3d"], "max": 3},
+    {"q": "core-i3-12100f", "cat": "cpu", "must": ["processador", "12100"], "max": 3},
+    {"q": "core-i5-13400f", "cat": "cpu", "must": ["processador", "13400"], "max": 3}
+  ]
 }

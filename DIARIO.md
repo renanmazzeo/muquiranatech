@@ -17,6 +17,12 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 
 ---
 
+## 2026-11-26 12:30 UTC · dono (sessão local) · catálogo da KaBuM!, busca inteligente
+**Feito:** coleta por **catálogo** da KaBuM! (13 categorias de tecnologia inteiras, só "Vendido pela KaBuM!", `kabum.catalogo`): cerca de 4.150 produtos da KaBuM! em vez de 320; categoria do site pelo nome (`collector/categorias.py`, com teste). Amazon com `max_busca: 8` (mesmo número de acessos, mais produtos por busca) e 12 buscas novas de modelos populares mais antigos (RTX 3060/4060, Ryzen 5 5500...). Tabela `prices` reordenada por dia (o .db pesa menos no git). Site: busca inteligente (tolera erro de digitação, "rtx3060", sinônimos), painel de resultados embaixo da busca e grade de 60 em 60. Conferi 10 preços do catálogo contra a página do produto: todos iguais.
+**Para o agente:** a KaBuM! agora tem milhares de produtos sem histórico ("Muquirana de olho" por 30 dias). Ao mexer na watchlist ou no `muq.py`, manter `catalogo`, `max_busca` e a ordem da tabela `prices`.
+
+---
+
 ## 2026-11-26 11:00 UTC · dono (sessão local) · lojas novas visíveis e agendamento
 **Feito:** a ordem "melhores" do site agora intercala as lojas; antes, Amazon e Kalunga (sem histórico) ficavam todas no fim da lista e pareciam não existir. Agendamento da coleta movido para o minuto 17 (no minuto 0 o GitHub não disparava nenhuma rodada `schedule`). Amazon pelo PC confirmada (286 produtos). Pendências resolvidas removidas de "Precisa do dono".
 

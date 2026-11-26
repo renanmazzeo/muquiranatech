@@ -20,6 +20,9 @@ PC do dono (a cada 6h)        ► coleta Amazon ─┼─► mescla em data/muqu
 Wayback Machine (domingo) ─► histórico KaBuM! ─┘              Cloudflare Pages / GitHub Pages ◄─────┘
 ```
 - `index.html`: o site inteiro (HTML, CSS e JS num arquivo só). Lê `data.js`; sem ele, mostra dados fictícios.
+  Busca inteligente (`rank()`): sem acento, "rtx3060" = "rtx 3060", aceita 1 letra errada ou trocada (2 em palavras
+  longas), sinônimos (`SIN`: celular/smartphone, fone/headset...); número tem que bater exato. Painel de resultados
+  embaixo da busca; a grade mostra 60 produtos por vez ("Ver mais").
 - `collector/muq.py`: comandos
   - `coletar [--lojas kabum,amazon]`: preço de hoje. Cada loja usa a `pausa` definida para ela na watchlist.
   - `historico --meses N` (padrão 12, nunca mais de 1 ano), `--max-minutos`: Wayback, só KaBuM!. Baixa primeiro
@@ -28,7 +31,10 @@ Wayback Machine (domingo) ─► histórico KaBuM! ─┘              Cloudflar
   - `exportar`: gera `data.js` (sempre com fim de linha LF).
   - `MUQ_DB=<arquivo>`: faz qualquer comando usar outro banco. Os robôs coletam numa cópia e só no fim fazem
     `git fetch` + `reset` + `mesclar` + `exportar` + push. Assim um robô nunca apaga a coleta do outro.
-- `collector/kabum.py`: lê o `__NEXT_DATA__` das buscas da KaBuM!. **Ofertas:** em promoções o preço real fica em
+- `collector/kabum.py`: lê o `__NEXT_DATA__` das buscas e categorias da KaBuM!. **Catálogo:** `catalogo(path)` lê a categoria
+  inteira só com o filtro "Vendido pela KaBuM!" (`facet_filters`), 100 por página, sem `sort` (o robots.txt proíbe);
+  as categorias ficam em `lojas.kabum.catalogo` na watchlist (~4.000 produtos). A categoria do site vem do nome do
+  produto (`collector/categorias.py`); a de uma busca, quando existe, não é trocada. **Ofertas:** em promoções o preço real fica em
   `offer` (`priceWithDiscount`, `startsAt`/`endsAt`). `_item()` usa a oferta ativa no instante da página (agora, ou a
   data da cópia na Wayback). Ignorar a oferta foi o bug de 25/11/2026, quando o site mostrava preços mais altos que
   os da loja. O preço "Prime" (só para assinantes) não é usado. `pick()` (usado por todas as lojas) filtra por
@@ -39,11 +45,14 @@ Wayback Machine (domingo) ─► histórico KaBuM! ─┘              Cloudflar
 - `collector/coletar-pc.ps1`: o robô do PC. Fica numa cópia própria do repositório em
   `%LOCALAPPDATA%\MuquiranaTech\repo`, com log em `%LOCALAPPDATA%\MuquiranaTech\coleta.log`. Tarefa do Windows:
   "MuquiranaTech - Amazon". Para reinstalar: `-Instalar`.
-- `collector/watchlist.json`: `lojas` (nome, vendedores confiáveis, `not` e `pausa` por loja) e 112 `buscas`
+- `collector/watchlist.json`: `lojas` (nome, vendedores confiáveis, `not`, `pausa` e `max_busca` por loja; `catalogo` na KaBuM!) e 124 `buscas`
   comuns (`q`, `cat`, `must`, `not`, `max`), com ajustes por loja (ex.: `"amazon": {"must": [...]}` ou
   `{"skip": true}`). Antes de adicionar uma busca, teste o `search` + `pick` e confira se o produto bate com o nome.
 - `data/muquirana.db`: SQLite. `products` (inclui `offer_ends` e `checked_at`) e `prices` (`source` = live ou
   wayback). Um preço por produto por dia (dia no fuso de Brasília); a última coleta do dia substitui as anteriores.
+  `prices` é ordenada por dia (`primary key(day, product_id, source)`, without rowid): cada coleta só acrescenta no
+  fim do arquivo, e o .db pesa menos no histórico do git. `db()` migra bancos antigos sozinho. Ficar de olho no
+  tamanho do repositório (`git count-objects -vH`); perto de 1 GB, migrar o histórico para o Cloudflare D1.
 - `.github/workflows/coletar.yml`: KaBuM! a cada 3h; domingo às 9h também busca histórico. Para rodar na mão:
   `gh workflow run "Coletar preços" -f historico=sim -f meses=4`.
 - `.github/workflows/testar-lojas.yml`: teste rápido para ver se as lojas respondem ao robô do GitHub (não salva nada).
