@@ -58,6 +58,9 @@ Wayback Machine (domingo) ─► histórico KaBuM! ─┘              Cloudflar
   `prices` é ordenada por dia (`primary key(day, product_id, source)`, without rowid): cada coleta só acrescenta no
   fim do arquivo, e o .db pesa menos no histórico do git. `db()` migra bancos antigos sozinho. Ficar de olho no
   tamanho do repositório (`git count-objects -vH`); perto de 1 GB, migrar o histórico para o Cloudflare D1.
+- `.github/workflows/relogio.yml` ("Relógio da coleta"): o `schedule` do GitHub nunca disparou neste repositório
+  (25-26/11), então este job fica de plantão, dispara o `coletar.yml` quando a última coleta tem 3 h ou mais e se
+  re-dispara perto do limite de 6 h. Se parar, religar em Actions → Run workflow. Desligar = cancelar a execução.
 - `.github/workflows/coletar.yml`: KaBuM! a cada 3h; domingo às 9h também busca histórico. Para rodar na mão:
   `gh workflow run "Coletar preços" -f historico=sim -f meses=4`.
 - `.github/workflows/testar-lojas.yml`: teste rápido para ver se as lojas respondem ao robô do GitHub (não salva nada).
