@@ -1,125 +1,23 @@
 {
- "id": "2026-11-26-rodada2",
+ "id": "2026-11-26-html1",
  "testes": [
   {
-   "nome": "fastshop-requests",
-   "url": "https://www.fastshop.com.br/web/s/smart%20tv",
-   "modo": "requests"
+   "nome": "kalunga-html",
+   "url": "https://www.kalunga.com.br/busca/mouse",
+   "modo": "requests",
+   "guardar": true
   },
   {
-   "nome": "fastshop-navegador",
-   "url": "https://www.fastshop.com.br/web/s/smart%20tv",
-   "modo": "playwright"
-  },
-  {
-   "nome": "submarino-requests",
-   "url": "https://www.submarino.com.br/busca/smart-tv-55",
-   "modo": "requests"
-  },
-  {
-   "nome": "submarino-navegador",
-   "url": "https://www.submarino.com.br/busca/smart-tv-55",
-   "modo": "playwright"
-  },
-  {
-   "nome": "girafa-requests",
-   "url": "https://www.girafa.com.br/mouse",
-   "modo": "requests"
-  },
-  {
-   "nome": "girafa-navegador",
-   "url": "https://www.girafa.com.br/mouse",
-   "modo": "playwright"
-  },
-  {
-   "nome": "nuuvem-requests",
-   "url": "https://www.nuuvem.com/br-pt/catalog?search=cyberpunk",
-   "modo": "requests"
-  },
-  {
-   "nome": "nuuvem-navegador",
-   "url": "https://www.nuuvem.com/br-pt/catalog?search=cyberpunk",
-   "modo": "playwright"
-  },
-  {
-   "nome": "samsung-requests",
-   "url": "https://shop.samsung.com/br/search?searchText=galaxy",
-   "modo": "requests"
-  },
-  {
-   "nome": "samsung-navegador",
-   "url": "https://shop.samsung.com/br/search?searchText=galaxy",
-   "modo": "playwright"
-  },
-  {
-   "nome": "apple-requests",
-   "url": "https://www.apple.com/br/shop/buy-iphone",
-   "modo": "requests"
-  },
-  {
-   "nome": "apple-navegador",
-   "url": "https://www.apple.com/br/shop/buy-iphone",
-   "modo": "playwright"
-  },
-  {
-   "nome": "dell-requests",
+   "nome": "dell-html",
    "url": "https://www.dell.com/pt-br/search/notebook",
-   "modo": "requests"
+   "modo": "requests",
+   "guardar": true
   },
   {
-   "nome": "dell-navegador",
-   "url": "https://www.dell.com/pt-br/search/notebook",
-   "modo": "playwright"
-  },
-  {
-   "nome": "lenovo-requests",
-   "url": "https://www.lenovo.com/br/pt/search?text=notebook",
-   "modo": "requests"
-  },
-  {
-   "nome": "lenovo-navegador",
-   "url": "https://www.lenovo.com/br/pt/search?text=notebook",
-   "modo": "playwright"
-  },
-  {
-   "nome": "lg-requests",
-   "url": "https://www.lg.com/br/busca?search=tv",
-   "modo": "requests"
-  },
-  {
-   "nome": "lg-navegador",
-   "url": "https://www.lg.com/br/busca?search=tv",
-   "modo": "playwright"
-  },
-  {
-   "nome": "motorola-requests",
-   "url": "https://www.motorola.com.br/search?q=moto%20g",
-   "modo": "requests"
-  },
-  {
-   "nome": "motorola-navegador",
-   "url": "https://www.motorola.com.br/search?q=moto%20g",
-   "modo": "playwright"
-  },
-  {
-   "nome": "playstation-requests",
-   "url": "https://store.playstation.com/pt-br/search/god%20of%20war",
-   "modo": "requests"
-  },
-  {
-   "nome": "playstation-navegador",
-   "url": "https://store.playstation.com/pt-br/search/god%20of%20war",
-   "modo": "playwright"
-  },
-  {
-   "nome": "xbox-requests",
-   "url": "https://www.xbox.com/pt-BR/search?q=forza",
-   "modo": "requests"
-  },
-  {
-   "nome": "xbox-navegador",
-   "url": "https://www.xbox.com/pt-BR/search?q=forza",
-   "modo": "playwright"
+   "nome": "samsung-html",
+   "url": "https://shop.samsung.com/br/search?searchText=galaxy",
+   "modo": "playwright",
+   "guardar": true
   }
  ]
 }

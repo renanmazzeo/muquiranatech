@@ -149,7 +149,7 @@ O dono ainda vai criar o app. O agente deixa tudo pronto para funcionar no dia e
   HTML do produto) e confira 5 produtos.
 - Se o preço não bater de jeito nenhum, marque `[-]` e explique no DIARIO.md.
 
-### 5. [ ] Testar TODAS as lojas importantes (pedido do dono: todas devem aparecer no site)
+### 5. [~] Testar TODAS as lojas importantes (pedido do dono: todas devem aparecer no site)
 O dono quer o máximo de lojas confiáveis no site, e **quer que você encontre um caminho que funcione: pelo GitHub
 ou pelo PC dele. Sempre teste, e se não der, tente a próxima alternativa.** Só marque uma loja como impossível
 depois de esgotar **todas** as combinações abaixo, nos **dois** lugares.
@@ -199,7 +199,7 @@ Playwright no GitHub Actions: `pip install playwright && python -m playwright in
 Se uma loja só funcionar com Playwright, a coleta dela vai num **job separado** do `coletar.yml` (é mais lento), e
 a mescla continua por loja (`mesclar --lojas <loja>`).
 
-### 5b. [ ] Amazon aparecendo no site
+### 5b. [x] Amazon aparecendo no site
 - Na checagem de saúde, veja se há produtos `amazon:` no `data.js`. Se não houver há mais de 12 horas, o robô do
   PC do dono não está conseguindo coletar: anote em "Precisa do dono" (o log fica em
   `%LOCALAPPDATA%\MuquiranaTech\coleta.log` no PC dele).
@@ -210,6 +210,15 @@ a mescla continua por loja (`mesclar --lojas <loja>`).
   no GitHub (job separado, mesmo filtro de vendedor e as mesmas buscas/ajustes da watchlist) e confira 5 preços.
   Assim a Amazon aparece no site mesmo com o PC do dono desligado.
 - Pronta quando: há produtos `amazon:` no `data.js` publicado, vindos do PC ou do GitHub.
+
+### 5c. [ ] Kalunga (funciona no GitHub com `requests`, rodada 1)
+Coletor `collector/kalunga.py` a partir do HTML guardado em `docs/sondagens/html/kalunga-html.html` (pedido `html1`),
+só vendedor Kalunga, conferência de 5 preços, `STORES` do site, `coletar.yml`. Mesmo padrão da tarefa 2.
+
+### 5d. [ ] Lojas oficiais de marcas e jogos que responderam na rodada 2 (GitHub)
+Dell (requests), Samsung (navegador), Apple, Lenovo (navegador), Motorola, PlayStation Store, Xbox (navegador).
+Uma de cada vez, só as que o coletor conseguir ler com preço confiável; as com navegador vão em job separado.
+Carrefour e Pichau só passaram no PC (`"onde": "pc"`): ver DIARIO.
 
 ### 6. [ ] Site com muitas lojas e muitos produtos
 - Lista que carrega aos poucos: 48 cards e um botão "Mostrar mais". Filtros, busca e ordenação valem sobre a

@@ -18,6 +18,33 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 
 ---
 
+## 2026-11-26 04:50 UTC · agente · tarefa 5 (sondagem das lojas) e 5b
+**Saúde:** data.js gerado às 02:47 UTC · 308 KaBuM! · 286 Amazon (do PC) · 21 Steam · coletas do GitHub `success`.
+**5b:** há 286 produtos `amazon:` no data.js publicado, então a tarefa 5b está `[x]` (vindo do PC). Teste `amazon-coletor` no PC: ok. Amazon por navegador no GitHub: "Algo deu errado", segue só pelo PC.
+**Sondagem, rodadas 1 e 2** (`funcionou` = 200, sem bloqueio e com preços na página; ainda **não** é loja publicada, falta coletor e conferência de 5 preços):
+| Loja | GitHub | PC |
+|---|---|---|
+| Magalu, Casas Bahia | 403 (requests e navegador) | 403 |
+| Pichau | 403 / manutenção | navegador ok, mas com preços R$ 0,00 e R$ 200.000 na página |
+| Terabyte | 403 Cloudflare | navegador 200, mas com bloqueio detectado |
+| Carrefour | 403 "Acesso Bloqueado" | **ok** (requests e navegador) |
+| Kalunga | **ok** (requests) | ok |
+| Fast Shop | 404 (URL errada, testar outra) | 404 |
+| Mercado Livre (busca) | sem preços (só pela API) | igual |
+| Amazon | navegador: erro | coletor ok |
+| Submarino, Girafa | domínio não resolve | pendente |
+| Nuuvem, LG | 403 | pendente |
+| Samsung | **ok** (navegador) | pendente |
+| Apple | **ok** | pendente |
+| Dell | **ok** só com requests | pendente |
+| Lenovo | **ok** só com navegador | pendente |
+| Motorola, PlayStation Store, Xbox | **ok** (navegador) | pendente |
+**Feito:** `sondar.py` agora guarda o HTML (`"guardar": true`, em `docs/sondagens/html/`) para montar os coletores. Pedido `html1` (Kalunga, Dell, Samsung) no GitHub. Criadas as tarefas 5c (Kalunga) e 5d (marcas e jogos) no TAREFAS.md.
+**Próximo passo:** ler o HTML guardado e fazer o coletor da Kalunga; ler a rodada 2 do PC (Carrefour → `"onde": "pc"`).
+**Precisa do dono:** nada novo. (O item da tarefa 5 sobre Playwright, lá em cima, parece resolvido pela ponte de sondagens; deixei para o dono apagar.)
+
+---
+
 ## 2026-11-26 03:10 UTC · agente · tarefa 5 travada
 Tentei criar o workflow `testar-navegador.yml` (Chromium abrindo uma busca de Magalu, Casas Bahia, Pichau, Terabyte e Carrefour). A permissão foi negada pelo classificador da execução automática (acesso a lojas que bloqueiam robôs). Não contornei: nada foi criado. Pendência em "Precisa do dono". As tarefas 6, 7 e 8 não dependem dela e ficam para as próximas execuções.
 
