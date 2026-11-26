@@ -1,0 +1,40 @@
+# Relógio da coleta. O agendamento ("schedule") do GitHub não disparou nenhuma vez neste repositório (25 e 26/11),
+# então este job fica de plantão: a cada 10 minutos confere quando foi a última coleta e, se já passaram 3 horas,
+# dispara o "Coletar preços". Perto do limite de tempo de um job (6 h) ele dispara a si mesmo de novo e termina.
+# Se o agendamento do GitHub voltar a funcionar, o relógio vê a coleta recente e não dispara outra (sem coleta dobrada,
+# o que gastaria builds do Cloudflare).
+# Para ligar: Actions → "Relógio da coleta" → Run workflow (uma vez). Para desligar: cancele a execução em andamento.
+name: Relógio da coleta
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "37 */6 * * *"   # se o agendamento voltar, também religa o relógio caso ele tenha parado
+concurrency:
+  group: relogio
+  cancel-in-progress: false
+permissions:
+  actions: write
+  contents: read
+jobs:
+  plantao:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - name: Disparar a coleta a cada 3 horas
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          inicio=$(date +%s)
+          while [ $(( $(date +%s) - inicio )) -lt $(( 340 * 60 )) ]; do
+            ultima=$(gh run list --workflow coletar.yml --limit 1 --json createdAt -q '.[0].createdAt' || true)
+            idade=999999
+            [ -n "$ultima" ] && idade=$(( $(date +%s) - $(date -d "$ultima" +%s) ))
+            if [ "$idade" -ge $(( 3 * 3600 - 300 )) ]; then
+              echo "$(date -u +%H:%M) última coleta há $((idade / 60)) min: disparando"
+              gh workflow run coletar.yml || echo "falhou ao disparar; tento de novo em 10 min"
+            fi
+            sleep 600
+          done
+          # quase no limite de 6 h: passa o plantão para uma nova execução
+          gh workflow run relogio.yml
