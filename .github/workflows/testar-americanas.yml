@@ -20,12 +20,13 @@ jobs:
           buscas = ["smart tv 55", "notebook lenovo ideapad", "ssd 1tb nvme", "monitor gamer 27", "fone bluetooth jbl", "galaxy s24"]
           total = 0
           for q in buscas:
-              url = "https://www.americanas.com.br/api/catalog_system/pub/products/search?" + urllib.parse.urlencode({"ft": q, "_from": 0, "_to": 4})
+              url = "https://www.americanas.com.br/api/catalog_system/pub/products/search?" + urllib.parse.urlencode({"ft": q})
               req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0", "Accept": "application/json"})
               try:
                   data = json.load(urllib.request.urlopen(req, timeout=30))
               except Exception as e:
-                  print(f"::warning::{q}: erro {e}")
+                  corpo = e.read()[:200] if hasattr(e, "read") else ""
+                  print(f"::warning::{q}: erro {e} {corpo}")
                   time.sleep(3); continue
               print(f"::notice::{q}: {len(data)} itens")
               for p in data[:3]:
