@@ -99,13 +99,18 @@ Preço normal = mediana dos preços de 31 a 90 dias atrás (`BF` em `index.html`
 | Carrefour | ⏳ só o PC do dono passa (GitHub 403); coletor ainda não feito |
 | PlayStation Store | ✅ GitHub, com navegador (Playwright, job `coletar-navegador`); 20 jogos, 5 preços conferidos |
 | Motorola | ✅ `collector/motorola.py`: API pública VTEX (`www.motorola.com.br/api/catalog_system`), categoria Smartphones, preço do Pix, só seller "1" |
-| Apple, Dell, Lenovo, Xbox | ⏳ responderam à sondagem de 26/11 no GitHub; coletores pendentes (tarefa 5d); Apple deixada de lado |
-| Magalu, Casas Bahia, Pichau, Terabyte, Nuuvem, LG | ❌ 403/captcha para robôs (Pichau/Terabyte só abrem no PC com navegador) |
+| Lenovo | ✅ `collector/lenovo.py`: API das páginas de categoria (`openapi.lenovo.com`, filtro `pageFilterId`) para a lista e `/detail/price/batch/get` (a da ficha) para o preço do Pix; notebooks, desktops e monitores. `/search` é proibido no robots.txt |
+| Apple, Dell, Xbox | ⏳ responderam à sondagem de 26/11 no GitHub; coletores pendentes (tarefa 5d); Apple deixada de lado |
+| Magalu, Casas Bahia, Pichau, Terabyte, Nuuvem, LG | ❌ 403/captcha para robôs (Pichau/Terabyte só abrem no PC com navegador). Não burlar: só por afiliados/feeds oficiais (Awin em análise; Lomadee tem TeraByte e Lenovo, sem feed de produtos) |
 
 ## Infra
 - Repositório: https://github.com/renanmazzeo/muquiranatech (público). GitHub CLI: `C:\Program Files\GitHub CLI\gh.exe`.
 - Site principal: https://muquiranatech.com.br (domínio no registro.br, expira 26/11/2027; DNS no Cloudflare; `www` também funciona).
   E-mail público: contato@muquiranatech.com.br (Cloudflare Email Routing → Gmail do projeto).
+- Afiliados: Lomadee (canal `muquirana-tech`, secret `LOMADEE_API_KEY`, workflow "Testar Lomadee"; deep link
+  `https://lmdee.link/deep/muquirana-tech?url=<url codificada>` só funciona depois que o canal for aprovado; em 26/11
+  ainda dava `channel_not_found`). Awin em análise. Quando ligar link de afiliado, usar `rel="sponsored"` e trocar o
+  "poderão" de privacidade.html e como-funciona.html.
   Endereço técnico do Cloudflare Pages: https://muquiranatech.pages.dev (conectado ao GitHub, publica a cada push).
   Também em https://renanmazzeo.github.io/muquiranatech/ (GitHub Pages).
   Cloudflare grátis: 500 builds por mês. Os robôs fazem cerca de 360 (KaBuM! a cada 3h + Amazon a cada 6h).
