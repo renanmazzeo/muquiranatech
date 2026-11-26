@@ -112,6 +112,15 @@
         {"path": "2084", "cat": "monitor", "fixa": true}
       ]
     },
+    "motorola": {
+      "nome": "Motorola",
+      "pausa": 2,
+      "vendedores_confiaveis": ["Motorola"],
+      "not": ["capa", "pelicula", "cabo", "carregador", "fonte", "recondicionado", "usado", "seminovo", "vitrine"],
+      "catalogo_not": [" + ", "kit ", "dummy", "teste"],
+      "buscas": [],
+      "catalogo": [{"path": "1", "cat": "celular", "fixa": true}]
+    },
     "playstation": {
       "nome": "PlayStation Store",
       "onde": "github-nav",

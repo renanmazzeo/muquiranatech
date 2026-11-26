@@ -1,0 +1,50 @@
+name: Testar Motorola
+
+# Roda quando o coletor da Motorola muda (ou na mão). Não salva nada: coleta numa cópia do banco e confere
+# 5 preços contra a ficha do produto (dados do Google na página). Resultado nas anotações.
+on:
+  push:
+    branches: [main]
+    paths: ["collector/motorola.py", ".github/workflows/testar-motorola.yml"]
+  workflow_dispatch:
+
+jobs:
+  motorola:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r collector/requirements.txt
+      - name: Coletar numa cópia e conferir 5 preços
+        run: |
+          MUQ_DB="$RUNNER_TEMP/mo.db" python collector/muq.py coletar --lojas motorola
+          python - <<'PY'
+          import json, os, re, sqlite3, sys, time
+          import requests
+          c = sqlite3.connect(os.environ["RUNNER_TEMP"] + "/mo.db")
+          rows = c.execute("select p.name,p.url,x.price from products p join prices x on x.product_id=p.id "
+                           "where p.store='motorola' order by p.code").fetchall()
+          print(f"::notice::motorola {len(rows)} produtos coletados")
+          passo = max(1, len(rows) // 5)
+          ruins = 0
+          H = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131.0 Safari/537.36", "Accept-Language": "pt-BR"}
+          for name, url, price in rows[::passo][:5]:
+              time.sleep(4)
+              html = requests.get(url, headers=H, timeout=40).text
+              precos = []
+              for m in re.finditer(r'<script type="application/ld\+json"[^>]*>(.*?)</script>', html, re.S):
+                  try:
+                      d = json.loads(m.group(1))
+                  except ValueError:
+                      continue
+                  for o in (d.get("offers", {}).get("offers", []) if isinstance(d, dict) and d.get("@type") == "Product" else []):
+                      precos.append(o.get("price"))
+              ok = any(abs(p - price) < 0.01 for p in precos if p)
+              ruins += not ok
+              print(f"::notice::{name[:40]}: coletor R$ {price} · página {sorted(set(precos))[:4]} · {'OK' if ok else 'DIFERENTE'}")
+          if len(rows) < 10 or ruins:
+              sys.exit(1)
+          PY
