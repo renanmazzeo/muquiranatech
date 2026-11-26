@@ -95,7 +95,12 @@ def cmd_coletar(a):
         if loja == "ml" and not mercadolivre.configurado():
             print("== Mercado Livre: sem ML_CLIENT_ID/ML_CLIENT_SECRET, pulando (sem erro).")
             continue
-        total = coletar_loja(c, loja, cfg, cfg.get("buscas", w["buscas"]), today, now, cfg.get("pausa", a.pausa))
+        try:
+            total = coletar_loja(c, loja, cfg, cfg.get("buscas", w["buscas"]), today, now, cfg.get("pausa", a.pausa))
+        finally:
+            # lojas com navegador (PlayStation, Xbox): fecha antes da próxima, senão a segunda não consegue abrir
+            if hasattr(LOJAS[loja], "fechar"):
+                LOJAS[loja].fechar()
         c.commit()
         print(f"== {w['lojas'][loja]['nome']}: {total} preços de hoje salvos.")
 

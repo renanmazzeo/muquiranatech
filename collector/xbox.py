@@ -98,7 +98,9 @@ def catalogo(path="browse", cliques=16, pausa=3.5):
         pg.wait_for_timeout(5000)
         btn = pg.locator("button:has-text('Carregar mais')")
         for _ in range(cliques):
-            if not btn.count():
+            try:  # enquanto carrega, o botão some por um tempo: espere ele voltar antes de concluir que acabou
+                btn.first.wait_for(state="visible", timeout=20000)
+            except Exception:  # noqa: BLE001
                 break
             btn.first.scroll_into_view_if_needed()
             btn.first.click()
