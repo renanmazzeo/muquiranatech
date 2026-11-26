@@ -23,11 +23,12 @@ import mercadolivre  # noqa: E402
 import steam  # noqa: E402
 import kalunga  # noqa: E402
 import playstation  # noqa: E402
+import samsung  # noqa: E402
 import wayback  # noqa: E402
 import categorias  # noqa: E402
 
 # lojas que o coletor sabe ler (cada módulo tem search(termo) -> itens no mesmo formato)
-LOJAS = {"kabum": kabum, "amazon": amazon, "steam": steam, "kalunga": kalunga, "playstation": playstation, "ml": mercadolivre}
+LOJAS = {"kabum": kabum, "amazon": amazon, "steam": steam, "kalunga": kalunga, "playstation": playstation, "samsung": samsung, "ml": mercadolivre}
 
 ROOT = Path(__file__).resolve().parent.parent
 DB = ROOT / "data" / "muquirana.db"
@@ -146,7 +147,9 @@ def coletar_loja(c, loja, cfg, buscas, today, now, pausa):
                 nome = kabum.norm(it["name"])
                 if not it["available"] or any(w in nome for w in evitar):
                     continue
-                salvar(c, loja, it, categorias.classificar(it["name"], cat.get("cat", "perif")), today, now)
+                # "fixa": a categoria da própria loja já é a certa (ex.: Samsung, onde o nome começa pela marca)
+                categoria = cat["cat"] if cat.get("fixa") else categorias.classificar(it["name"], cat.get("cat", "perif"))
+                salvar(c, loja, it, categoria, today, now)
                 n += 1
             total += n
             print(f"  catálogo {cat['path']:<32} {n} produtos")

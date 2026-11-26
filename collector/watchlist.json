@@ -92,6 +92,26 @@
         {"q": "hades", "cat": "game", "must": ["hades"], "max": 1}
       ]
     },
+    "samsung": {
+      "nome": "Samsung",
+      "pausa": 2,
+      "vendedores_confiaveis": ["Samsung"],
+      "not": ["capa", "pelicula", "controle remoto", "fonte de alimentacao", "cabo", "suporte", "recondicionado", "usado", "seminovo", "vitrine"],
+      "catalogo_not": [" + ", "kit ", "dummy", "teste"],
+      "buscas": [],
+      "catalogo": [
+        {"path": "4/8", "cat": "celular", "fixa": true},
+        {"path": "4/9", "cat": "tablet", "fixa": true},
+        {"path": "4/10", "cat": "wear", "fixa": true},
+        {"path": "4/2066", "cat": "wear", "fixa": true},
+        {"path": "4/2081", "cat": "audio", "fixa": true},
+        {"path": "6/19", "cat": "tv", "fixa": true},
+        {"path": "6/44", "cat": "audio", "fixa": true},
+        {"path": "6/2061", "cat": "tv", "fixa": true},
+        {"path": "7/71", "cat": "notebook", "fixa": true},
+        {"path": "2084", "cat": "monitor", "fixa": true}
+      ]
+    },
     "playstation": {
       "nome": "PlayStation Store",
       "onde": "github-nav",

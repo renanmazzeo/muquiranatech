@@ -90,9 +90,10 @@ Preço normal = mediana dos preços de 31 a 90 dias atrás (`BF` em `index.html`
 | Americanas | ❌ a API VTEX responde 400 "Scripts are not allowed" na rede do GitHub (26/11); sem preço confiável, não coletamos |
 | Steam | ✅ API pública (`store.steampowered.com/api/storesearch`), não implementada ainda |
 | Kalunga | ✅ GitHub (HTML da busca + preço à vista da ficha do produto) |
+| Samsung | ✅ `collector/samsung.py`: API pública VTEX (`shop.samsung.com/br/api/catalog_system`), categorias de tecnologia inteiras, preço do Pix, só seller "1" (a Samsung), sem kits "A + B" |
 | Carrefour | ⏳ só o PC do dono passa (GitHub 403); coletor ainda não feito |
 | PlayStation Store | ✅ GitHub, com navegador (Playwright, job `coletar-navegador`); 20 jogos, 5 preços conferidos |
-| Samsung, Apple, Dell, Lenovo, Motorola, Xbox | ⏳ responderam à sondagem de 26/11 no GitHub; coletores pendentes (tarefa 5d) |
+| Apple, Dell, Lenovo, Motorola, Xbox | ⏳ responderam à sondagem de 26/11 no GitHub; coletores pendentes (tarefa 5d) |
 | Magalu, Casas Bahia, Pichau, Terabyte, Nuuvem, LG | ❌ 403/captcha para robôs (Pichau/Terabyte só abrem no PC com navegador) |
 
 ## Infra
