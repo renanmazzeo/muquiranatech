@@ -20,6 +20,8 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 ## 2026-11-26 18:40 UTC · agente · tarefa 5d (Xbox Store)
 **Saúde:** data.js gerado às 16:46 UTC · 4.190 KaBuM! · 286 Amazon · 153 Samsung · 65 Kalunga · 32 Motorola (já no ar) · 21 Steam · 20 PlayStation · últimas execuções do GitHub `success`.
 **Feito:** `collector/xbox.py` (navegador; lê nome, preço e "preço original" do `aria-label` dos cartões da busca; ignora jogo sem preço), 20 jogos na watchlist (`lojas.xbox`, **com `"onde": "teste"`: ainda NÃO é coletada pelos robôs**), loja em `STORES` do site, 2 testes novos (36 no total, ok) e workflow `testar-xbox.yml` (coleta numa cópia e confere 5 fichas na rede do GitHub).
+**Teste no ar:** commit 47480eb: Cloudflare Pages `success`, Testes `success`. `testar-xbox` **falhou**: 0 jogos nas 20 buscas na rede do GitHub (o cartão com `a[href*="/games/store/"]` não apareceu em 30 s; a página real difere da guardada ou a Microsoft limitou o robô). A loja segue com `"onde": "teste"`, então nada errado foi ao ar.
+**Próximo passo:** workflow de diagnóstico que guarde o HTML/captura da busca `forza` em `docs/sondagens/html/` para ajustar o seletor; se não resolver, Xbox `[-]`.
 **Falta:** ver o `testar-xbox` passar com 5 preços iguais; só então trocar `"onde"` para `"github-nav"` (entra no job `coletar-navegador`). Lenovo: HTML guardado é grande e misturado (kits, preço "de" e preço atual em blocos diferentes), ainda sem coletor.
 **Precisa do dono:** nada novo.
 
