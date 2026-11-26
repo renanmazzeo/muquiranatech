@@ -19,11 +19,12 @@ sys.stdout.reconfigure(encoding="utf-8")
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import amazon  # noqa: E402
 import kabum  # noqa: E402
+import mercadolivre  # noqa: E402
 import steam  # noqa: E402
 import wayback  # noqa: E402
 
 # lojas que o coletor sabe ler (cada módulo tem search(termo) -> itens no mesmo formato)
-LOJAS = {"kabum": kabum, "amazon": amazon, "steam": steam}
+LOJAS = {"kabum": kabum, "amazon": amazon, "steam": steam, "ml": mercadolivre}
 
 ROOT = Path(__file__).resolve().parent.parent
 DB = ROOT / "data" / "muquirana.db"
@@ -71,6 +72,9 @@ def cmd_coletar(a):
     lojas = a.lojas.split(",") if a.lojas else list(w["lojas"])
     for loja in lojas:
         cfg = w["lojas"][loja]
+        if loja == "ml" and not mercadolivre.configurado():
+            print("== Mercado Livre: sem ML_CLIENT_ID/ML_CLIENT_SECRET, pulando (sem erro).")
+            continue
         total = coletar_loja(c, loja, cfg, cfg.get("buscas", w["buscas"]), today, now, cfg.get("pausa", a.pausa))
         c.commit()
         print(f"== {w['lojas'][loja]['nome']}: {total} preços de hoje salvos.")

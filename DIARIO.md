@@ -17,6 +17,13 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 
 ---
 
+## 2026-11-26 02:30 UTC · agente · tarefa 3 (Mercado Livre), parte 1
+**Feito:** `collector/mercadolivre.py` (token `client_credentials`, busca na API oficial só com `official_store=all` e itens novos, exige `official_store_id`), loja `ml` na watchlist (vendedor "Loja oficial", usa as mesmas 112 buscas), `coletar.yml` passa os secrets `ML_CLIENT_ID`/`ML_CLIENT_SECRET` e coleta `kabum,steam,ml`; sem os secrets o coletor escreve "pulando" e segue sem falhar. Guia `docs/mercado-livre.md`. 5 testes novos com resposta de exemplo (22 no total, todos ok). Coleta local `--lojas ml` sem credenciais: pulou sem erro.
+**Falta para `[x]`:** ver a coleta agendada/disparada rodar no GitHub sem erro e sem os secrets (a fila de coletas está ocupada pelo histórico de 4 meses; ver tarefa 2). Ligar de verdade depende do dono (secrets).
+**Precisa do dono:** criar o app e os 2 secrets (guia em `docs/mercado-livre.md`; já listado acima).
+
+---
+
 ## 2026-11-26 02:00 UTC · agente · tarefa 2 (Steam), parte 1
 **Saúde:** data.js gerado às 00:50 UTC · 303 produtos KaBuM! · 0 Amazon (segue pendente com o dono) · coletas: última `success` às 23:50 UTC de 25/11, as 3 seguintes `cancelled` (à mão) e uma em andamento.
 **Feito:** criado `collector/steam.py` (busca pela API pública da Steam, preço final em reais, vendedor "Steam"), lista própria de 21 jogos populares na watchlist (`lojas.steam.buscas`; o coletor usa a lista da loja quando ela existe), `steam` em `LOJAS`, em `STORES` do site e no `coletar.yml` (coleta e mescla `kabum,steam`). 3 testes novos (17 no total, todos ok). Novo workflow `testar-steam.yml`: roda no push, coleta numa cópia do banco e confere 5 preços contra a API de detalhes, com o resultado nas anotações.
