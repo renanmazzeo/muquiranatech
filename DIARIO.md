@@ -21,8 +21,8 @@ Pendências que só o dono resolve. O agente acrescenta itens aqui e o dono apag
 **Saúde:** data.js gerado às 00:50 UTC · 303 produtos KaBuM! · 0 Amazon (segue pendente com o dono) · coletas: última `success` às 23:50 UTC de 25/11, as 3 seguintes `cancelled` (à mão) e uma em andamento.
 **Feito:** criado `collector/steam.py` (busca pela API pública da Steam, preço final em reais, vendedor "Steam"), lista própria de 21 jogos populares na watchlist (`lojas.steam.buscas`; o coletor usa a lista da loja quando ela existe), `steam` em `LOJAS`, em `STORES` do site e no `coletar.yml` (coleta e mescla `kabum,steam`). 3 testes novos (17 no total, todos ok). Novo workflow `testar-steam.yml`: roda no push, coleta numa cópia do banco e confere 5 preços contra a API de detalhes, com o resultado nas anotações.
 **Como testei:** `python -m unittest` ok; coleta simulada de ponta a ponta numa cópia do banco com resposta de exemplo; YAML e JS do site conferidos. Esta nuvem não alcança a Steam (proxy 403), por isso a conferência real é a do workflow no GitHub.
-**Teste no ar:** (a preencher)
-**Falta:** ver o `testar-steam.yml` passar (cerca de 21 jogos, 5 preços iguais), disparar uma coleta no GitHub e ver os jogos no `data.js`. Só então marcar `[x]`.
+**Teste no ar:** commit 8132864: check "Cloudflare Pages" `success`, Testes `success`. `testar-steam.yml` `success` na rede do GitHub: 21 jogos coletados e 5 conferidos contra a API de detalhes, todos iguais (RDR2 R$ 74,97; Hades II R$ 62,29; Cyberpunk R$ 199,90; Baldur's Gate 3 R$ 139,99; Terraria R$ 32,99).
+**Falta:** disparei uma coleta (workflow_dispatch às 01:33 UTC), mas ela está na fila atrás da coleta de histórico de 4 meses (iniciada 00:51, até 270 min; o grupo `coleta` não roda duas ao mesmo tempo). Na próxima execução: conferir se `data.js` já tem produtos `steam:` (esperado ~21) e então marcar `[x]`.
 **Precisa do dono:** nada novo.
 
 ---
