@@ -115,6 +115,7 @@
     },
     "lenovo": {
       "nome": "Lenovo",
+      "lomadee": "Lenovo",
       "pausa": 2,
       "vendedores_confiaveis": ["Lenovo"],
       "not": ["recondicionado", "usado", "seminovo", "vitrine", "outlet"],

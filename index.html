@@ -154,6 +154,15 @@ a.cta{display:block;text-align:center;text-decoration:none}
 .trust{display:flex;align-items:center;gap:5px;color:var(--mut);font-size:12px}
 .trust svg{color:var(--li);flex:none}
 .lost{font-size:12px;color:var(--mut);border-left:2px solid var(--c);padding-left:8px}
+.cupb{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font:700 11.5px var(--mono);letter-spacing:.3px;color:#ffb020;border:1px dashed rgba(255,176,32,.55);background:rgba(255,176,32,.07);padding:4px 9px;border-radius:8px}
+.cupm{margin:12px 0 16px;border:1px dashed rgba(255,176,32,.55);background:rgba(255,176,32,.05);border-radius:14px;padding:12px 14px}
+.cupm h5{color:#ffb020}.cupr{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:8px 0;border-top:1px dashed rgba(255,176,32,.25)}.cupr:first-of-type{border-top:0}
+.cupr code{font:800 16px var(--mono);letter-spacing:1px;color:#ffb020;background:rgba(255,176,32,.1);padding:5px 10px;border-radius:8px}
+.cupr .ct{flex:1;min-width:180px;font-size:13.5px}.cupr .ct small{display:block;color:var(--dim);font-size:11.5px;margin-top:2px}
+.cupr .cp{font-size:13px;color:var(--li)}.cupr .cp b{font-family:var(--mono)}
+.cupgo{background:#ffb020;color:#1a1000;border:0;border-radius:10px;padding:9px 14px;font-weight:800;cursor:pointer;white-space:nowrap}.cupgo:hover{filter:brightness(1.08)}
+.cupm>small{display:block;color:var(--dim);font-size:11.5px;margin-top:6px}
+.st.cupf.on{background:#ffb020;border-color:#ffb020;color:#1a1000}
 .also{margin:0 0 16px}.also small{display:block;color:var(--dim);font-size:11.5px;margin-top:8px}
 .orow{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;border-top:1px solid var(--line);padding:9px 2px;cursor:pointer;text-align:left}
 .orow:first-of-type{border-top:0}.orow:hover{background:rgba(255,255,255,.03)}
@@ -348,6 +357,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--dim);fon
   <nav class="cats" id="cats"></nav>
   <div class="bar">
     <div class="stores" id="stores"></div>
+    <button class="st cupf" id="soCup" hidden>🏷️ Com cupom</button>
     <div class="sp"></div>
     <select class="sel" id="tier">
       <option value="all">Todos os status</option>
@@ -595,6 +605,20 @@ const disjuntos=(a,b)=>a.size&&b.size&&![...a].some(x=>b.has(x));
   // uma oferta por loja (a mais barata), da mais barata para a mais cara
   P.forEach(p=>{const m=new Map();p.outras.forEach(o=>{if(!m.has(o.st)||o.s.cur<m.get(o.st).s.cur)m.set(o.st,o)});p.outras=[...m.values()].sort((a,b)=>a.s.cur-b.s.cur)});
 }
+/* ---------- cupons (collector/cupons.py): só de lojas do site, vencido some sozinho ----------
+   O Muquirômetro e a Black Fraude julgam o preço SEM cupom; o cupom aparece como um extra. */
+const CUP=(REAL&&REAL.cupons||[]);
+function cupsDe(p){
+  if(!CUP.length)return [];
+  if(!p._cup){const n=nrm(p.n);p._cup=CUP.filter(c=>c.loja===p.st&&(!c.cat||c.cat.includes(p.cat))&&(!c.palavras||c.palavras.some(w=>n.includes(nrm(w)))))}
+  return p._cup.filter(c=>!c.ate||Date.parse(c.ate)>Date.now());
+}
+// preço com cupom só quando a regra é simples (% ou R$) e a compra mínima é atingida
+function comCupom(p,c){const v=p.s.cur;if(c.minimo&&v<c.minimo)return null;
+  return c.pct?v*(1-c.pct/100):c.valor?Math.max(0,v-c.valor):null}
+function cupGo(i,btn){const c=CUP[i],p=P[btn.dataset.pid],url=c.link||p.url;
+  const ir=()=>window.open(url,'_blank','noopener');
+  (navigator.clipboard?navigator.clipboard.writeText(c.codigo):Promise.reject()).then(()=>{btn.textContent='Copiado! Abrindo a loja…';ir()},()=>{prompt('Copie o cupom:',c.codigo);ir()})}
 function outrasLinha(p){
   const o=p.outras[0];if(!o)return'';
   const d=o.s.cur/p.s.cur-1;
@@ -645,7 +669,7 @@ function chart(p){
 }
 
 /* ---------- estado & render ---------- */
-const S={cat:'all',stores:new Set(),tier:'all',sort:'ping',q:''};
+const S={cat:'all',stores:new Set(),tier:'all',sort:'ping',q:'',cup:false};
 const $=id=>document.getElementById(id);
 
 const storeKeys=REAL?[...new Set(P.map(p=>p.st))]:Object.keys(STORES);
@@ -679,6 +703,7 @@ function card(p){
     ${p.bf.kind==='fraude'?`<div class="lost" style="--c:#ff4d6d"><b style="color:#ff4d6d">BLACK FRAUDE</b> · ${bfWhy(p.bf)}</div>`:''}
     ${p.bf.kind==='firmeza'?`<div class="lost" style="--c:#a6ff3b"><b style="color:#a6ff3b">BLACK FIRMEZA</b> · ${pct(p.bf.vs)} vs preço normal (${fmt(p.bf.normal)})</div>`:''}
     ${outrasLinha(p)}
+    ${cupsDe(p).length?`<div><span class="cupb">🏷️ TEM CUPOM</span></div>`:''}
     ${p.bf.deInflado?`<div class="lost" style="--c:#ffb020">O “−${Math.round(p.bf.claim*100)}%” da loja é exagerado: o preço normal dele é ${fmt(p.bf.normal)}</div>`:''}
     <div class="foot"><a class="go" href="${p.url}" target="_blank" rel="noopener sponsored" onclick="event.stopPropagation()">Ver na loja ↗</a><span class="ping">${thermo(s)}</span></div>
   </article>`;
@@ -746,7 +771,7 @@ const PAG=60;let shown=PAG,lastList=[];
 function render(keep){
   const q=S.q.trim(),R=q?rank(q):null;
   const okTier=p=>S.tier==='all'||(S.tier==='fraude'||S.tier==='firmeza'?p.bf.kind===S.tier:p.s.tier<=+S.tier);
-  let list=P.filter(p=>(S.cat==='all'||p.cat===S.cat)&&(!S.stores.size||S.stores.has(p.st))&&okTier(p)&&(!R||R.has(p)));
+  let list=P.filter(p=>(S.cat==='all'||p.cat===S.cat)&&(!S.stores.size||S.stores.has(p.st))&&okTier(p)&&(!S.cup||cupsDe(p).length)&&(!R||R.has(p)));
   const f={ping:(a,b)=>(b.s.score??-1)-(a.s.score??-1)||b.s.off-a.s.off,off:(a,b)=>b.s.off-a.s.off,low:(a,b)=>a.s.cur-b.s.cur,high:(a,b)=>b.s.cur-a.s.cur}[S.sort];
   if(R&&S.sort==='ping')list.sort((a,b)=>Math.round((R.get(b)-R.get(a))*20)||f(a,b));  // busca: mais parecido primeiro
   else{
@@ -853,6 +878,8 @@ $('black').onclick=e=>{
 };
 
 $('cats').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;S.cat=b.dataset.k;document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b));render()};
+$('soCup').hidden=!P.some(p=>cupsDe(p).length);
+$('soCup').onclick=()=>{S.cup=!S.cup;$('soCup').classList.toggle('on',S.cup);render()};
 $('stores').onclick=e=>{const b=e.target.closest('.st');if(!b)return;const k=b.dataset.k;S.stores.has(k)?S.stores.delete(k):S.stores.add(k);b.classList.toggle('on');render()};
 $('tier').onchange=e=>{S.tier=e.target.value;render()};
 $('sort').onchange=e=>{S.sort=e.target.value;render()};
@@ -882,6 +909,10 @@ function openModal(p){
         ${s.off>=.01?`<div class="sub"><s>${fmtc(s.full)}</s> · <span class="off">−${Math.round(s.off*100)}% vs preço cheio</span></div>`:''}
         <div class="seen">${p.at?`Preço visto na loja ${dia(new Date(p.at))} às ${hm(new Date(p.at))}. Pode ter mudado desde então.`:''}${endsTxt(p)?` <b>⏱ ${endsTxt(p)}</b>`:''}</div></div>
       <a class="cta" href="${p.url}" target="_blank" rel="noopener sponsored">Ver na ${st.n} →</a></div>
+    ${cupsDe(p).length?`<div class="box cupm"><h5>🏷️ Cupom para este produto</h5>${cupsDe(p).map(c=>{const v=comCupom(p,c),i=CUP.indexOf(c);
+      return `<div class="cupr"><code>${c.codigo}</code><div class="ct">${c.titulo}<small>${c.ate?'Válido até '+dia(new Date(c.ate))+' às '+hm(new Date(c.ate)):''}${c.minimo?(c.ate?' · ':'')+'compra mínima '+fmt(c.minimo):''}</small>${v!=null?`<div class="cp">Com o cupom: <b>${fmtc(v)}</b> <small style="color:var(--dim)">(estimado)</small></div>`:''}</div>
+        <button class="cupgo" data-pid="${p.id}" onclick="cupGo(${i},this)">Copiar cupom e ir para a loja →</button></div>`}).join('')}
+      <small>Cole o código no carrinho da ${st.n}. A loja pode mudar ou encerrar o cupom. O Muquirômetro avalia o preço sem cupom.</small></div>`:''}
     ${p.outras.length?`<div class="box also"><h5>O mesmo produto em outras lojas</h5>${p.outras.map(o=>{const d=o.s.cur/s.cur-1;
       return `<button class="orow" data-oid="${o.id}">${logo(o.st,16)}<span>${STORES[o.st].n}</span><b>${fmtc(o.s.cur)}</b><em style="color:${d<-.005?'#a6ff3b':d>.005?'#ff4d6d':'var(--mut)'}">${Math.abs(d)<.005?'mesmo preço':Math.abs(Math.round(d*100))+'% '+(d<0?'mais barato':'mais caro')}</em></button>`}).join('')}
       <small>Juntamos só quando o código do modelo é o mesmo nas duas lojas. Toque para ver o histórico.</small></div>`:''}

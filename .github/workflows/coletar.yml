@@ -38,12 +38,14 @@ jobs:
           MUQ_DB="$RUNNER_TEMP/coleta.db" python collector/muq.py coletar --lojas "$(python collector/muq.py lojas github)"
 
       - name: Histórico (Wayback Machine)
-        if: github.event.schedule == '0 12 * * 0' || inputs.historico == 'sim'
+        if: github.event.schedule == '47 12 * * 0' || inputs.historico == 'sim'
         # para antes do limite do job (340 min) para sempre dar tempo de salvar; o resto continua na próxima
         run: MUQ_DB="$RUNNER_TEMP/coleta.db" python collector/muq.py historico --pausa 3 --max-minutos 270 --meses ${{ inputs.meses || 12 }}
 
       - name: Salvar no repositório
         if: ${{ !cancelled() }}
+        env:  # cupons automáticos da Lomadee (sem a chave, ficam os de antes)
+          LOMADEE_API_KEY: ${{ secrets.LOMADEE_API_KEY }}
         run: |
           git config user.name "muquirana-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -51,8 +53,9 @@ jobs:
             # sempre parte da versão mais nova do repositório e mescla só o que esta coleta trouxe
             git fetch -q origin main && git reset -q --hard origin/main
             python collector/muq.py mesclar "$RUNNER_TEMP/coleta.db" --lojas "$(python collector/muq.py lojas github)" --wayback
+            python collector/muq.py cupons
             python collector/muq.py exportar
-            git add data/muquirana.db data.js
+            git add data/muquirana.db data.js data/cupons-auto.json
             git diff --cached --quiet && exit 0
             git commit -q -m "Preços de $(TZ=America/Sao_Paulo date '+%F %Hh%M') · KaBuM!, Steam e ML"
             git push -q && exit 0

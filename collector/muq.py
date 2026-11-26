@@ -27,6 +27,7 @@ import xbox  # noqa: E402
 import samsung  # noqa: E402
 import motorola  # noqa: E402
 import lenovo  # noqa: E402
+import cupons  # noqa: E402
 import wayback  # noqa: E402
 import categorias  # noqa: E402
 
@@ -262,7 +263,8 @@ def cmd_exportar(a):
             "at": checked_at,  # quando o preço de hoje foi visto na loja (UTC)
             "ends": offer_ends,  # fim da oferta relâmpago, se houver (epoch)
         })
-    payload = {"gerado": dt.datetime.now(dt.timezone.utc).isoformat(timespec="minutes"), "produtos": produtos}
+    payload = {"gerado": dt.datetime.now(dt.timezone.utc).isoformat(timespec="minutes"), "produtos": produtos,
+               "cupons": cupons.validos()}  # cupons das lojas do site (ver collector/cupons.py)
     out = ROOT / "data.js"
     with open(out, "w", encoding="utf-8", newline="\n") as f:  # sempre LF, igual no Windows e no GitHub
         f.write("window.MUQ_DATA=" + json.dumps(payload, ensure_ascii=False, separators=(",", ":")) + ";\n")
@@ -327,7 +329,7 @@ def lojas_do(onde):
 
 def main():
     p = argparse.ArgumentParser(description="Coletor de preços do MuquiranaTech")
-    p.add_argument("comando", choices=["coletar", "historico", "exportar", "tudo", "mesclar", "testar", "lojas"])
+    p.add_argument("comando", choices=["coletar", "historico", "exportar", "tudo", "mesclar", "testar", "lojas", "cupons"])
     p.add_argument("origem", nargs="?", help="mesclar: banco (cópia) de onde vêm os dados novos; "
                                              "testar: arquivo do pedido; lojas: github ou pc")
     p.add_argument("--saida", help="testar: arquivo JSON onde gravar o resultado")
@@ -353,6 +355,8 @@ def main():
         cmd_testar(a)
     if a.comando == "lojas":  # usado pelos robôs: imprime as lojas daquele lugar, separadas por vírgula
         print(",".join(lojas_do(a.origem or "github")))
+    if a.comando == "cupons":  # cupons automáticos (Lomadee) → data/cupons-auto.json
+        cupons.atualizar(watchlist()["lojas"])
     if a.comando in ("exportar", "tudo"):
         cmd_exportar(a)
 

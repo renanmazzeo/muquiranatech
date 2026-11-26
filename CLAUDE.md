@@ -63,6 +63,15 @@ Wayback Machine (domingo) ─► histórico KaBuM! ─┘              Cloudflar
 - `.github/workflows/testar-lojas.yml`: teste rápido para ver se as lojas respondem ao robô do GitHub (não salva nada).
 - Os robôs fazem commit de `data.js` e do `.db` várias vezes por dia: **sempre rode `git pull` antes de mexer**.
 
+## Cupons (janela do produto)
+- `collector/cupons.py`: junta `data/cupons.json` (cupons à mão, ex.: exclusivo que uma loja mandou) e
+  `data/cupons-auto.json` (comando `cupons`, Lomadee, só marcas ligadas a uma loja do site pela chave `"lomadee"` da
+  loja na watchlist). O `exportar` põe os válidos em `data.js` (`cupons`). Formato no topo de `cupons.py`.
+- No site: selo "TEM CUPOM" no cartão, botão "Com cupom" ao lado das lojas, caixa na janela com "Copiar cupom e ir
+  para a loja". "Preço com cupom (estimado)" só com `pct`/`valor` e compra mínima atingida. O Muquirômetro e a Black
+  Fraude julgam o preço SEM cupom. Sem cupom válido, nada aparece. Nunca inventar cupom nem mostrar cupom de loja que
+  não está no site (o dono não quer página genérica de cupons).
+
 ## Muquirômetro (termômetro, sem nota e sem descrição)
 Faixa pelo quanto o preço de hoje está acima do menor preço já visto (`up`):
 - Até o Muquirana compra: até 2% acima
