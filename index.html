@@ -138,9 +138,39 @@ td small{color:var(--dim)}
 .cta{margin-top:14px;width:100%;padding:12px;border-radius:10px;border:0;background:var(--c);color:#041014;font-weight:700;cursor:pointer;font-size:15px}
 footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--dim);font-size:12px;font-family:var(--mono)}
 
+/* Black Fraude × Black Firmeza */
+.navbf{font:700 12px var(--mono);letter-spacing:.5px;color:var(--rd);border:1px solid rgba(255,77,109,.4);background:rgba(255,77,109,.08);padding:7px 12px;border-radius:999px;text-decoration:none;white-space:nowrap}
+.navbf:hover{background:rgba(255,77,109,.16)}
+.bf{margin:6px 0 34px;padding:26px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(135deg,rgba(255,77,109,.07),transparent 45%,rgba(166,255,59,.06)),var(--panel);scroll-margin-top:80px}
+.bf h2{font-size:30px;letter-spacing:-1px;font-weight:800}
+.bf h2 .fr{color:var(--rd)}.bf h2 .fi{color:var(--li)}.bf h2 .vs{color:var(--dim);font-weight:500;margin:0 6px}
+.bf-head p{color:var(--mut);max-width:780px;margin-top:8px}
+.bf-explain{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+.bfx{--c:var(--rd);border:1px solid color-mix(in srgb,var(--c) 35%,transparent);background:color-mix(in srgb,var(--c) 6%,#0a0f1a);border-radius:14px;padding:16px;display:grid;grid-template-columns:200px 1fr;gap:16px;align-items:center}
+.bfx.fi{--c:var(--li)}
+.bfx svg{width:100%;height:auto;display:block}
+.bfx h4{font:800 15px var(--mono);color:var(--c);letter-spacing:.5px}
+.bfx ul{list-style:none;margin-top:8px;display:grid;gap:5px;font-size:13px;color:var(--mut)}
+.bfx li::before{content:"› ";color:var(--c);font-weight:700}
+.bfx li b{color:var(--txt)}
+.bf-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+.bf-cols h3{font:700 13px var(--mono);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;color:var(--c)}
+.bf-list{display:grid;gap:10px}
+.bfi{--c:var(--rd);display:grid;grid-template-columns:44px 1fr 150px;gap:12px;align-items:center;background:#0a0f1a;border:1px solid var(--line);border-left:3px solid var(--c);border-radius:12px;padding:10px 12px;cursor:pointer;transition:border-color .15s}
+.bfi:hover{border-color:var(--c)}
+.bfi .thumb{width:44px;height:44px;border-radius:10px}
+.bfi h4{font-size:13.5px;font-weight:600;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.bfi p{font:12px var(--mono);color:var(--mut);margin-top:4px}
+.bfi p b{color:var(--c)}
+.bfi svg{width:100%;height:auto}
+.bf-empty{border:1px dashed var(--line2);border-radius:12px;padding:18px;color:var(--mut);font-size:13px;text-align:center}
+.bf-note{margin-top:14px;font-size:12px;color:var(--dim)}
+
 @media (max-width:860px){
   .hero{grid-template-columns:1fr}.hero h1{font-size:34px}
   .mg{grid-template-columns:1fr}.trusted{display:none}
+  .bf-explain,.bf-cols{grid-template-columns:1fr}.bfx{grid-template-columns:1fr}
+  .bfi{grid-template-columns:44px 1fr}.bfi svg{display:none}.navbf{display:none}
 }
 </style>
 </head>
@@ -156,6 +186,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--dim);fon
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
       <input id="q" placeholder="Buscar PS5, iPhone, TV 55, RTX 5070…">
     </label>
+    <a class="navbf" href="#black">BLACK FRAUDE?</a>
     <div class="trusted"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/></svg>Só lojas verificadas</div>
   </div>
 </header>
@@ -173,6 +204,49 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--dim);fon
     </div>
   </section>
 
+  <section class="bf" id="black">
+    <div class="bf-head">
+      <h2>Black <span class="fr">Fraude</span><span class="vs">×</span>Black <span class="fi">Firmeza</span></h2>
+      <p>Todo ano tem loja que sobe o preço semanas antes da Black Friday só para “baixar” no dia e anunciar um descontão. O Muquirana compara o preço da promoção com o <b>preço normal dos 3 meses anteriores</b> e mostra quem está enganando e quem está dando desconto de verdade.</p>
+    </div>
+    <div class="bf-explain">
+      <div class="bfx">
+        <svg viewBox="0 0 200 90" aria-hidden="true">
+          <line x1="6" x2="194" y1="56" y2="56" stroke="#8b98b2" stroke-dasharray="4 4" stroke-opacity=".6"/>
+          <text x="8" y="70" fill="#8b98b2" font-size="9" font-family="monospace">preço normal</text>
+          <path d="M6 56 L70 56 L92 22 L140 20 L160 54 L194 55" fill="none" stroke="#ff4d6d" stroke-width="2.4" stroke-linejoin="round"/>
+          <text x="98" y="14" fill="#ff4d6d" font-size="9" font-family="monospace">sobe antes…</text>
+          <circle cx="160" cy="54" r="4" fill="#ff4d6d"/>
+          <text x="196" y="84" text-anchor="end" fill="#ff4d6d" font-size="9" font-family="monospace">“-30%” na black</text>
+        </svg>
+        <div><h4>BLACK FRAUDE</h4><ul>
+          <li>O preço <b>sobe nas semanas anteriores</b></li>
+          <li>Na Black, ele só <b>volta ao preço normal</b> (ou fica acima)</li>
+          <li>Ou o preço “de” é <b>inflado</b> para o desconto parecer enorme</li>
+        </ul></div>
+      </div>
+      <div class="bfx fi">
+        <svg viewBox="0 0 200 90" aria-hidden="true">
+          <line x1="6" x2="194" y1="38" y2="38" stroke="#8b98b2" stroke-dasharray="4 4" stroke-opacity=".6"/>
+          <text x="8" y="30" fill="#8b98b2" font-size="9" font-family="monospace">preço normal</text>
+          <path d="M6 38 L60 37 L110 39 L140 38 L160 68 L194 68" fill="none" stroke="#a6ff3b" stroke-width="2.4" stroke-linejoin="round"/>
+          <circle cx="160" cy="68" r="4" fill="#a6ff3b"/>
+          <text x="108" y="84" fill="#a6ff3b" font-size="9" font-family="monospace">abaixo do normal</text>
+        </svg>
+        <div><h4>BLACK FIRMEZA</h4><ul>
+          <li>Preço estável, <b>sem maquiagem</b> antes da promoção</li>
+          <li>Na Black, cai <b>8% ou mais abaixo do preço normal</b></li>
+          <li>Desconto real, que você pode conferir no gráfico</li>
+        </ul></div>
+      </div>
+    </div>
+    <div class="bf-cols">
+      <div style="--c:var(--rd)"><h3 id="bfFrH">Flagrados na Black Fraude</h3><div class="bf-list" id="bfFr"></div></div>
+      <div style="--c:var(--li)"><h3 id="bfFiH">Black Firmeza</h3><div class="bf-list" id="bfFi"></div></div>
+    </div>
+    <p class="bf-note" id="bfNote"></p>
+  </section>
+
   <nav class="cats" id="cats"></nav>
   <div class="bar">
     <div class="stores" id="stores"></div>
@@ -181,6 +255,8 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--dim);fon
       <option value="all">Todos os status</option>
       <option value="0">Só “Até o Muquirana compra”</option>
       <option value="1">Tudo que o Muquirana aprova</option>
+      <option value="fraude">Só Black Fraude</option>
+      <option value="firmeza">Só Black Firmeza</option>
     </select>
     <select class="sel" id="sort">
       <option value="ping">Melhor nota (melhor negócio)</option>
@@ -322,10 +398,38 @@ function stats(p){
 function fromReal(r,i){
   const h=Array(N).fill(null);
   r.hist.forEach(([d,v])=>{const k=mAbs(d)-M0;if(k>=0&&k<N)h[k]=h[k]==null?v:Math.min(h[k],v)});
-  return{id:i,n:r.n,cat:r.cat,st:r.st,url:r.url,img:r.img,seller:r.seller,full:r.full,cur:r.cur,h,first:r.hist[0][0]};
+  return{id:i,n:r.n,cat:r.cat,st:r.st,url:r.url,img:r.img,seller:r.seller,full:r.full,cur:r.cur,h,first:r.hist[0][0],pts:r.hist};
 }
-const P=(REAL?REAL.produtos.map(fromReal):RAW.map((p,i)=>{p.id=i;p.h=buildHist(p.a,i);return p}))
-  .map(p=>{p.s=stats(p);p.url=p.url||STORES[p.st].s(p.n);return p});
+// fictício: um ponto por mês (dia 15), para a Black Fraude funcionar também na demonstração
+const monthPts=h=>h.map((v,i)=>v==null?null:[`${Math.floor((M0+i)/12)}-${String((M0+i)%12+1).padStart(2,'0')}-15`,v]).filter(Boolean);
+
+/* ---------- Black Fraude × Black Firmeza ----------
+   preço normal = mediana dos preços de 31 a 90 dias atrás
+   esquenta     = maior preço dos últimos 30 dias
+   FRAUDE  : hoje não está nem 3% abaixo do normal E (subiu 8%+ antes OU o preço "de" promete 25%+ de desconto)
+   FIRMEZA : hoje está 8%+ abaixo do normal                                                              */
+const BF={normalDe:90,normalAte:31,esquenta:30,subiu:.08,quaseNormal:-.03,real:-.08,deFalso:.25};
+const dnum=d=>Date.parse(d+'T12:00:00Z')/864e5;
+const median=a=>{const s=[...a].sort((x,y)=>x-y),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2};
+function blackCheck(p){
+  const pts=p.pts||[];if(!pts.length)return{kind:'wait'};
+  const t=dnum(pts[pts.length-1][0]),age=d=>t-dnum(d);
+  const base=pts.filter(([d])=>age(d)>=BF.normalAte&&age(d)<=BF.normalDe).map(x=>x[1]);
+  if(base.length<2)return{kind:'wait'};
+  const normal=median(base),cur=p.cur??pts[pts.length-1][1];
+  const recent=pts.filter(([d])=>age(d)>0&&age(d)<=BF.esquenta);
+  const pk=recent.reduce((m,x)=>!m||x[1]>m[1]?x:m,null);
+  const peak=pk&&pk[1]>normal?pk[1]:normal,peakDay=pk&&pk[1]>normal?pk[0]:null;
+  const vs=cur/normal-1,rise=peak/normal-1,claim=p.full>cur?1-cur/p.full:0;
+  const pts90=pts.filter(([d])=>age(d)<=BF.normalDe);
+  const r={normal,peak,peakDay,vs,rise,claim,cur,pts90,t};
+  if(vs<=BF.real)return{...r,kind:'firmeza'};
+  if(vs>BF.quaseNormal&&(rise>=BF.subiu||claim>=BF.deFalso))return{...r,kind:'fraude',why:rise>=BF.subiu?'esquenta':'de'};
+  return{...r,kind:'neutro'};
+}
+
+const P=(REAL?REAL.produtos.map(fromReal):RAW.map((p,i)=>{p.id=i;p.h=buildHist(p.a,i);p.pts=monthPts(p.h);return p}))
+  .map(p=>{p.s=stats(p);p.bf=blackCheck(p);p.url=p.url||STORES[p.st].s(p.n);return p});
 
 /* ---------- gráficos ---------- */
 function spark(p){
@@ -391,17 +495,49 @@ function card(p){
     </div>
     ${spark(p)}
     ${s.tier>=2?`<div class="lost">Melhor preço perdido: <b>${fmt(s.min)}</b> em ${lbl(s.mi)}</div>`:''}
+    ${p.bf.kind==='fraude'?`<div class="lost" style="--c:#ff4d6d"><b style="color:#ff4d6d">BLACK FRAUDE</b> · ${bfWhy(p.bf)}</div>`:''}
+    ${p.bf.kind==='firmeza'?`<div class="lost" style="--c:#a6ff3b"><b style="color:#a6ff3b">BLACK FIRMEZA</b> · ${pct(p.bf.vs)} vs preço normal (${fmt(p.bf.normal)})</div>`:''}
     <div class="foot"><a class="go" href="${p.url}" target="_blank" rel="noopener sponsored" onclick="event.stopPropagation()">Ver na loja ↗</a><span class="ping">${s.fresh?'em análise':meter(s.score,t.c)+nota(s.score)}</span></div>
   </article>`;
 }
 function render(){
   const q=S.q.toLowerCase();
-  let list=P.filter(p=>(S.cat==='all'||p.cat===S.cat)&&(!S.stores.size||S.stores.has(p.st))&&(S.tier==='all'||p.s.tier<=+S.tier)&&(!q||p.n.toLowerCase().includes(q)));
+  const okTier=p=>S.tier==='all'||(S.tier==='fraude'||S.tier==='firmeza'?p.bf.kind===S.tier:p.s.tier<=+S.tier);
+  let list=P.filter(p=>(S.cat==='all'||p.cat===S.cat)&&(!S.stores.size||S.stores.has(p.st))&&okTier(p)&&(!q||p.n.toLowerCase().includes(q)));
   const f={ping:(a,b)=>(b.s.score??-1)-(a.s.score??-1),off:(a,b)=>b.s.off-a.s.off,low:(a,b)=>a.s.cur-b.s.cur,high:(a,b)=>b.s.cur-a.s.cur}[S.sort];
   list.sort(f);
   $('count').textContent=`> ${list.length} oferta${list.length===1?'':'s'} encontrada${list.length===1?'':'s'}`;
   $('grid').innerHTML=list.length?list.map(card).join(''):'<div class="empty">Nenhuma oferta com esses filtros. Tente tirar algum.</div>';
 }
+
+/* ---------- seção Black Fraude × Black Firmeza ---------- */
+function bfWhy(b){
+  return b.why==='esquenta'
+    ? `subiu ${pct(b.rise)} ${b.peakDay?'até '+dBR(b.peakDay).slice(0,5)+' ':''}e hoje está ${Math.abs(b.vs)<.005?'igual ao':pct(b.vs)+' vs o'} preço normal`
+    : `anuncia −${Math.round(b.claim*100)}% sobre o preço “de”, mas está ${Math.abs(b.vs)<.005?'igual ao':pct(b.vs)+' vs o'} preço normal`;
+}
+function bfSpark(b,c){
+  const W=150,H=40,pts=b.pts90,vals=pts.map(x=>x[1]).concat(b.normal),lo=Math.min(...vals)*.97,hi=Math.max(...vals)*1.03;
+  const X=d=>(1-(b.t-dnum(d))/BF.normalDe)*W,Y=v=>H-3-(v-lo)/(hi-lo||1)*(H-6);
+  const d=pts.map(([dd,v],i)=>`${i?'L':'M'}${X(dd).toFixed(1)} ${Y(v).toFixed(1)}`).join('');
+  return `<svg viewBox="0 0 ${W} ${H}"><line x1="0" x2="${W}" y1="${Y(b.normal)}" y2="${Y(b.normal)}" stroke="#8b98b2" stroke-dasharray="3 3" stroke-opacity=".6"/>
+    <path d="${d}" fill="none" stroke="${c}" stroke-width="1.8" stroke-linejoin="round"/><circle cx="${W}" cy="${Y(b.cur)}" r="3" fill="${c}"/></svg>`;
+}
+function renderBlack(){
+  const fr=P.filter(p=>p.bf.kind==='fraude').sort((a,b)=>b.bf.vs-a.bf.vs);
+  const fi=P.filter(p=>p.bf.kind==='firmeza').sort((a,b)=>a.bf.vs-b.bf.vs);
+  const waiting=P.filter(p=>p.bf.kind==='wait').length;
+  const item=(p,c,txt)=>`<div class="bfi" style="--c:${c}" data-id="${p.id}"><div class="thumb" style="--c:${c};color:${c}">${thumb(p,22)}</div>
+    <div><h4>${p.n}</h4><p><b>${fmt(p.bf.cur)}</b> · ${txt}</p></div>${bfSpark(p.bf,c)}</div>`;
+  const empty=t=>`<div class="bf-empty">${t}</div>`;
+  const wait=waiting===P.length?'O Muquirana ainda está juntando histórico: precisa conhecer o preço normal de pelo menos 1 mês antes.':'';
+  $('bfFrH').textContent=`Flagrados na Black Fraude (${fr.length})`;
+  $('bfFiH').textContent=`Black Firmeza (${fi.length})`;
+  $('bfFr').innerHTML=fr.length?fr.slice(0,8).map(p=>item(p,'#ff4d6d',bfWhy(p.bf))).join(''):empty(wait||'Nenhuma Black Fraude flagrada até agora. O Muquirana continua de olho.');
+  $('bfFi').innerHTML=fi.length?fi.slice(0,8).map(p=>item(p,'#a6ff3b',`${pct(p.bf.vs)} vs preço normal de ${fmt(p.bf.normal)}`)).join(''):empty(wait||'Nenhum desconto real (8%+ abaixo do normal) por enquanto.');
+  $('bfNote').textContent=`Preço normal = mediana dos preços de 31 a 90 dias atrás.${waiting&&waiting<P.length?` ${waiting} produto${waiting>1?'s ainda não têm':' ainda não tem'} histórico suficiente.`:''} Veja todos usando o filtro “Só Black Fraude” abaixo.`;
+}
+$('black').onclick=e=>{const c=e.target.closest('.bfi');if(c)openModal(P[c.dataset.id])};
 
 $('cats').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;S.cat=b.dataset.k;document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b));render()};
 $('stores').onclick=e=>{const b=e.target.closest('.st');if(!b)return;const k=b.dataset.k;S.stores.has(k)?S.stores.delete(k):S.stores.add(k);b.classList.toggle('on');render()};
@@ -428,6 +564,7 @@ function openModal(p){
     <div class="mh"><div class="thumb" style="--c:${t.c};color:${t.c}">${thumb(p,34)}</div>
       <div><span class="store">${logo(p.st,18)}${st.n}</span><h2>${p.n}</h2><div class="trust" style="margin-top:4px">${shield(13)}${p.seller||'Vendido e entregue por '+st.n}</div></div></div>
     <div class="verdict"><div class="big">${s.fresh?'—':nota(s.score)}<small>/10</small></div><div><span class="tag">${t.k}</span><p style="margin-top:6px">${frase}</p></div></div>
+    ${p.bf.kind==='fraude'||p.bf.kind==='firmeza'?`<div class="lost" style="--c:${p.bf.kind==='fraude'?'#ff4d6d':'#a6ff3b'};margin:-6px 0 16px"><b style="color:${p.bf.kind==='fraude'?'#ff4d6d':'#a6ff3b'}">${p.bf.kind==='fraude'?'BLACK FRAUDE':'BLACK FIRMEZA'}</b> · ${p.bf.kind==='fraude'?bfWhy(p.bf):pct(p.bf.vs)+' vs o preço normal dos 3 meses anteriores ('+fmt(p.bf.normal)+')'}</div>`:''}
     <div class="cw" id="cw">${chart(p)}<div class="tip" id="tip"></div></div>
     <div class="mg">
       <div class="box"><h5>Hoje (${fmt(s.cur)}) comparado com</h5><table>${rows}</table></div>
@@ -452,6 +589,7 @@ function openModal(p){
   hit.onmouseleave=()=>{svg.querySelector('#hv').style.display='none';tip.style.display='none'};
 }
 
+renderBlack();
 render();
 </script>
 </body>
