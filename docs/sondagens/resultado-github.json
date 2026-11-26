@@ -1,29 +1,161 @@
 {
- "id": "2026-11-26-html3",
+ "id": "2026-11-26-html4",
  "onde": "github",
- "quando": "2026-11-26T04:42+00:00",
+ "quando": "2026-11-26T04:46+00:00",
  "resultados": [
   {
-   "nome": "kalunga-produto",
+   "nome": "kalunga-p0",
    "modo": "requests",
-   "url": "https://www.kalunga.com.br/prod/mouse-gamer-sem-fio-logitech-g305-lightspeed-com-6-botoes-programaveis-e-ate-12-000-dpi-preto-cx-1-un/442535",
+   "url": "https://www.kalunga.com.br/prod/mouse-sem-fio-usb-slim-box-1200dpi-preto-mo307-multilaser-cx-1-un/442311",
    "loja": null,
    "q": null,
    "status": 200,
-   "tamanho": 741674,
-   "precos_na_pagina": 25,
+   "tamanho": 738918,
+   "precos_na_pagina": 7,
    "exemplos_de_preco": [
-    "R$ 218,41",
-    "R$ 59,90",
-    "R$ 11,49",
-    "R$ 218,41",
-    "R$ 218,41"
+    "R$ 28,50",
+    "R$ 29,90",
+    "R$ 28,50",
+    "R$ 143,80",
+    "R$ 79,90"
    ],
    "bloqueio_detectado": false,
-   "titulo": "Mouse Gamer Sem Fio Logitech G305 LIGHTSPEED com 6 Botões Programáveis e Até 12.000 DPI - Preto CX 1 UN - Gamers - Kalun",
+   "titulo": "Mouse sem fio usb slim box 1200dpi preto MO307 Multilaser CX 1 UN - Informática - Kalunga",
    "json": false,
    "funcionou": true,
-   "url_final": "https://www.kalunga.com.br/prod/mouse-gamer-sem-fio-logitech-g305-lightspeed-com-6-botoes-programaveis-e-ate-12-000-dpi-preto-cx-1-un/442535"
+   "url_final": "https://www.kalunga.com.br/prod/mouse-sem-fio-usb-slim-box-1200dpi-preto-mo307-multilaser-cx-1-un/442311"
+  },
+  {
+   "nome": "kalunga-p1",
+   "modo": "requests",
+   "url": "https://www.kalunga.com.br/prod/mouse-pad-com-apoio-de-punho-em-gel-preto-24-8x22-6cm-app-tech-pt-1-un/464357",
+   "loja": null,
+   "q": null,
+   "status": 200,
+   "tamanho": 742149,
+   "precos_na_pagina": 12,
+   "exemplos_de_preco": [
+    "R$ 44,90",
+    "R$ 59,90",
+    "R$ 59,90",
+    "R$ 15,00",
+    "R$ 44,90"
+   ],
+   "bloqueio_detectado": false,
+   "titulo": "Mouse pad com apoio de punho em gel, Preto, 24,8x22,6cm, App-Tech - PT 1 UN - Informática - Kalunga",
+   "json": false,
+   "funcionou": true,
+   "url_final": "https://www.kalunga.com.br/prod/mouse-pad-com-apoio-de-punho-em-gel-preto-24-8x22-6cm-app-tech-pt-1-un/464357"
+  },
+  {
+   "nome": "kalunga-p2",
+   "modo": "requests",
+   "url": "https://www.kalunga.com.br/prod/mouse-wireless-1600dpi-rosa-mw7030p-ergo-pilha-alcalina-pequena-aa-optimum-com4-5019457-duracell-bt-4-un-cx-1-un/981525",
+   "loja": null,
+   "q": null,
+   "status": 200,
+   "tamanho": 750132,
+   "precos_na_pagina": 14,
+   "exemplos_de_preco": [
+    "R$ 97,98",
+    "R$ 122,80",
+    "R$ 122,80",
+    "R$ 24,82",
+    "R$ 97,98"
+   ],
+   "bloqueio_detectado": false,
+   "titulo": "Mouse wireless 1600dpi rosa MW7030P Ergo + Pilha alcalina pequena AA optimum c/4 5019457 Duracell BT 4 UN CX 1 UN - Info",
+   "json": false,
+   "funcionou": true,
+   "url_final": "https://www.kalunga.com.br/prod/mouse-wireless-1600dpi-rosa-mw7030p-ergo-pilha-alcalina-pequena-aa-optimum-com4-5019457-duracell-bt-4-un-cx-1-un/981525"
+  },
+  {
+   "nome": "kalunga-p3",
+   "modo": "requests",
+   "url": "https://www.kalunga.com.br/prod/mouse-pad-com-base-emborrachada-70cm-x-30cm-preto-tbp7x3-app-tech-pt-1-un/464429",
+   "loja": null,
+   "q": null,
+   "status": 200,
+   "tamanho": 740878,
+   "precos_na_pagina": 9,
+   "exemplos_de_preco": [
+    "R$ 59,90",
+    "R$ 59,90",
+    "R$ 89,90",
+    "R$ 44,95",
+    "R$ 149,00"
+   ],
+   "bloqueio_detectado": false,
+   "titulo": "Mouse pad com base emborrachada, 70cm x 30cm, Preto, TBP7X3, App-tech PT 1 UN - Informática - Kalunga",
+   "json": false,
+   "funcionou": true,
+   "url_final": "https://www.kalunga.com.br/prod/mouse-pad-com-base-emborrachada-70cm-x-30cm-preto-tbp7x3-app-tech-pt-1-un/464429"
+  },
+  {
+   "nome": "kalunga-p4",
+   "modo": "requests",
+   "url": "https://www.kalunga.com.br/prod/mouse-com-fio-1000-dpi-cinza-mf300g-ergo-cx-1-un/435256",
+   "loja": null,
+   "q": null,
+   "status": 200,
+   "tamanho": 736997,
+   "precos_na_pagina": 9,
+   "exemplos_de_preco": [
+    "R$ 35,90",
+    "R$ 35,90",
+    "R$ 24,90",
+    "R$ 1.139,05",
+    "R$ 816,05"
+   ],
+   "bloqueio_detectado": false,
+   "titulo": "Mouse com fio, 1000 DPI,Cinza, MF300G, Ergo - CX 1 UN - Informática - Kalunga",
+   "json": false,
+   "funcionou": true,
+   "url_final": "https://www.kalunga.com.br/prod/mouse-com-fio-1000-dpi-cinza-mf300g-ergo-cx-1-un/435256"
+  },
+  {
+   "nome": "kalunga-p5",
+   "modo": "requests",
+   "url": "https://www.kalunga.com.br/prod/mouse-pad-com-apoio-de-punho-em-gel-24-8x22-6cm-soothing-rosa-pastel-spiral-pt-1-un/464437",
+   "loja": null,
+   "q": null,
+   "status": 200,
+   "tamanho": 742826,
+   "precos_na_pagina": 13,
+   "exemplos_de_preco": [
+    "R$ 44,90",
+    "R$ 59,90",
+    "R$ 59,90",
+    "R$ 15,00",
+    "R$ 44,90"
+   ],
+   "bloqueio_detectado": false,
+   "titulo": "Mouse Pad com Apoio de Punho em Gel 24,8x22,6cm Soothing Rosa Pastel Spiral PT 1 UN - Informática - Kalunga",
+   "json": false,
+   "funcionou": true,
+   "url_final": "https://www.kalunga.com.br/prod/mouse-pad-com-apoio-de-punho-em-gel-24-8x22-6cm-soothing-rosa-pastel-spiral-pt-1-un/464437"
+  },
+  {
+   "nome": "kalunga-p6",
+   "modo": "requests",
+   "url": "https://www.kalunga.com.br/prod/mouse-sem-fio-1200dpi-cinza-mw253-app-tech-cx-1-un/436332",
+   "loja": null,
+   "q": null,
+   "status": 200,
+   "tamanho": 743837,
+   "precos_na_pagina": 11,
+   "exemplos_de_preco": [
+    "R$ 34,90",
+    "R$ 29,90",
+    "R$ 34,90",
+    "R$ 31,90",
+    "R$ 269,00"
+   ],
+   "bloqueio_detectado": false,
+   "titulo": "Mouse sem fio, 1200DPI, Cinza, MW253, App-Tech - CX 1 UN - Informática - Kalunga",
+   "json": false,
+   "funcionou": true,
+   "url_final": "https://www.kalunga.com.br/prod/mouse-sem-fio-1200dpi-cinza-mw253-app-tech-cx-1-un/436332"
   }
  ]
 }
