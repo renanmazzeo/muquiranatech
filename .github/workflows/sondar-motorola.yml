@@ -1,0 +1,41 @@
+name: Sondar Motorola
+
+# Sonda (não salva nada): vê se a API pública de catálogo da Motorola responde na rede do GitHub.
+on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/sondar-motorola.yml"]
+  workflow_dispatch:
+
+jobs:
+  sonda:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Perguntar à API
+        run: |
+          python3 - <<'PY'
+          import json, time, urllib.request
+          H = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131.0 Safari/537.36", "Accept-Language": "pt-BR"}
+          def get(u):
+              try:
+                  with urllib.request.urlopen(urllib.request.Request(u, headers=H), timeout=40) as r:
+                      return r.status, r.read().decode("utf-8", "replace")
+              except Exception as e:
+                  return getattr(e, "code", 0), str(e)
+          B = "https://www.motorola.com.br/api/catalog_system/pub/"
+          s, t = get(B + "category/tree/2")
+          print(f"::notice::arvore {s} {t[:600]}")
+          time.sleep(3)
+          s, t = get(B + "products/search?ft=moto%20g&_from=0&_to=9")
+          print(f"::notice::busca {s} {len(t)} bytes")
+          try:
+              for p in json.loads(t)[:5]:
+                  it = p["items"][0]
+                  for se in it["sellers"]:
+                      o = se["commertialOffer"]
+                      pix = [i["Value"] for i in o.get("Installments", []) if "pix" in i.get("PaymentSystemName", "").lower()]
+                      print(f"::notice::{p['productName'][:50]} cats={p.get('categoriesIds')} seller={se['sellerId']}/{se['sellerName']} preco={o['Price']} de={o['ListPrice']} pix={pix[:2]} qtd={o['AvailableQuantity']} {p['link']}")
+          except Exception as e:
+              print("::notice::erro", e)
+          PY
