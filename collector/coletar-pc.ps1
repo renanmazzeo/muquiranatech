@@ -3,8 +3,8 @@
 #
 # Roda numa cópia própria do repositório em %LOCALAPPDATA%\MuquiranaTech\repo, nunca na pasta de trabalho,
 # porque faz "git reset --hard" para sempre partir da versão mais nova do GitHub.
-# O Agendador de Tarefas do Windows chama este script a cada 6 horas (tarefa "MuquiranaTech - Amazon").
-# 6h e não 3h: cada push vira um deploy na Cloudflare, e o plano grátis tem 500 por mês.
+# O Agendador de Tarefas do Windows chama este script a cada 12 horas (tarefa "MuquiranaTech - Amazon").
+# 12h (era 6h até 27/11): cada push vira um deploy na Cloudflare, e o plano grátis tem 500 por mês.
 #
 #   Instalar ou reinstalar:  powershell -ExecutionPolicy Bypass -File collector\coletar-pc.ps1 -Instalar
 #   Rodar agora, na mão:     powershell -ExecutionPolicy Bypass -File "$env:LOCALAPPDATA\MuquiranaTech\repo\collector\coletar-pc.ps1"
@@ -55,14 +55,14 @@ if ($Instalar) {
     $script = Join-Path $Repo "collector\coletar-pc.ps1"
     $acao = New-ScheduledTaskAction -Execute "powershell.exe" `
         -Argument "-NoProfile -NonInteractive -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$script`""
-    # a cada 6h (1h30, 7h30, 13h30, 19h30), fora dos horários do robô do GitHub (0h, 3h, 6h... de Brasília)
+    # a cada 12h (1h30 e 13h30), fora dos horários do robô do GitHub
     $gatilho = New-ScheduledTaskTrigger -Once -At (Get-Date "01:30") `
-        -RepetitionInterval (New-TimeSpan -Hours 6) -RepetitionDuration (New-TimeSpan -Days 3650)
+        -RepetitionInterval (New-TimeSpan -Hours 12) -RepetitionDuration (New-TimeSpan -Days 3650)
     $config = New-ScheduledTaskSettingsSet -StartWhenAvailable -AllowStartIfOnBatteries `
         -DontStopIfGoingOnBatteries -ExecutionTimeLimit (New-TimeSpan -Minutes 45) -MultipleInstances IgnoreNew
     Register-ScheduledTask -TaskName $Tarefa -Action $acao -Trigger $gatilho -Settings $config `
         -Description "Coleta os preços da Amazon para o MuquiranaTech e envia ao GitHub." -Force | Out-Null
-    Write-Log "Instalado: tarefa '$Tarefa' a cada 6h (repo em $Repo)"
+    Write-Log "Instalado: tarefa '$Tarefa' a cada 12h (repo em $Repo)"
     return
 }
 

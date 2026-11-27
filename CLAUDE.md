@@ -14,8 +14,8 @@ Público: leigo em tecnologia. Todo o texto do site e dos commits é em portugu�
 
 ## Arquitetura
 ```
-GitHub Actions (a cada 3h) ──► coleta KaBuM! ─┐
-PC do dono (a cada 6h)        ► coleta Amazon ─┼─► mescla em data/muquirana.db ─► exporta data.js ─► push na main
+GitHub Actions (a cada 6h) ──► coleta KaBuM! ─┐
+PC do dono (a cada 12h)       ► coleta Amazon ─┼─► mescla em data/muquirana.db ─► exporta data.js ─► push na main
                                                │                                                    │
 Wayback Machine (domingo) ─► histórico KaBuM! ─┘              Cloudflare Pages / GitHub Pages ◄─────┘
 ```
@@ -59,9 +59,11 @@ Wayback Machine (domingo) ─► histórico KaBuM! ─┘              Cloudflar
   fim do arquivo, e o .db pesa menos no histórico do git. `db()` migra bancos antigos sozinho. Ficar de olho no
   tamanho do repositório (`git count-objects -vH`); perto de 1 GB, migrar o histórico para o Cloudflare D1.
 - `.github/workflows/relogio.yml` ("Relógio da coleta"): o `schedule` do GitHub nunca disparou neste repositório
-  (25-26/11), então este job fica de plantão, dispara o `coletar.yml` quando a última coleta tem 3 h ou mais e se
+  (25-26/11), então este job fica de plantão, dispara o `coletar.yml` quando a última coleta tem 6 h ou mais e se
   re-dispara perto do limite de 6 h. Se parar, religar em Actions → Run workflow. Desligar = cancelar a execução.
-- `.github/workflows/coletar.yml`: KaBuM! a cada 3h; domingo às 9h também busca histórico. Para rodar na mão:
+- `.github/workflows/coletar.yml`: a cada 6h (era 3h; reduzido em 27/11 enquanto o site é estruturado, voltar depois).
+  Os jobs `coletar` e `coletar-navegador` rodam juntos e entregam a cópia do banco; o job `salvar` mescla as duas e faz
+  UM push (1 build do Cloudflare por coleta); domingo às 9h também busca histórico. Para rodar na mão:
   `gh workflow run "Coletar preços" -f historico=sim -f meses=4`.
 - `.github/workflows/testar-loja.yml` ("Testar loja", input `loja`): coleta uma loja numa cópia na rede do GitHub.
 - `.github/workflows/testar-lojas.yml`: teste rápido para ver se as lojas respondem ao robô do GitHub (não salva nada).
@@ -141,7 +143,9 @@ Preço normal = mediana dos preços de 31 a 90 dias atrás (`BF` em `index.html`
   "poderão" de privacidade.html e como-funciona.html.
   Endereço técnico do Cloudflare Pages: https://muquiranatech.pages.dev (conectado ao GitHub, publica a cada push).
   Também em https://renanmazzeo.github.io/muquiranatech/ (GitHub Pages).
-  Cloudflare grátis: 500 builds por mês. Os robôs fazem cerca de 360 (KaBuM! a cada 3h + Amazon a cada 6h).
+  Cloudflare grátis: 500 builds por mês. Os robôs fazem cerca de 180 (GitHub a cada 6h com 1 push + Amazon a cada 12h). Medição de 27/11: só a KaBuM!
+  muda muito entre coletas (~1,6% dos produtos a cada 3h, quase tudo oferta relâmpago); Steam, Xbox, PlayStation, Samsung
+  e Kalunga quase não mudam no dia.
   **Não aumente a frequência**, e pull requests também geram builds de prévia.
   A Netlify foi descartada porque o plano grátis novo só permite cerca de 20 deploys por mês.
 - Banco: SQLite no git basta por enquanto. Quando o repositório passar de cerca de 1 GB, migrar para o Cloudflare D1.

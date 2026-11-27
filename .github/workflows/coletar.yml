@@ -2,7 +2,7 @@ name: Coletar preços
 
 on:
   schedule:
-    - cron: "17 */3 * * *"   # a cada 3 horas (minuto 17: no minuto 0 o GitHub atrasa ou pula): preços mudam várias vezes por dia em promoções
+    - cron: "17 */6 * * *"   # a cada 6 horas (27/11: menos builds do Cloudflare enquanto o site é estruturado; voltar a */3 depois)
     - cron: "47 12 * * 0"    # domingo 09h: também busca histórico novo na Wayback
   workflow_dispatch:
     inputs:
@@ -42,35 +42,18 @@ jobs:
         # para antes do limite do job (340 min) para sempre dar tempo de salvar; o resto continua na próxima
         run: MUQ_DB="$RUNNER_TEMP/coleta.db" python collector/muq.py historico --pausa 3 --max-minutos 270 --meses ${{ inputs.meses || 12 }}
 
-      - name: Salvar no repositório
+      - name: Entregar a coleta para o job "salvar"
         if: ${{ !cancelled() }}
-        env:  # cupons automáticos da Lomadee (sem a chave, ficam os de antes)
-          LOMADEE_API_KEY: ${{ secrets.LOMADEE_API_KEY }}
-        run: |
-          git config user.name "muquirana-bot"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          for i in 1 2 3 4 5; do
-            # sempre parte da versão mais nova do repositório e mescla só o que esta coleta trouxe
-            git fetch -q origin main && git reset -q --hard origin/main
-            python collector/muq.py mesclar "$RUNNER_TEMP/coleta.db" --lojas "$(python collector/muq.py lojas github)" --wayback
-            python collector/muq.py cupons
-            python collector/muq.py exportar
-            git add data/muquirana.db data.js data/cupons-auto.json
-            git diff --cached --quiet && exit 0
-            git commit -q -m "Preços de $(TZ=America/Sao_Paulo date '+%F %Hh%M') · KaBuM!, Steam e ML"
-            git push -q && exit 0
-            sleep 15
-          done
-          exit 1
+        uses: actions/upload-artifact@v4
+        with:
+          name: coleta-github
+          path: ${{ runner.temp }}/coleta.db
+          retention-days: 1
 
   # lojas que só mostram o preço com navegador de verdade (PlayStation Store): job separado, é mais lento
   coletar-navegador:
-    needs: coletar
-    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -82,18 +65,56 @@ jobs:
         run: |
           cp data/muquirana.db "$RUNNER_TEMP/coleta.db"
           MUQ_DB="$RUNNER_TEMP/coleta.db" python collector/muq.py coletar --lojas "$(python collector/muq.py lojas github-nav)"
-      - name: Salvar no repositório
+      - name: Entregar a coleta para o job "salvar"
         if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: coleta-navegador
+          path: ${{ runner.temp }}/coleta.db
+          retention-days: 1
+
+  # junta as duas coletas num commit só: 1 push = 1 build do Cloudflare (limite grátis de 500 por mês)
+  salvar:
+    needs: [coletar, coletar-navegador]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r collector/requirements.txt
+      - uses: actions/download-artifact@v4
+        continue-on-error: true  # se uma das coletas falhou, salva a outra
+        with:
+          name: coleta-github
+          path: ${{ runner.temp }}/github
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: coleta-navegador
+          path: ${{ runner.temp }}/nav
+      - name: Salvar no repositório
+        env:  # cupons automáticos da Lomadee (sem a chave, ficam os de antes)
+          LOMADEE_API_KEY: ${{ secrets.LOMADEE_API_KEY }}
         run: |
           git config user.name "muquirana-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          G="$RUNNER_TEMP/github/coleta.db"; N="$RUNNER_TEMP/nav/coleta.db"
+          [ -f "$G" ] || [ -f "$N" ] || { echo "nenhuma coleta para salvar"; exit 1; }
           for i in 1 2 3 4 5; do
+            # sempre parte da versão mais nova do repositório e mescla só o que estas coletas trouxeram
             git fetch -q origin main && git reset -q --hard origin/main
-            python collector/muq.py mesclar "$RUNNER_TEMP/coleta.db" --lojas "$(python collector/muq.py lojas github-nav)"
+            [ -f "$G" ] && python collector/muq.py mesclar "$G" --lojas "$(python collector/muq.py lojas github)" --wayback
+            [ -f "$N" ] && python collector/muq.py mesclar "$N" --lojas "$(python collector/muq.py lojas github-nav)"
+            python collector/muq.py cupons
             python collector/muq.py exportar
-            git add data/muquirana.db data.js
+            git add data/muquirana.db data.js data/cupons-auto.json
             git diff --cached --quiet && exit 0
-            git commit -q -m "Preços de $(TZ=America/Sao_Paulo date '+%F %Hh%M') · PlayStation Store"
+            git commit -q -m "Preços de $(TZ=America/Sao_Paulo date '+%F %Hh%M')"
             git push -q && exit 0
             sleep 15
           done
