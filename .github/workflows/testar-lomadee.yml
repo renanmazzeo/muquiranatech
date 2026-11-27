@@ -104,4 +104,13 @@ jobs:
                   print(f"  {str(marcas[oid])[:25]:25} | {x.get('type')} | código={x.get('code') or x.get('coupon') or '-'} | até {fim} | {str(x.get('name'))[:70]}")
               if pg_ >= ((j.get("meta") or {}).get("totalPages") or 1):
                   break
+          print("== ENCURTADOR (Custom) PARA A LENOVO")
+          lv = [b for b in (get("/affiliate/brands", search="lenovo", limit=20) or {}).get("data", []) if b.get("name", "").lower() == "lenovo"]
+          if lv:
+              for url in ["https://www.lenovo.com/br/pt/p/laptops/ideapad/ideapad-s-series/lenovo-ideapad-slim-3i-gen-10-15-inch-intel/83ns000lbr",
+                          "https://www.lenovo.com/br/pt/laptops/"]:
+                  time.sleep(1.2)
+                  r = requests.post(API + "/affiliate/shortener/url", headers={**H, "Content-Type": "application/json"}, timeout=30,
+                                    json={"organizationId": lv[0]["id"], "type": "Custom", "url": url, "mdasc": "teste"})
+                  print("  ", r.status_code, url[-40:], r.text[:400])
           EOF
