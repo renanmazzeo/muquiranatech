@@ -289,4 +289,4 @@ Tentei criar o workflow `testar-navegador.yml` (Chromium abrindo uma busca de Ma
 - Lenovo: a Lomadee confirmou que o link sempre abre a página inicial. A pedido do dono, o "Ver na Lenovo" usa o link de comissão, copia o código do produto e mostra a dica para colar na busca.
 - PCYes (196-201 produtos, 6 de 6 preços iguais à ficha) e Concórdia Informática (379-387 produtos, 5 de 5) entram no site com link de comissão da Lomadee no "Ver na loja" (deep link abre o produto). Shopinfo: bloqueia robôs (429). Xiaomi: não achada na Lomadee (dono vai ver o nome).
 - Nova chave da Lomadee com encurtador e pedidos (a antiga foi revogada pelo dono). Novo workflow genérico "Testar loja".
-**Precisa do dono:** nome exato da Xiaomi na Lomadee.
+- Xiaomi (loja oficial mibrasil.com.br, na Lomadee como "Dl Comercio E Industria De Produtos Eletronicos", 2,38%): `collector/xiaomi.py` lê o catálogo aberto `/products.json`; 137 produtos de tecnologia (celulares, tablets, relógios, fones, casa inteligente, roteadores), 8 de 8 preços iguais à ficha; link de comissão abre o produto.

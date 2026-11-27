@@ -155,6 +155,15 @@
         {"path": "energia", "cat": "rede"}
       ]
     },
+    "xiaomi": {
+      "nome": "Xiaomi",
+      "lomadee": "Dl Comercio E Industria De Produtos Eletronicos",
+      "pausa": 3,
+      "vendedores_confiaveis": ["Xiaomi"],
+      "not": ["recondicionado", "usado", "seminovo", "vitrine", "capa ", "capa protetora", "pelicula", "kapps", "refil", "escova", "pulseira de reposicao", "cordao"],
+      "buscas": [],
+      "catalogo": [{"path": "tudo", "cat": "celular"}]
+    },
     "motorola": {
       "nome": "Motorola",
       "pausa": 2,

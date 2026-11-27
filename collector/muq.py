@@ -30,11 +30,12 @@ import lenovo  # noqa: E402
 import cupons  # noqa: E402
 import pcyes  # noqa: E402
 import concordia  # noqa: E402
+import xiaomi  # noqa: E402
 import wayback  # noqa: E402
 import categorias  # noqa: E402
 
 # lojas que o coletor sabe ler (cada módulo tem search(termo) -> itens no mesmo formato)
-LOJAS = {"kabum": kabum, "amazon": amazon, "steam": steam, "kalunga": kalunga, "playstation": playstation, "xbox": xbox, "samsung": samsung, "motorola": motorola, "lenovo": lenovo, "pcyes": pcyes, "concordia": concordia, "ml": mercadolivre}
+LOJAS = {"kabum": kabum, "amazon": amazon, "steam": steam, "kalunga": kalunga, "playstation": playstation, "xbox": xbox, "samsung": samsung, "motorola": motorola, "lenovo": lenovo, "pcyes": pcyes, "concordia": concordia, "xiaomi": xiaomi, "ml": mercadolivre}
 
 ROOT = Path(__file__).resolve().parent.parent
 DB = ROOT / "data" / "muquirana.db"
@@ -159,7 +160,9 @@ def coletar_loja(c, loja, cfg, buscas, today, now, pausa):
                 if not it["available"] or any(w in nome for w in evitar):
                     continue
                 # "fixa": a categoria da própria loja já é a certa (ex.: Samsung, onde o nome começa pela marca)
-                categoria = cat["cat"] if cat.get("fixa") else categorias.classificar(it["name"], cat.get("cat", "perif"))
+                # ou a loja já diz a categoria do site no item (ex.: Xiaomi, pela categoria da própria loja)
+                categoria = it.get("cat") or (cat["cat"] if cat.get("fixa") else
+                                              categorias.classificar(it["name"], cat.get("cat", "perif")))
                 salvar(c, loja, it, categoria, today, now)
                 n += 1
             total += n
