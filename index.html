@@ -40,7 +40,7 @@ button,select,input{font:inherit;color:inherit}
 /* header */
 header{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(6,8,13,.78);border-bottom:1px solid var(--line)}
 header .wrap{display:flex;align-items:center;gap:20px;height:66px}
-.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px;letter-spacing:-.5px;white-space:nowrap}
+.logo{color:inherit;text-decoration:none;cursor:pointer;display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px;letter-spacing:-.5px;white-space:nowrap}
 .logo b{color:var(--cy)}
 .logo small{font:500 10px var(--mono);color:var(--dim);border:1px solid var(--line2);padding:2px 6px;border-radius:5px;letter-spacing:0}
 .search{flex:1;max-width:520px;position:relative}
@@ -224,6 +224,10 @@ td small{color:var(--dim)}
 .cta{margin-top:14px;width:100%;padding:14px;border-radius:12px;border:0;background:linear-gradient(90deg,#a6ff3b,#4dffb8);color:#04140a;font-weight:800;cursor:pointer;font-size:16px;letter-spacing:.2px;box-shadow:0 6px 24px -6px rgba(166,255,59,.6);transition:transform .15s,box-shadow .15s}
 .cta:hover{transform:translateY(-1px);box-shadow:0 10px 30px -6px rgba(166,255,59,.8)}
 footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--dim);font-size:12px;font-family:var(--mono)}
+.selos{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;font-family:'Segoe UI',Inter,system-ui,sans-serif}
+.selo{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line2);border-radius:12px;background:var(--panel);color:var(--txt);font-size:12.5px}
+.selo svg{flex:none}.selo small{display:block;color:var(--dim);font-size:11px}
+footer .ct{margin-top:10px}footer a{color:var(--mut)}footer .ct a{color:var(--cy)}
 
 /* Black Fraude × Black Firmeza */
 .navbf{font:700 12px var(--mono);letter-spacing:.5px;color:var(--rd);border:1px solid rgba(255,77,109,.4);background:rgba(255,77,109,.08);padding:7px 12px;border-radius:999px;text-decoration:none;white-space:nowrap}
@@ -289,10 +293,10 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--dim);fon
 
 <header>
   <div class="wrap">
-    <div class="logo">
+    <a class="logo" href="./" aria-label="MuquiranaTech: página inicial">
       <svg width="30" height="30" viewBox="-0.5 -3.5 25 25" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z" stroke="#00e5ff" stroke-width="2"/><path d="M8 8C5.6 6.4 3.4 4.2 2.2 1.8 1.2-.2 2.4-2.2 4.6-2.2 6.6-2.2 8-.8 8.4 1" stroke="#a6ff3b" stroke-width="1.6"/><circle cx="8" cy="8" r="1.7" fill="#a6ff3b"/></svg>
       <span>Muquirana<b>Tech</b></span>
-    </div>
+    </a>
     <div class="search" id="sbox">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
       <input id="q" type="search" enterkeyhint="search" autocomplete="off" placeholder="Buscar PS5, iPhone, TV 55, RTX 3060…" aria-label="Buscar produto">
@@ -700,7 +704,16 @@ const nPrecos=REAL?REAL.produtos.reduce((a,p)=>a+p.hist.length,0):P.reduce((a,p)
 const milhar=v=>v.toLocaleString('pt-BR');
 $('stats').innerHTML=[[milhar(P.length),'produtos monitorados'],[milhar(nPrecos),'preços registrados'],[milhar(P.filter(p=>p.s.tier<=1).length),'aprovados pelo Muquirana']]
   .map(([v,l])=>`<div>${v}<small>${l}</small></div>`).join('');
-if(REAL)document.querySelector('footer .wrap').innerHTML=`MuquiranaTech · preços reais atualizados várias vezes por dia · preço à vista, só vendedores confiáveis. Confira sempre na loja antes de comprar. · <a href="como-funciona.html" style="color:var(--mut)">Como funciona</a> · <a href="privacidade.html" style="color:var(--mut)">Privacidade e transparência</a>`;
+// selos: só fatos sobre o próprio site (nada de selo de terceiro que o site não tem)
+const SELO=(c,d,t,sub)=>`<div class="selo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg><div>${t}<small>${sub}</small></div></div>`;
+if(REAL)document.querySelector('footer .wrap').innerHTML=`<div class="selos">
+  ${SELO('#a6ff3b','<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>','Conexão segura','cadeado HTTPS em todo o site')}
+  ${SELO('#00e5ff','<path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/>','Lojas e vendedores verificados','só a própria loja ou parceiro oficial')}
+  ${SELO('#ffb020','<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>','Preços conferidos nas lojas','várias vezes por dia, com histórico')}
+  ${SELO('#8b98b2','<path d="M3 3l18 18"/><path d="M10.6 5.1A9 9 0 0 1 21 12a9 9 0 0 1-1.7 3.3M6.6 6.6A9 9 0 0 0 3 12a9 9 0 0 0 13.4 5.4"/>','Sem cadastro e sem rastreio','não usamos cookies de propaganda')}
+</div>
+MuquiranaTech · preços à vista, só vendedores confiáveis. Confira sempre na loja antes de comprar. · <a href="como-funciona.html">Como funciona</a> · <a href="privacidade.html">Privacidade e transparência</a>
+<div class="ct">Parcerias, sugestões e contato: <a href="mailto:contato@muquiranatech.com.br">contato@muquiranatech.com.br</a></div>`;
 {const sc=T.slice(0,4).reverse();
  $('legend').innerHTML=`<div class="thv"><div><div class="tube">${sc.map(t=>`<i style="background:${t.c}"></i>`).join('')}</div><div class="bulb"></div></div>
   <div class="lbl">${sc.map(t=>`<span style="--c:${t.c}">${t.k}</span>`).join('')}</div></div>
