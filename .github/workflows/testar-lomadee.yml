@@ -118,4 +118,16 @@ jobs:
               for b in (get("/affiliate/brands", search=q, limit=20) or {}).get("data", []):
                   com = (b.get("commission") or {}).get("value")
                   print(f"  [{q}] {b.get('name')} | {b.get('site')} | comissão={com}% | id={b.get('id')}")
+          print("== TODAS AS MARCAS")
+          pg_ = 1
+          while pg_ <= 60:
+              j = get("/affiliate/brands", limit=20, page=pg_)
+              ds = (j or {}).get("data") or []
+              for b in ds:
+                  com = (b.get("commission") or {}).get("value")
+                  print(f"MARCA|{b.get('name')}|{b.get('site')}|{b.get('segment')}|{com}")
+              tp = ((j or {}).get("pagination") or {}).get("totalPages") or 1
+              if not ds or pg_ >= tp:
+                  break
+              pg_ += 1
           EOF
