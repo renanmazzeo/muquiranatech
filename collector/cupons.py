@@ -87,7 +87,8 @@ def de_lomadee(marcas):
             if oid not in nomes:
                 b = _get(f"/affiliate/brands/{oid}")
                 nomes[oid] = str(((b.get("data") or b) if isinstance(b, dict) else {}).get("name") or "").strip().lower()
-            loja = marcas.get(nomes[oid])
+            # nome igual, ou começando pelo nome da watchlist (razões sociais longas: "... Eletronicos Ltda")
+            loja = marcas.get(nomes[oid]) or next((v for k, v in marcas.items() if nomes[oid].startswith(k)), None)
             if not loja or not x.get("code") or x.get("status") not in (None, "onTime"):
                 continue
             links = [u for ch in x.get("channels") or [] for u in ch.get("shortUrls") or []]
