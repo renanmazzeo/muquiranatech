@@ -11,6 +11,8 @@ import unicodedata
 
 import requests
 
+import parcelas
+
 BASE = "https://www.kabum.com.br"
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -76,6 +78,8 @@ def _item(o, at=None):
         "url": f"{BASE}/produto/{code}/{friendly}" if friendly else f"{BASE}/produto/{code}",
         "available": bool(available),
         "offer_ends": of["endsAt"] if of else None,
+        # "10x de R$ 117,64": sem juros quando o total bate com o preço no cartão (o "price", sem o desconto do Pix)
+        "parc": parcelas.de_texto(o.get("maxInstallment"), _num(src.get("price")) or _num(o.get("price"))),
     }
 
 

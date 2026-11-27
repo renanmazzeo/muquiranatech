@@ -34,9 +34,10 @@ class TestLenovo(unittest.TestCase):
 
     def test_preco_da_ficha(self):
         j = {"data": {"83NS000LBR": [0, "ok", "83NS000LBR", "BRL", "3782.49", -1, -1, 0, [], "1417.5", 27.0, 2, -1,
-                                     [3, "487450718175237", "0", "5199.99", 0]],
+                                     [3, "487450718175237", "0", "5199.99", 0],
+                                     [0, {"installment": 12, "pricePerInstallment": 370.83, "totalInstallmentPrice": 4449.96}]],
                       "X1": [1, "erro", "X1", "BRL", "0"]}}
-        self.assertEqual(lenovo.ler_precos(j), {"83NS000LBR": (3782.49, 5199.99)})
+        self.assertEqual(lenovo.ler_precos(j), {"83NS000LBR": (3782.49, 5199.99, {"n": 12, "v": 370.83, "total": 4449.96, "juros": False})})
 
 
 if __name__ == "__main__":

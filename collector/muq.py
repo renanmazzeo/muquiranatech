@@ -52,7 +52,7 @@ def db():
     create table if not exists wayback_done(key text primary key);
     """)
     cols = {r[1] for r in c.execute("pragma table_info(products)")}
-    for col in ("offer_ends integer", "checked_at text"):  # colunas novas em bancos antigos
+    for col in ("offer_ends integer", "checked_at text", "parcelas text"):  # colunas novas em bancos antigos
         if col.split()[0] not in cols:
             c.execute(f"alter table products add column {col}")
     # preços ordenados por DIA (without rowid): a coleta de hoje só acrescenta páginas no fim do arquivo.
@@ -170,13 +170,14 @@ def salvar(c, loja, it, cat, today, now):
     """Grava o produto e o preço de hoje. A categoria só vale na 1ª vez (a de uma busca não é trocada)."""
     pid = f"{loja}:{it['code']}"
     c.execute("""insert into products
-      (id,store,code,name,cat,url,img,seller,list_price,first_seen,last_seen,offer_ends,checked_at)
-      values(?,?,?,?,?,?,?,?,?,?,?,?,?)
+      (id,store,code,name,cat,url,img,seller,list_price,first_seen,last_seen,offer_ends,checked_at,parcelas)
+      values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)
       on conflict(id) do update set name=excluded.name, url=excluded.url, img=excluded.img,
       seller=excluded.seller, list_price=excluded.list_price, last_seen=excluded.last_seen,
-      offer_ends=excluded.offer_ends, checked_at=excluded.checked_at""",
+      offer_ends=excluded.offer_ends, checked_at=excluded.checked_at, parcelas=excluded.parcelas""",
               (pid, loja, it["code"], it["name"], cat, it["url"], it["img"],
-               it["seller"], it["list_price"], today, today, it["offer_ends"], now))
+               it["seller"], it["list_price"], today, today, it["offer_ends"], now,
+               json.dumps(it["parc"]) if it.get("parc") else None))
     c.execute("insert or replace into prices(product_id,day,price,source) values(?,?,?,?)",
               (pid, today, it["price"], "live"))
 
@@ -244,8 +245,8 @@ def cmd_exportar(a):
         d[day] = min(price, d.get(day, price))
         if source == "live":
             vivo[pid] = price  # o último dia (ordem por dia) fica
-    for pid, store, name, cat, url, img, seller, list_price, offer_ends, checked_at in c.execute(
-            "select id,store,name,cat,url,img,seller,list_price,offer_ends,checked_at from products"
+    for pid, store, name, cat, url, img, seller, list_price, offer_ends, checked_at, parc in c.execute(
+            "select id,store,name,cat,url,img,seller,list_price,offer_ends,checked_at,parcelas from products"
             " where last_seen>=? order by id",
             (cutoff,)).fetchall():
         hist = sorted(dias.get(pid, {}).items())
@@ -262,6 +263,7 @@ def cmd_exportar(a):
             "full": list_price, "cur": cur[0], "hist": [[d, p] for d, p in hist],
             "at": checked_at,  # quando o preço de hoje foi visto na loja (UTC)
             "ends": offer_ends,  # fim da oferta relâmpago, se houver (epoch)
+            "parc": json.loads(parc) if parc else None,  # parcelamento no cartão (collector/parcelas.py)
         })
     payload = {"gerado": dt.datetime.now(dt.timezone.utc).isoformat(timespec="minutes"), "produtos": produtos,
                "cupons": cupons.validos()}  # cupons das lojas do site (ver collector/cupons.py)
@@ -282,14 +284,19 @@ def cmd_mesclar(a):
     c.execute("attach database ? as o", (str(Path(a.origem).resolve()),))
     lojas = a.lojas.split(",") if a.lojas else [r[0] for r in c.execute("select distinct store from o.products")]
     marks = ",".join("?" * len(lojas))
+    # cópia feita por um robô com código antigo pode não ter a coluna de parcelamento
+    tem_parc = "parcelas" in {r[1] for r in c.execute("pragma o.table_info(products)")}
     c.execute(f"""insert into products(id,store,code,name,cat,url,img,seller,list_price,first_seen,last_seen,
-                                       offer_ends,checked_at)
-        select id,store,code,name,cat,url,img,seller,list_price,first_seen,last_seen,offer_ends,checked_at
+                                       offer_ends,checked_at,parcelas)
+        select id,store,code,name,cat,url,img,seller,list_price,first_seen,last_seen,offer_ends,checked_at,
+               {"parcelas" if tem_parc else "null"}
         from o.products where store in ({marks})
         on conflict(id) do update set name=excluded.name, cat=excluded.cat, url=excluded.url, img=excluded.img,
           seller=excluded.seller, list_price=excluded.list_price, last_seen=max(last_seen, excluded.last_seen),
           first_seen=min(first_seen, excluded.first_seen), offer_ends=excluded.offer_ends,
-          checked_at=max(coalesce(checked_at,''), coalesce(excluded.checked_at,''))""", lojas)
+          checked_at=max(coalesce(checked_at,''), coalesce(excluded.checked_at,'')),
+          parcelas=case when coalesce(excluded.checked_at,'') >= coalesce(checked_at,'') then excluded.parcelas
+                        else parcelas end""", lojas)
     n = c.execute(f"""insert or replace into prices select x.* from o.prices x
         join o.products p on p.id=x.product_id
         where p.store in ({marks}) and x.source='live' and x.day>=?""", (*lojas, a.desde_dia)).rowcount

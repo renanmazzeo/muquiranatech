@@ -13,6 +13,8 @@ from urllib.parse import quote
 
 import requests
 
+import parcelas
+
 BASE = "https://www.lenovo.com/br/pt"
 API = "https://openapi.lenovo.com/br/pt/ofp/search/dlp/product/query/get/_tsc"
 HEADERS = {
@@ -103,8 +105,15 @@ def ler_precos(j):
             continue
         preco = _num(e[4])
         de = _num(e[13][3]) if len(e) > 13 and isinstance(e[13], list) and len(e[13]) > 3 else 0
+        parc = None  # "Ou R$ X em até 12x de R$ Y sem juros no cartão" (a mesma informação da ficha)
+        for x in e[14:]:
+            if isinstance(x, list) and len(x) > 1 and isinstance(x[1], dict) and "pricePerInstallment" in x[1]:
+                i = x[1]
+                parc = parcelas.montar(i.get("installment"), i.get("pricePerInstallment"), i.get("totalInstallmentPrice"),
+                                       juros=False)
+                break
         if preco > 0:
-            out[code] = (preco, max(de, preco))
+            out[code] = (preco, max(de, preco), parc)
     return out
 
 
@@ -123,6 +132,6 @@ def catalogo(filtro, max_paginas=20, pausa=2.0):
     final = []
     for code, it in out.items():
         if code in pr:
-            it["price"], it["list_price"] = pr[code]
+            it["price"], it["list_price"], it["parc"] = pr[code]
             final.append(it)
     return final

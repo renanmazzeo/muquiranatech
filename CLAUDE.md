@@ -75,6 +75,16 @@ Wayback Machine (domingo) ─► histórico KaBuM! ─┘              Cloudflar
   Fraude julgam o preço SEM cupom. Sem cupom válido, nada aparece. Nunca inventar cupom nem mostrar cupom de loja que
   não está no site (o dono não quer página genérica de cupons).
 
+## Parcelamento e "Apoie o Muquirana"
+- `collector/parcelas.py`: parcelamento no cartão `{"n","v","total","juros"}` guardado na coluna `products.parcelas`
+  e exportado como `parc`. KaBuM! (`maxInstallment`, sem juros quando o total bate com o preço no cartão),
+  Samsung/Motorola (VTEX `Installments`: maior parcela sem juros num cartão comum), Lenovo (o mesmo da ficha).
+  Amazon, Kalunga e jogos: não mostra nada. Nunca inventar parcelamento. No site: linha abaixo do preço (cartão e janela).
+- Lenovo pela Lomadee: qualquer link (deep link ou encurtador "Custom") abre a página INICIAL (a Lomadee confirmou em
+  27/11; a comissão vale para qualquer compra na latência do cookie). Por isso o botão principal vai direto ao produto
+  (sem comissão) e a janela tem a caixa opcional "Apoie o Muquirana": copia o código do produto e abre a Lenovo pelo
+  link de afiliado (`STORES.lenovo.apoio`, `mdasc=apoio-janela`). Nunca abrir link de afiliado escondido.
+
 ## Muquirômetro (termômetro, sem nota e sem descrição)
 Faixa pelo quanto o preço de hoje está acima do menor preço já visto (`up`):
 - Até o Muquirana compra: até 2% acima

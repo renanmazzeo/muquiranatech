@@ -154,6 +154,12 @@ a.cta{display:block;text-align:center;text-decoration:none}
 .trust{display:flex;align-items:center;gap:5px;color:var(--mut);font-size:12px}
 .trust svg{color:var(--li);flex:none}
 .lost{font-size:12px;color:var(--mut);border-left:2px solid var(--c);padding-left:8px}
+.parc{font-size:12px;color:var(--mut);margin-top:2px}.parc b{font-family:var(--mono);color:var(--txt);font-weight:600}
+.mparc{font-size:13px;color:var(--mut);margin-top:6px}.mparc b{font-family:var(--mono);color:var(--txt)}
+.apoio{margin:0 0 16px;border:1px dashed rgba(166,255,59,.45);background:rgba(166,255,59,.04);border-radius:14px;padding:12px 14px}
+.apoio h5{color:var(--li)}.apoio p{font-size:13px;color:#cdd6e6;margin:4px 0 8px}
+.apoio code{font:800 15px var(--mono);letter-spacing:1px;color:var(--li);background:rgba(166,255,59,.1);padding:5px 10px;border-radius:8px}
+.apoiogo{background:var(--li);color:#071000;border:0;border-radius:10px;padding:9px 14px;font-weight:800;cursor:pointer}
 .cupb{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font:700 11.5px var(--mono);letter-spacing:.3px;color:#ffb020;border:1px dashed rgba(255,176,32,.55);background:rgba(255,176,32,.07);padding:4px 9px;border-radius:8px}
 .cupm{margin:12px 0 16px;border:1px dashed rgba(255,176,32,.55);background:rgba(255,176,32,.05);border-radius:14px;padding:12px 14px}
 .cupm h5{color:#ffb020}.cupr{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:8px 0;border-top:1px dashed rgba(255,176,32,.25)}.cupr:first-of-type{border-top:0}
@@ -435,7 +441,8 @@ const STORES={
   xbox:{n:'Xbox Store',c:'#107c10',d:'xbox.com',s:q=>`https://www.xbox.com/pt-BR/search?q=${enc(q)}`},
   kalunga:{n:'Kalunga',c:'#0b4ea2',d:'kalunga.com.br',s:q=>`https://www.kalunga.com.br/busca/${slug(q)}`},
   motorola:{n:'Motorola',c:'#5c92fa',d:'motorola.com.br',s:q=>`https://www.motorola.com.br/search?q=${enc(q)}`},
-  lenovo:{n:'Lenovo',c:'#e2231a',d:'lenovo.com',s:q=>`https://www.lenovo.com/br/pt/search?text=${enc(q)}`},
+  lenovo:{n:'Lenovo',c:'#e2231a',d:'lenovo.com',s:q=>`https://www.lenovo.com/br/pt/search?text=${enc(q)}`,
+    apoio:'https://lmdee.link/deep/muquirana-tech?url=https%3A%2F%2Fwww.lenovo.com%2Fbr%2Fpt%2F&mdasc=apoio-janela'},
   samsung:{n:'Samsung',c:'#1428a0',d:'samsung.com',s:q=>`https://shop.samsung.com/br/${enc(q)}?_q=${enc(q)}&map=ft`},
   nuuvem:{n:'Nuuvem',c:'#b04cff',d:'nuuvem.com',s:q=>`https://www.nuuvem.com/br-pt/catalog/search/${enc(q)}`},
   psstore:{n:'PS Store',c:'#2b6cff',d:'store.playstation.com',s:q=>`https://store.playstation.com/pt-br/search/${enc(q)}`},
@@ -530,7 +537,7 @@ function stats(p){
 function fromReal(r,i){
   const h=Array(N).fill(null);
   r.hist.forEach(([d,v])=>{const k=mAbs(d)-M0;if(k>=0&&k<N)h[k]=h[k]==null?v:Math.min(h[k],v)});
-  return{id:i,n:r.n,cat:r.cat,st:r.st,url:r.url,img:r.img,seller:r.seller,full:r.full,cur:r.cur,h,first:r.hist[0][0],pts:r.hist,at:r.at,ends:r.ends};
+  return{id:i,cod:String(r.id).split(':').slice(1).join(':'),n:r.n,cat:r.cat,st:r.st,url:r.url,img:r.img,seller:r.seller,full:r.full,cur:r.cur,h,first:r.hist[0][0],pts:r.hist,at:r.at,ends:r.ends,parc:r.parc};
 }
 // fictício: um ponto por mês (dia 15), para a Black Fraude funcionar também na demonstração
 const monthPts=h=>h.map((v,i)=>v==null?null:[`${Math.floor((M0+i)/12)}-${String((M0+i)%12+1).padStart(2,'0')}-15`,v]).filter(Boolean);
@@ -616,6 +623,12 @@ function cupsDe(p){
 // preço com cupom só quando a regra é simples (% ou R$) e a compra mínima é atingida
 function comCupom(p,c){const v=p.s.cur;if(c.minimo&&v<c.minimo)return null;
   return c.pct?v*(1-c.pct/100):c.valor?Math.max(0,v-c.valor):null}
+function parcTxt(p,longo){const c=p.parc;if(!c)return '';
+  const j=c.juros?'com juros':'sem juros';
+  return longo?`<div class="mparc">ou <b>${fmtc(c.total)}</b> em até <b>${c.n}x de ${fmtc(c.v)}</b> ${j} no cartão</div>`
+              :`<div class="parc">ou ${c.n}x de <b>${fmtc(c.v)}</b> ${j}</div>`}
+function copiarIr(txt,url,btn){const ir=()=>window.open(url,'_blank','noopener');
+  (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>{btn.textContent='Copiado! Abrindo a loja…';ir()},()=>{prompt('Copie:',txt);ir()})}
 function cupGo(i,btn){const c=CUP[i],p=P[btn.dataset.pid],url=c.link||p.url;
   const ir=()=>window.open(url,'_blank','noopener');
   (navigator.clipboard?navigator.clipboard.writeText(c.codigo):Promise.reject()).then(()=>{btn.textContent='Copiado! Abrindo a loja…';ir()},()=>{prompt('Copie o cupom:',c.codigo);ir()})}
@@ -692,7 +705,7 @@ function card(p){
   return `<article class="card" style="--c:${t.c}" data-id="${p.id}">
     <div class="top"><span class="store">${logo(p.st)}${st.n}</span><span class="tag">${t.k}</span></div>
     <div class="prod"><div class="thumb">${thumb(p,28)}</div><div><h4>${p.n}</h4><div class="cat">${cl}</div></div></div>
-    <div class="price"><strong>${fmtc(s.cur)}</strong>${s.off>=.01?`<s>${fmt(s.full)}</s><span class="off">−${Math.round(s.off*100)}% vs cheio</span>`:'<span class="off" style="color:var(--dim)">à vista</span>'}</div>
+    <div class="price"><strong>${fmtc(s.cur)}</strong>${s.off>=.01?`<s>${fmt(s.full)}</s><span class="off">−${Math.round(s.off*100)}% vs cheio</span>`:'<span class="off" style="color:var(--dim)">à vista</span>'}</div>${parcTxt(p)}
     ${endsTxt(p)?`<div class="ends">⏱ ${endsTxt(p)}</div>`:''}
     <div class="cmp">
       <div><small>Menor já visto</small><b>${fmt(s.min)}</b> <em style="color:var(--dim)">${lbl(s.mi)}</em></div>
@@ -907,12 +920,16 @@ function openModal(p){
       <div><span class="store">${logo(p.st,18)}${st.n}</span><h2>${p.n}</h2><div class="trust" style="margin-top:4px">${shield(13)}${p.seller||'Vendido e entregue por '+st.n}</div></div></div>
     <div class="mprice"><div class="now"><strong>${fmtc(s.cur)}</strong><span class="pix">à vista no Pix</span>
         ${s.off>=.01?`<div class="sub"><s>${fmtc(s.full)}</s> · <span class="off">−${Math.round(s.off*100)}% vs preço cheio</span></div>`:''}
+        ${parcTxt(p,1)}
         <div class="seen">${p.at?`Preço visto na loja ${dia(new Date(p.at))} às ${hm(new Date(p.at))}. Pode ter mudado desde então.`:''}${endsTxt(p)?` <b>⏱ ${endsTxt(p)}</b>`:''}</div></div>
       <a class="cta" href="${p.url}" target="_blank" rel="noopener sponsored">Ver na ${st.n} →</a></div>
     ${cupsDe(p).length?`<div class="box cupm"><h5>🏷️ Cupom para este produto</h5>${cupsDe(p).map(c=>{const v=comCupom(p,c),i=CUP.indexOf(c);
       return `<div class="cupr"><code>${c.codigo}</code><div class="ct">${c.titulo}<small>${c.ate?'Válido até '+dia(new Date(c.ate))+' às '+hm(new Date(c.ate)):''}${c.minimo?(c.ate?' · ':'')+'compra mínima '+fmt(c.minimo):''}</small>${v!=null?`<div class="cp">Com o cupom: <b>${fmtc(v)}</b> <small style="color:var(--dim)">(estimado)</small></div>`:''}</div>
         <button class="cupgo" data-pid="${p.id}" onclick="cupGo(${i},this)">Copiar cupom e ir para a loja →</button></div>`}).join('')}
       <small>Cole o código no carrinho da ${st.n}. A loja pode mudar ou encerrar o cupom. O Muquirômetro avalia o preço sem cupom.</small></div>`:''}
+    ${st.apoio&&p.cod?`<div class="box apoio"><h5>💚 Apoie o Muquirana (opcional)</h5>
+      <p>A ${st.n} só deixa o nosso link abrir a página inicial da loja. Copie o código do produto, abra a ${st.n} pelo nosso link e cole na busca. O preço é o mesmo para você, e a loja paga uma pequena comissão ao site.</p>
+      <div class="cupr"><code>${p.cod}</code><button class="apoiogo" data-u="${st.apoio}" data-c="${p.cod}" onclick="copiarIr(this.dataset.c,this.dataset.u,this)">Copiar código e abrir a ${st.n} →</button></div></div>`:''}
     ${p.outras.length?`<div class="box also"><h5>O mesmo produto em outras lojas</h5>${p.outras.map(o=>{const d=o.s.cur/s.cur-1;
       return `<button class="orow" data-oid="${o.id}">${logo(o.st,16)}<span>${STORES[o.st].n}</span><b>${fmtc(o.s.cur)}</b><em style="color:${d<-.005?'#a6ff3b':d>.005?'#ff4d6d':'var(--mut)'}">${Math.abs(d)<.005?'mesmo preço':Math.abs(Math.round(d*100))+'% '+(d<0?'mais barato':'mais caro')}</em></button>`}).join('')}
       <small>Juntamos só quando o código do modelo é o mesmo nas duas lojas. Toque para ver o histórico.</small></div>`:''}

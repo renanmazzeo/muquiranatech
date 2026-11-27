@@ -8,6 +8,8 @@ import time
 
 import requests
 
+import parcelas
+
 BASE = "https://www.motorola.com.br"
 API = BASE + "/api/catalog_system/pub/products/search"
 HEADERS = {
@@ -57,6 +59,8 @@ def _item(p):
         "url": p.get("link") or f"{BASE}/{p.get('linkText')}/p",
         "available": True,
         "offer_ends": None,
+        "parc": parcelas.vtex(next((s.get("commertialOffer", {}).get("Installments") for s in it.get("sellers") or []
+                                    if str(s.get("sellerId")) == "1"), None)),
     }
 
 
