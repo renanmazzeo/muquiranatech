@@ -113,4 +113,9 @@ jobs:
                   r = requests.post(API + "/affiliate/shortener/url", headers={**H, "Content-Type": "application/json"}, timeout=30,
                                     json={"organizationId": lv[0]["id"], "type": "Custom", "url": url, "mdasc": "teste"})
                   print("  ", r.status_code, url[-40:], r.text[:400])
+          print("== MARCAS PEDIDAS PELO DONO")
+          for q in ["xiaomi", "mi store", "pcyes", "shopinfo", "concordia", "concórdia"]:
+              for b in (get("/affiliate/brands", search=q, limit=20) or {}).get("data", []):
+                  com = (b.get("commission") or {}).get("value")
+                  print(f"  [{q}] {b.get('name')} | {b.get('site')} | comissão={com}% | id={b.get('id')}")
           EOF
