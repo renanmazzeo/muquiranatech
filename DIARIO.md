@@ -282,3 +282,4 @@ Tentei criar o workflow `testar-navegador.yml` (Chromium abrindo uma busca de Ma
 - Cabeçalho: "Somente vendedores e lojas verificadas". Logo diagonal com cordinha no site, favicon e og.png. Instagram @muquiranatech; gerador de posts em `marca/instagram.py`.
 - Afiliados: Lomadee ativa (deep link da Lenovo cai na home: não ligar até corrigir); Awin aprovada com lojas pendentes; AliExpress e Shopee aguardando liberação da API (workflows "Testar AliExpress" e "Testar Shopee" prontos); Pichau contatada.
 **Precisa do dono:** chamado na Lomadee (Lenovo); guardar as chaves de AliExpress/Shopee quando liberarem; tirar o arquivo de chave da pasta do projeto.
+- (fim do dia) Agente autônomo na nuvem PAUSADO a pedido do dono. Criada a skill `/nova-loja`. Mercado Livre: dono enviou o formulário de pedido de API (botão "Criar nova aplicação" segue desabilitado). Shopee: dono pediu liberação da Open API por chamado; pagamento/fiscal completo.
