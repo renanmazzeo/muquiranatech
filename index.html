@@ -648,9 +648,10 @@ function parcTxt(p,longo){const c=p.parc;if(!c)return '';
               :`<div class="parc">ou ${c.n}x de <b>${fmtc(c.v)}</b> ${j}</div>`}
 function copiarIr(txt,url,btn){const ir=()=>window.open(url,'_blank','noopener');
   (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>{btn.textContent='Copiado! Abrindo a loja…';ir()},()=>{prompt('Copie:',txt);ir()})}
-function cupGo(i,btn){const c=CUP[i],p=P[btn.dataset.pid],url=c.link||goUrl(p);
+// abre a página do PRODUTO (o mesmo link do botão "Ver na loja"), já com o cupom copiado
+function cupGo(i,btn){const c=CUP[i],p=P[btn.dataset.pid],url=goUrl(p);
   const ir=()=>window.open(url,'_blank','noopener');
-  (navigator.clipboard?navigator.clipboard.writeText(c.codigo):Promise.reject()).then(()=>{btn.textContent='Copiado! Abrindo a loja…';ir()},()=>{prompt('Copie o cupom:',c.codigo);ir()})}
+  (navigator.clipboard?navigator.clipboard.writeText(c.codigo):Promise.reject()).then(()=>{btn.textContent='Cupom copiado! Abrindo o produto…';ir()},()=>{prompt('Copie o cupom:',c.codigo);ir()})}
 function outrasLinha(p){
   const o=p.outras[0];if(!o)return'';
   const d=o.s.cur/p.s.cur-1;
@@ -951,9 +952,9 @@ function openModal(p){
         ${parcTxt(p,1)}
         <div class="seen">${p.at?`Preço visto na loja ${dia(new Date(p.at))} às ${hm(new Date(p.at))}. Pode ter mudado desde então.`:''}${endsTxt(p)?` <b>⏱ ${endsTxt(p)}</b>`:''}</div></div>
       <a class="cta" href="${goUrl(p)}" target="_blank" rel="noopener sponsored"${goClick(p)}>Ver na ${st.n} →</a>${goDica(p)}</div>
-    ${cupsDe(p).length?`<div class="box cupm"><h5><svg class="tagi" width="16" height="16" viewBox="-0.5 -3.5 25 25" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z" stroke="#00e5ff" stroke-width="2.2"/><path d="M8 8C5.6 6.4 3.4 4.2 2.2 1.8 1.2-.2 2.4-2.2 4.6-2.2 6.6-2.2 8-.8 8.4 1" stroke="#a6ff3b" stroke-width="1.8"/><circle cx="8" cy="8" r="1.8" fill="#a6ff3b"/></svg> Cupom de desconto para este produto</h5>${cupsDe(p).map(c=>{const v=comCupom(p,c),i=CUP.indexOf(c);
+    ${cupsDe(p).length?`<div class="box cupm"><h5><svg class="tagi" width="16" height="16" viewBox="-0.5 -3.5 25 25" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z" stroke="#00e5ff" stroke-width="2.2"/><path d="M8 8C5.6 6.4 3.4 4.2 2.2 1.8 1.2-.2 2.4-2.2 4.6-2.2 6.6-2.2 8-.8 8.4 1" stroke="#a6ff3b" stroke-width="1.8"/><circle cx="8" cy="8" r="1.8" fill="#a6ff3b"/></svg> Cupom de desconto do Muquirana</h5>${cupsDe(p).map(c=>{const v=comCupom(p,c),i=CUP.indexOf(c);
       return `<div class="cupr"><code>${c.codigo}</code><div class="ct">${c.titulo}<small>${c.ate?'Válido até '+dia(new Date(c.ate))+' às '+hm(new Date(c.ate)):''}${c.minimo?(c.ate?' · ':'')+'compra mínima '+fmt(c.minimo):''}</small>${v!=null?`<div class="cp">Com o cupom: <b>${fmtc(v)}</b> <small style="color:var(--dim)">(estimado)</small></div>`:''}</div>
-        <button class="cupgo" data-pid="${p.id}" onclick="cupGo(${i},this)">Copiar cupom e ir para a loja →</button></div>`}).join('')}
+        <button class="cupgo" data-pid="${p.id}" onclick="cupGo(${i},this)">Copiar cupom e ver o produto na loja →</button></div>`}).join('')}
       <small>Cole o código no carrinho da ${st.n}. A loja pode mudar ou encerrar o cupom. O Muquirômetro avalia o preço sem cupom.</small></div>`:''}
     ${p.outras.length?`<div class="box also"><h5>O mesmo produto em outras lojas</h5>${p.outras.map(o=>{const d=o.s.cur/s.cur-1;
       return `<button class="orow" data-oid="${o.id}">${logo(o.st,16)}<span>${STORES[o.st].n}</span><b>${fmtc(o.s.cur)}</b><em style="color:${d<-.005?'#a6ff3b':d>.005?'#ff4d6d':'var(--mut)'}">${Math.abs(d)<.005?'mesmo preço':Math.abs(Math.round(d*100))+'% '+(d<0?'mais barato':'mais caro')}</em></button>`}).join('')}

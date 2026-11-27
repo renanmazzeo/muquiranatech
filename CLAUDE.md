@@ -71,8 +71,8 @@ Wayback Machine (domingo) ─► histórico KaBuM! ─┘              Cloudflar
 - `collector/cupons.py`: junta `data/cupons.json` (cupons à mão, ex.: exclusivo que uma loja mandou) e
   `data/cupons-auto.json` (comando `cupons`, Lomadee, só marcas ligadas a uma loja do site pela chave `"lomadee"` da
   loja na watchlist). O `exportar` põe os válidos em `data.js` (`cupons`). Formato no topo de `cupons.py`.
-- No site: selo "CUPOM DE DESCONTO" no cartão, botão "Cupom de desconto" (primeiro da barra, borda azul→verde do logo, com o nº de ofertas), caixa na janela com "Copiar cupom e ir
-  para a loja". "Preço com cupom (estimado)" só com `pct`/`valor` e compra mínima atingida. O Muquirômetro e a Black
+- No site: selo "CUPOM DE DESCONTO" no cartão, botão "Cupom de desconto" (primeiro da barra, borda azul→verde do logo, com o nº de ofertas), caixa "Cupom de desconto do Muquirana" na janela com "Copiar cupom e ver o produto na loja"
+  (copia o código e abre o MESMO link do "Ver na loja", na página do produto; não o link genérico do cupom). "Preço com cupom (estimado)" só com `pct`/`valor` e compra mínima atingida. O Muquirômetro e a Black
   Fraude julgam o preço SEM cupom. Sem cupom válido, nada aparece. Nunca inventar cupom nem mostrar cupom de loja que
   não está no site (o dono não quer página genérica de cupons).
 
