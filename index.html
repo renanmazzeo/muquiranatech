@@ -156,6 +156,7 @@ a.cta{display:block;text-align:center;text-decoration:none}
 .lost{font-size:12px;color:var(--mut);border-left:2px solid var(--c);padding-left:8px}
 .parc{font-size:12px;color:var(--mut);margin-top:2px}.parc b{font-family:var(--mono);color:var(--txt);font-weight:600}
 .mparc{font-size:13px;color:var(--mut);margin-top:6px}.mparc b{font-family:var(--mono);color:var(--txt)}
+.dica{flex-basis:100%;font-size:12.5px;color:var(--mut);text-align:right}.dica b{font-family:var(--mono);color:var(--txt)}
 .apoio{margin:0 0 16px;border:1px dashed rgba(166,255,59,.45);background:rgba(166,255,59,.04);border-radius:14px;padding:12px 14px}
 .apoio h5{color:var(--li)}.apoio p{font-size:13px;color:#cdd6e6;margin:4px 0 8px}
 .apoio code{font:800 15px var(--mono);letter-spacing:1px;color:var(--li);background:rgba(166,255,59,.1);padding:5px 10px;border-radius:8px}
@@ -442,7 +443,7 @@ const STORES={
   kalunga:{n:'Kalunga',c:'#0b4ea2',d:'kalunga.com.br',s:q=>`https://www.kalunga.com.br/busca/${slug(q)}`},
   motorola:{n:'Motorola',c:'#5c92fa',d:'motorola.com.br',s:q=>`https://www.motorola.com.br/search?q=${enc(q)}`},
   lenovo:{n:'Lenovo',c:'#e2231a',d:'lenovo.com',s:q=>`https://www.lenovo.com/br/pt/search?text=${enc(q)}`,
-    apoio:'https://lmdee.link/deep/muquirana-tech?url=https%3A%2F%2Fwww.lenovo.com%2Fbr%2Fpt%2F&mdasc=apoio-janela'},
+    apoio:'https://lmdee.link/deep/muquirana-tech?url=https%3A%2F%2Fwww.lenovo.com%2Fbr%2Fpt%2F&mdasc=site'},
   samsung:{n:'Samsung',c:'#1428a0',d:'samsung.com',s:q=>`https://shop.samsung.com/br/${enc(q)}?_q=${enc(q)}&map=ft`},
   nuuvem:{n:'Nuuvem',c:'#b04cff',d:'nuuvem.com',s:q=>`https://www.nuuvem.com/br-pt/catalog/search/${enc(q)}`},
   psstore:{n:'PS Store',c:'#2b6cff',d:'store.playstation.com',s:q=>`https://store.playstation.com/pt-br/search/${enc(q)}`},
@@ -623,6 +624,11 @@ function cupsDe(p){
 // preço com cupom só quando a regra é simples (% ou R$) e a compra mínima é atingida
 function comCupom(p,c){const v=p.s.cur;if(c.minimo&&v<c.minimo)return null;
   return c.pct?v*(1-c.pct/100):c.valor?Math.max(0,v-c.valor):null}
+// loja cujo link de afiliado só abre a página inicial (Lenovo): o botão copia o código do produto e abre a loja
+const goUrl=p=>STORES[p.st].apoio&&p.cod?STORES[p.st].apoio:p.url;
+const goClick=p=>STORES[p.st].apoio&&p.cod?` onclick="copiar('${p.cod}')"`:'';
+function copiar(t){try{navigator.clipboard&&navigator.clipboard.writeText(t)}catch(e){}}
+const goDica=p=>STORES[p.st].apoio&&p.cod?`<div class="dica">📋 Ao clicar, copiamos o código <b>${p.cod}</b>: cole na busca da ${STORES[p.st].n} para achar este produto.</div>`:'';
 function parcTxt(p,longo){const c=p.parc;if(!c)return '';
   const j=c.juros?'com juros':'sem juros';
   return longo?`<div class="mparc">ou <b>${fmtc(c.total)}</b> em até <b>${c.n}x de ${fmtc(c.v)}</b> ${j} no cartão</div>`
@@ -718,7 +724,7 @@ function card(p){
     ${outrasLinha(p)}
     ${cupsDe(p).length?`<div><span class="cupb">🏷️ TEM CUPOM</span></div>`:''}
     ${p.bf.deInflado?`<div class="lost" style="--c:#ffb020">O “−${Math.round(p.bf.claim*100)}%” da loja é exagerado: o preço normal dele é ${fmt(p.bf.normal)}</div>`:''}
-    <div class="foot"><a class="go" href="${p.url}" target="_blank" rel="noopener sponsored" onclick="event.stopPropagation()">Ver na loja ↗</a><span class="ping">${thermo(s)}</span></div>
+    <div class="foot">${STORES[p.st].apoio&&p.cod?`<a class="go" href="#" onclick="event.preventDefault()">Ver na loja ↗</a>`:`<a class="go" href="${p.url}" target="_blank" rel="noopener sponsored" onclick="event.stopPropagation()">Ver na loja ↗</a>`}<span class="ping">${thermo(s)}</span></div>
   </article>`;
 }
 /* ---------- busca inteligente: acha mesmo com erro de digitação, sem acento ou com palavras juntas ---------- */
@@ -922,14 +928,11 @@ function openModal(p){
         ${s.off>=.01?`<div class="sub"><s>${fmtc(s.full)}</s> · <span class="off">−${Math.round(s.off*100)}% vs preço cheio</span></div>`:''}
         ${parcTxt(p,1)}
         <div class="seen">${p.at?`Preço visto na loja ${dia(new Date(p.at))} às ${hm(new Date(p.at))}. Pode ter mudado desde então.`:''}${endsTxt(p)?` <b>⏱ ${endsTxt(p)}</b>`:''}</div></div>
-      <a class="cta" href="${p.url}" target="_blank" rel="noopener sponsored">Ver na ${st.n} →</a></div>
+      <a class="cta" href="${goUrl(p)}" target="_blank" rel="noopener sponsored"${goClick(p)}>Ver na ${st.n} →</a>${goDica(p)}</div>
     ${cupsDe(p).length?`<div class="box cupm"><h5>🏷️ Cupom para este produto</h5>${cupsDe(p).map(c=>{const v=comCupom(p,c),i=CUP.indexOf(c);
       return `<div class="cupr"><code>${c.codigo}</code><div class="ct">${c.titulo}<small>${c.ate?'Válido até '+dia(new Date(c.ate))+' às '+hm(new Date(c.ate)):''}${c.minimo?(c.ate?' · ':'')+'compra mínima '+fmt(c.minimo):''}</small>${v!=null?`<div class="cp">Com o cupom: <b>${fmtc(v)}</b> <small style="color:var(--dim)">(estimado)</small></div>`:''}</div>
         <button class="cupgo" data-pid="${p.id}" onclick="cupGo(${i},this)">Copiar cupom e ir para a loja →</button></div>`}).join('')}
       <small>Cole o código no carrinho da ${st.n}. A loja pode mudar ou encerrar o cupom. O Muquirômetro avalia o preço sem cupom.</small></div>`:''}
-    ${st.apoio&&p.cod?`<div class="box apoio"><h5>💚 Apoie o Muquirana (opcional)</h5>
-      <p>A ${st.n} só deixa o nosso link abrir a página inicial da loja. Copie o código do produto, abra a ${st.n} pelo nosso link e cole na busca. O preço é o mesmo para você, e a loja paga uma pequena comissão ao site.</p>
-      <div class="cupr"><code>${p.cod}</code><button class="apoiogo" data-u="${st.apoio}" data-c="${p.cod}" onclick="copiarIr(this.dataset.c,this.dataset.u,this)">Copiar código e abrir a ${st.n} →</button></div></div>`:''}
     ${p.outras.length?`<div class="box also"><h5>O mesmo produto em outras lojas</h5>${p.outras.map(o=>{const d=o.s.cur/s.cur-1;
       return `<button class="orow" data-oid="${o.id}">${logo(o.st,16)}<span>${STORES[o.st].n}</span><b>${fmtc(o.s.cur)}</b><em style="color:${d<-.005?'#a6ff3b':d>.005?'#ff4d6d':'var(--mut)'}">${Math.abs(d)<.005?'mesmo preço':Math.abs(Math.round(d*100))+'% '+(d<0?'mais barato':'mais caro')}</em></button>`}).join('')}
       <small>Juntamos só quando o código do modelo é o mesmo nas duas lojas. Toque para ver o histórico.</small></div>`:''}
@@ -940,7 +943,7 @@ function openModal(p){
       <div class="box"><h5>Hoje (${fmtc(s.cur)}) comparado com</h5><table>${rows}</table></div>
       <div class="box"><h5>Por que essa loja é confiável</h5><ul>
         ${(p.st==='ml'?[p.seller,'Reputação verde no Mercado Livre','+10 mil vendas concluídas','Compra garantida pelo Mercado Livre']:[p.seller||'Vendido e entregue por '+st.n,'Nota fiscal e garantia oficial','Boa reputação em sites de reclamação']).map(x=>`<li>${shield(13)}${x}</li>`).join('')}
-        </ul><a class="cta" href="${p.url}" target="_blank" rel="noopener sponsored">Ir para a ${st.n} →</a></div>
+        </ul><a class="cta" href="${goUrl(p)}" target="_blank" rel="noopener sponsored"${goClick(p)}>Ir para a ${st.n} →</a></div>
     </div>`;
   if(!$('ov').classList.contains('open'))history.pushState({muq:1},'');
   $('ov').classList.add('open');m.scrollTop=0;

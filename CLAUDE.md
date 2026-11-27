@@ -81,9 +81,9 @@ Wayback Machine (domingo) ─► histórico KaBuM! ─┘              Cloudflar
   Samsung/Motorola (VTEX `Installments`: maior parcela sem juros num cartão comum), Lenovo (o mesmo da ficha).
   Amazon, Kalunga e jogos: não mostra nada. Nunca inventar parcelamento. No site: linha abaixo do preço (cartão e janela).
 - Lenovo pela Lomadee: qualquer link (deep link ou encurtador "Custom") abre a página INICIAL (a Lomadee confirmou em
-  27/11; a comissão vale para qualquer compra na latência do cookie). Por isso o botão principal vai direto ao produto
-  (sem comissão) e a janela tem a caixa opcional "Apoie o Muquirana": copia o código do produto e abre a Lenovo pelo
-  link de afiliado (`STORES.lenovo.apoio`, `mdasc=apoio-janela`). Nunca abrir link de afiliado escondido.
+  27/11; a comissão vale para qualquer compra na latência do cookie). A pedido do dono, o próprio "Ver na Lenovo"
+  usa o link de afiliado (`STORES.lenovo.apoio`, `mdasc=site`): copia o código do produto e mostra a dica "cole na busca
+  da Lenovo". No cartão, "Ver na loja" da Lenovo abre a janela (onde está a dica). Nunca abrir link de afiliado escondido.
 
 ## Muquirômetro (termômetro, sem nota e sem descrição)
 Faixa pelo quanto o preço de hoje está acima do menor preço já visto (`up`):
