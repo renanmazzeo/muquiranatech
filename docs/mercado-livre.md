@@ -13,7 +13,7 @@ Sem elas, o robô simplesmente pula o Mercado Livre (nada quebra).
 ## 2. Guardar no GitHub
 1. No repositório: **Settings → Secrets and variables → Actions → New repository secret**.
 2. Crie `ML_CLIENT_ID` com o App ID e `ML_CLIENT_SECRET` com a chave secreta.
-   (Ou no terminal do VS Code: `& "C:Program FilesGitHub CLIgh.exe" secret set ML_CLIENT_ID -R renanmazzeo/muquiranatech`
+   (Ou no terminal do VS Code: `& "C:\Program Files\GitHub CLI\gh.exe" secret set ML_CLIENT_ID -R renanmazzeo/muquiranatech`
    e o mesmo para `ML_CLIENT_SECRET`; cole o valor quando ele pedir.)
 
 ## 3. Conferir
