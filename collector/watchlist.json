@@ -127,6 +127,34 @@
         {"path": "d97fd14c-bdf2-4bcb-b686-140f4cc1c4aa", "cat": "monitor", "fixa": true}
       ]
     },
+    "pcyes": {
+      "nome": "PCYes",
+      "lomadee": "PCYES",
+      "pausa": 3,
+      "vendedores_confiaveis": ["PCYes"],
+      "not": ["recondicionado", "usado", "seminovo", "vitrine", "camiseta"],
+      "buscas": [],
+      "catalogo": [{"path": "sitemap", "cat": "perif"}]
+    },
+    "concordia": {
+      "nome": "Concórdia",
+      "lomadee": "Concórdia Informática",
+      "pausa": 3,
+      "vendedores_confiaveis": ["Concórdia Informática"],
+      "not": ["recondicionado", "usado", "seminovo", "vitrine", "outlet", "mostruario", "impressora de cupom", "termica de cupom", "nao fiscal", "sat fiscal", "gaveta"],
+      "buscas": [],
+      "catalogo": [
+        {"path": "notebooks", "cat": "notebook"},
+        {"path": "monitores", "cat": "monitor"},
+        {"path": "pc-empresarial", "cat": "notebook"},
+        {"path": "gamer", "cat": "perif"},
+        {"path": "componentes", "cat": "perif"},
+        {"path": "acessorios", "cat": "perif"},
+        {"path": "roteador", "cat": "rede"},
+        {"path": "acess-point", "cat": "rede"},
+        {"path": "energia", "cat": "rede"}
+      ]
+    },
     "motorola": {
       "nome": "Motorola",
       "pausa": 2,

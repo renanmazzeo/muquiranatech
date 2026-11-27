@@ -1,0 +1,37 @@
+# Teste genérico de uma loja na rede do GitHub (ou na mão): coleta numa cópia do banco, não salva nada,
+# e mostra quantos produtos vieram e alguns preços. Uso: Actions → "Testar loja" → loja = chave da watchlist.
+name: Testar loja
+on:
+  workflow_dispatch:
+    inputs:
+      loja:
+        description: "Chave da loja na watchlist (ex.: pcyes, concordia)"
+        required: true
+permissions:
+  contents: read
+jobs:
+  testar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r collector/requirements.txt
+      - name: Coletar numa cópia
+        env:
+          LOJA: ${{ inputs.loja }}
+        run: |
+          MUQ_DB="$RUNNER_TEMP/t.db" python collector/muq.py coletar --lojas "$LOJA"
+          python - <<'PY'
+          import os, sqlite3, sys
+          c = sqlite3.connect(os.environ["RUNNER_TEMP"] + "/t.db")
+          loja = os.environ["LOJA"]
+          n = c.execute("select count(*) from products where store=?", (loja,)).fetchone()[0]
+          print(f"::notice::{loja}: {n} produtos coletados no GitHub")
+          for name, price in c.execute("select p.name, x.price from products p join prices x on x.product_id=p.id "
+                                       "where p.store=? order by x.price limit 5", (loja,)):
+              print(f"::notice::{name[:60]}: R$ {price}")
+          sys.exit(0 if n else 1)
+          PY
