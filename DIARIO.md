@@ -283,3 +283,10 @@ Tentei criar o workflow `testar-navegador.yml` (Chromium abrindo uma busca de Ma
 - Afiliados: Lomadee ativa (deep link da Lenovo cai na home: não ligar até corrigir); Awin aprovada com lojas pendentes; AliExpress e Shopee aguardando liberação da API (workflows "Testar AliExpress" e "Testar Shopee" prontos); Pichau contatada.
 **Precisa do dono:** chamado na Lomadee (Lenovo); guardar as chaves de AliExpress/Shopee quando liberarem; tirar o arquivo de chave da pasta do projeto.
 - (fim do dia) Agente autônomo na nuvem PAUSADO a pedido do dono. Criada a skill `/nova-loja`. Mercado Livre: dono enviou o formulário de pedido de API (botão "Criar nova aplicação" segue desabilitado). Shopee: dono pediu liberação da Open API por chamado; pagamento/fiscal completo.
+
+### 27/11/2026 — conversa com o dono
+- Parcelamento no cartão abaixo do preço (KaBuM!, Samsung, Motorola, Lenovo): `collector/parcelas.py`, coluna `products.parcelas`. No ar em 4.539 produtos.
+- Lenovo: a Lomadee confirmou que o link sempre abre a página inicial. A pedido do dono, o "Ver na Lenovo" usa o link de comissão, copia o código do produto e mostra a dica para colar na busca.
+- PCYes (196-201 produtos, 6 de 6 preços iguais à ficha) e Concórdia Informática (379-387 produtos, 5 de 5) entram no site com link de comissão da Lomadee no "Ver na loja" (deep link abre o produto). Shopinfo: bloqueia robôs (429). Xiaomi: não achada na Lomadee (dono vai ver o nome).
+- Nova chave da Lomadee com encurtador e pedidos (a antiga foi revogada pelo dono). Novo workflow genérico "Testar loja".
+**Precisa do dono:** nome exato da Xiaomi na Lomadee.

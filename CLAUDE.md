@@ -63,6 +63,7 @@ Wayback Machine (domingo) ─► histórico KaBuM! ─┘              Cloudflar
   re-dispara perto do limite de 6 h. Se parar, religar em Actions → Run workflow. Desligar = cancelar a execução.
 - `.github/workflows/coletar.yml`: KaBuM! a cada 3h; domingo às 9h também busca histórico. Para rodar na mão:
   `gh workflow run "Coletar preços" -f historico=sim -f meses=4`.
+- `.github/workflows/testar-loja.yml` ("Testar loja", input `loja`): coleta uma loja numa cópia na rede do GitHub.
 - `.github/workflows/testar-lojas.yml`: teste rápido para ver se as lojas respondem ao robô do GitHub (não salva nada).
 - Os robôs fazem commit de `data.js` e do `.db` várias vezes por dia: **sempre rode `git pull` antes de mexer**.
 
@@ -122,6 +123,9 @@ Preço normal = mediana dos preços de 31 a 90 dias atrás (`BF` em `index.html`
 | PlayStation Store | ✅ GitHub, com navegador (Playwright, job `coletar-navegador`); 20 jogos, 5 preços conferidos |
 | Motorola | ✅ `collector/motorola.py`: API pública VTEX (`www.motorola.com.br/api/catalog_system`), categoria Smartphones, preço do Pix, só seller "1" |
 | Lenovo | ✅ `collector/lenovo.py`: API das páginas de categoria (`openapi.lenovo.com`, filtro `pageFilterId`) para a lista e `/detail/price/batch/get` (a da ficha) para o preço do Pix; notebooks, desktops e monitores. `/search` é proibido no robots.txt |
+| PCYes | ✅ `collector/pcyes.py`: 1ª página (12 itens) de cada categoria do sitemap, `__NEXT_DATA__` (Magento), `final_price` = preço da ficha (Pix = cartão em 10x sem juros); `/graphql` e `/search` proibidos. ~200 produtos. Link de comissão Lomadee (abre o produto) |
+| Concórdia Informática | ✅ `collector/concordia.py`: páginas de categoria Tray (`?pg=N`), preço "à vista com desconto" (igual à ficha); esgotados ficam por último e o coletor para; sem Outlet nem automação comercial. ~380 produtos. Link de comissão Lomadee (abre o produto) |
+| Shopinfo | ❌ Shopify limita robôs (429 depois de 3-4 acessos); deep link da Lomadee funciona: só com feed oficial |
 | Xbox Store | ✅ `collector/xbox.py` (navegador, job `coletar-navegador`), 20 jogos, 5 preços conferidos (26/11) |
 | Apple, Dell | ⏳ responderam à sondagem de 26/11 no GitHub; coletores pendentes (tarefa 5d); Apple deixada de lado |
 | Magalu, Casas Bahia, Pichau, Terabyte, Nuuvem, LG | ❌ 403/captcha para robôs (Pichau/Terabyte só abrem no PC com navegador). Não burlar: só por afiliados/feeds oficiais (Awin em análise; Lomadee tem TeraByte e Lenovo, sem feed de produtos) |
