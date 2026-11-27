@@ -290,3 +290,8 @@ Tentei criar o workflow `testar-navegador.yml` (Chromium abrindo uma busca de Ma
 - PCYes (196-201 produtos, 6 de 6 preços iguais à ficha) e Concórdia Informática (379-387 produtos, 5 de 5) entram no site com link de comissão da Lomadee no "Ver na loja" (deep link abre o produto). Shopinfo: bloqueia robôs (429). Xiaomi: não achada na Lomadee (dono vai ver o nome).
 - Nova chave da Lomadee com encurtador e pedidos (a antiga foi revogada pelo dono). Novo workflow genérico "Testar loja".
 - Xiaomi (loja oficial mibrasil.com.br, na Lomadee como "Dl Comercio E Industria De Produtos Eletronicos", 2,38%): `collector/xiaomi.py` lê o catálogo aberto `/products.json`; 137 produtos de tecnologia (celulares, tablets, relógios, fones, casa inteligente, roteadores), 8 de 8 preços iguais à ficha; link de comissão abre o produto.
+- (noite) Visual: filtro "Cupom de desconto" primeiro da barra (etiqueta do logo, borda azul→verde, nº de ofertas), caixa "Cupom de desconto do Muquirana" e o botão copia o cupom e abre a página do produto; categorias e lojas no mesmo padrão (pílula, selecionada azul) e barra de rolagem em degradê.
+- Coleta reduzida (temporário, pedido do dono): GitHub a cada 6 h com um só push por coleta (job `salvar`) e Amazon no PC a cada 12 h: ~180 builds/mês. Medição: só a KaBuM! muda muito entre coletas (~1,6% a cada 3 h, ofertas relâmpago).
+- Xiaomi no ar (137); fotos corrigidas para a CDN da loja; cupons da Lomadee aceitam marca com razão social longa (prefixo).
+- Dono mandou mensagem à KaBuM! e chamado à Awin pedindo andamento. AliExpress: texto de ticket pronto, dono deixou para depois.
+**Prioridades combinadas:** Search Console + páginas por produto/categoria, Web Analytics do Cloudflare, Amazon Associados, Instagram.
