@@ -1,1 +1,18 @@
-[]
+[
+ {
+  "loja": "concordia",
+  "codigo": "COMPUTADOR10",
+  "titulo": "10% OFF em todos os computadores",
+  "ate": "2026-12-01T02:30:00.000Z",
+  "link": "https://lmdee.link/ahw0VmRzWlbM",
+  "fonte": "lomadee"
+ },
+ {
+  "loja": "pcyes",
+  "codigo": "BEMVINDO10",
+  "titulo": "10% off na sua primeira compra",
+  "ate": null,
+  "link": "https://lmdee.link/X9ZuBQXwDJMI",
+  "fonte": "lomadee"
+ }
+]
