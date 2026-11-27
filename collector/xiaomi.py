@@ -17,6 +17,7 @@ import parcelas
 from kabum import norm
 
 BASE = "https://www.mibrasil.com.br"
+CDN = "https://d1r6yjixh9u0er.cloudfront.net"  # onde a própria loja serve as fotos
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36",
     "Accept-Language": "pt-BR,pt;q=0.9",
@@ -78,14 +79,16 @@ def _item(p):
     if (mx.get("Installments") or 0) > 1:
         parc = parcelas.montar(mx["Installments"], _num(mx.get("InstallmentPrice")), _num(mx.get("RetailPrice")) or None,
                                juros=False)
-    img = p.get("MediaSmall")
+    # a foto fica na CDN da loja (o mesmo caminho em www.mibrasil.com.br dá 404); tamanho médio, 500 px
+    grupo = (p.get("MediaGroups") or [{}])[0] or {}
+    img = (grupo.get("Medium") or {}).get("MediaPath") or p.get("MediaSmall")
     return {
         "code": str(p["ProductID"]),
         "name": " ".join(str(p.get("Name") or "").split()),
         "price": price,
         "list_price": max(_num(pr.get("ListPrice")), cheio, price),
         "seller": "Xiaomi",
-        "img": (BASE + img if img.startswith("/") else img) if img else None,
+        "img": (CDN + img if img.startswith("/") else img) if img else None,
         "url": BASE + p["Url"] if p["Url"].startswith("/") else p["Url"],
         "available": True,
         "offer_ends": None,
